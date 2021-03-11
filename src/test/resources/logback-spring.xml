@@ -1,0 +1,63 @@
+<configuration>
+	<springProfile name="prod-data-agent">
+	    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+	    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+	        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+	            <layout class="com.charzer.config.server.config.CustomJsonLayout">
+	                <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSSX</timestampFormat>
+	                <timestampFormatTimezoneId>Etc/UTC</timestampFormatTimezoneId>
+	                <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+	                </jsonFormatter>
+	                <appendLineSeparator>true</appendLineSeparator>
+	            </layout>
+	        </encoder>
+	    </appender>
+	    <root level="OFF" additivity="false">
+	        <appender-ref ref="CONSOLE"/>
+	    </root>
+	    <logger level="INFO" name="org" additivity="false">
+	        <appender-ref ref="CONSOLE"/>
+	    </logger>
+	    <logger level="INFO" name="com" additivity="false">
+	        <appender-ref ref="CONSOLE"/>
+	    </logger>
+	</springProfile>
+	<springProfile name="dev">
+	    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+	      <encoder>
+	        <pattern>
+	          %d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] [%X{traceId:-},%X{spanId:-}] %-5level  %class{25}.%M\(%L\) - %msg%n%rEx
+	        </pattern>
+	        <charset>utf8</charset>
+	      </encoder>
+	    </appender>
+	    <root level="OFF" additivity="false">
+	        <appender-ref ref="CONSOLE"/>
+	    </root>
+	    <logger level="INFO" name="org" additivity="false">
+	        <appender-ref ref="CONSOLE"/>
+	    </logger>
+	    <logger level="DEBUG" name="com" additivity="false">
+	        <appender-ref ref="CONSOLE"/>
+	    </logger>
+	</springProfile>
+	<springProfile name="qa,prod">
+	    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+	      <encoder>
+	        <pattern>
+	          [%thread] [%X{traceId:-},%X{spanId:-}] %-5level  %class{25}.%M\(%L\) - %msg%n%rEx
+	        </pattern>
+	        <charset>utf8</charset>
+	      </encoder>
+	    </appender>
+	    <root level="OFF" additivity="false">
+	        <appender-ref ref="CONSOLE"/>
+	    </root>
+	    <logger level="INFO" name="org" additivity="false">
+	        <appender-ref ref="CONSOLE"/>
+	    </logger>
+	    <logger level="DEBUG" name="com.charzer" additivity="false">
+	        <appender-ref ref="CONSOLE"/>
+	    </logger>
+	</springProfile>
+</configuration>

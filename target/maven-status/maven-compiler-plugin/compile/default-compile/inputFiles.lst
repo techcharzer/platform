@@ -1,8 +1,8 @@
-/Users/arun.chouhan/Documents/projects/charzer/Platform-Core/src/main/java/org/charzer/platform/exception/ValidationException.java
-/Users/arun.chouhan/Documents/projects/charzer/Platform-Core/src/main/java/org/charzer/platform/logging/CustomJsonLayout.java
-/Users/arun.chouhan/Documents/projects/charzer/Platform-Core/src/main/java/org/charzer/platform/cache/CacheCommonService.java
-/Users/arun.chouhan/Documents/projects/charzer/Platform-Core/src/main/java/org/charzer/platform/exception/ErrorField.java
-/Users/arun.chouhan/Documents/projects/charzer/Platform-Core/src/main/java/org/charzer/platform/exception/ApplicationException.java
-/Users/arun.chouhan/Documents/projects/charzer/Platform-Core/src/main/java/org/charzer/platform/exception/PlatFormExceptionCodes.java
-/Users/arun.chouhan/Documents/projects/charzer/Platform-Core/src/main/java/org/charzer/platform/cors/CorsConfigProps.java
-/Users/arun.chouhan/Documents/projects/charzer/Platform-Core/src/main/java/org/charzer/platform/exception/IExceptionCodes.java
+/Users/arun.chouhan/Documents/projects/charzer/platform/src/main/java/org/charzer/platform/cache/CacheCommonService.java
+/Users/arun.chouhan/Documents/projects/charzer/platform/src/main/java/org/charzer/platform/exception/IExceptionCodes.java
+/Users/arun.chouhan/Documents/projects/charzer/platform/src/main/java/org/charzer/platform/logging/CustomJsonLayout.java
+/Users/arun.chouhan/Documents/projects/charzer/platform/src/main/java/org/charzer/platform/exception/ApplicationException.java
+/Users/arun.chouhan/Documents/projects/charzer/platform/src/main/java/org/charzer/platform/exception/PlatFormExceptionCodes.java
+/Users/arun.chouhan/Documents/projects/charzer/platform/src/main/java/org/charzer/platform/cors/CorsConfigProps.java
+/Users/arun.chouhan/Documents/projects/charzer/platform/src/main/java/org/charzer/platform/exception/ErrorField.java
+/Users/arun.chouhan/Documents/projects/charzer/platform/src/main/java/org/charzer/platform/exception/ValidationException.java
