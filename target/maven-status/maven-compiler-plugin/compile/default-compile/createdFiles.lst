@@ -2,8 +2,10 @@ org/charzer/platform/exception/IExceptionCodes.class
 org/charzer/platform/exception/ValidationException.class
 org/charzer/platform/exception/ErrorField.class
 org/charzer/platform/cache/CacheCommonService.class
+org/charzer/platform/cors/WebMvcConfigugration.class
 org/charzer/platform/exception/PlatFormExceptionCodes.class
 org/charzer/platform/cors/CorsConfigProps.class
 org/charzer/platform/cache/CacheCommonService$AnonymousMethod.class
 org/charzer/platform/exception/ApplicationException.class
 org/charzer/platform/logging/CustomJsonLayout.class
+org/charzer/platform/cors/WebMvcConfigugration$1.class
