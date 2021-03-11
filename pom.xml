@@ -11,7 +11,7 @@
 
 	<name>Platform Core</name>
 	<description>Platform Core basic spring dependencies</description>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 	<properties>
 		<java.version>11</java.version>
 		<spring-cloud.version>2020.0.1</spring-cloud.version>
