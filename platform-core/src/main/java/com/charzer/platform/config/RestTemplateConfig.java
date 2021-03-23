@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-import com.charzer.platform.PlatFormConstants;
+import com.charzer.platform.PlatformConstants;
 
 @Configuration
 public class RestTemplateConfig {
@@ -26,12 +26,12 @@ public class RestTemplateConfig {
 		return new RestTemplate(httpRequestFactory);
 	}
 
-	@Bean(PlatFormConstants.EXTERNAL_CLIENT)
+	@Bean(PlatformConstants.EXTERNAL_CLIENT)
 	public RestTemplate getExternalRestTemplate() {
 		return getRestTemplate(5000);
 	}
 
-	@Bean(PlatFormConstants.EXTERNAL_SLOW_CLIENT)
+	@Bean(PlatformConstants.EXTERNAL_SLOW_CLIENT)
 	public RestTemplate getExternalSlowRestTemplate() {
 		return getRestTemplate(7000);
 	}

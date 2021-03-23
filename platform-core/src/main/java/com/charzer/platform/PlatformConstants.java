@@ -1,7 +1,7 @@
 package com.charzer.platform;
 
-public class PlatFormConstants {
-	private PlatFormConstants() {
+public class PlatformConstants {
+	private PlatformConstants() {
 
 	}
 
