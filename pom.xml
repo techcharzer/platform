@@ -9,8 +9,8 @@
 	<artifactId>platform-pom</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 
-	<name>Platform Core</name>
-	<description>Platform Core basic spring dependencies</description>
+	<name>Platform POM</name>
+	<description>Platform POM</description>
 	<packaging>pom</packaging>
 	<properties>
 		<java.version>11</java.version>

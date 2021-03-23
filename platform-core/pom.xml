@@ -4,8 +4,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-
+	<groupId>com.charzer.core</groupId>
 	<artifactId>platform-core</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
 
 	<name>Platform Core</name>
 	<description>Platform Core basic spring dependencies</description>
@@ -20,9 +21,7 @@
 		<groupId>com.charzer</groupId>
 		<artifactId>platform-pom</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-
 
 	<dependencies>
 		<dependency>
@@ -53,10 +52,8 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
-		<!-- <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency> -->
+		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-security</artifactId> 
+			</dependency> -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-sleuth</artifactId>
