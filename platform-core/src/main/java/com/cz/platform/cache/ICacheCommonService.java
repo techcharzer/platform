@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.util.ObjectUtils;
 
 import com.cz.platform.exception.PlatFormExceptionCodes;
@@ -16,10 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public abstract class ICacheCommonService {
-
-	@Autowired
-	@Lazy
-	protected ICacheCommonService cacheCommonService;
 
 	protected static final Map<String, AnonymousMethod> REFRESH_KEY_METHOD = new HashMap<>();
 
