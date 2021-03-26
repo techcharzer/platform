@@ -1,7 +1,7 @@
 package com.cz.platform.custom.events;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -14,5 +14,5 @@ import lombok.Data;
 @ConfigurationProperties(prefix = "cz.config.custom.events")
 @RefreshScope
 public class CustomEventConfig {
-	private Map<Integer, String> listOfCustomeEvents = new HashMap<>();
+	private List<String> listOfCustomeEvents = new ArrayList<>();
 }

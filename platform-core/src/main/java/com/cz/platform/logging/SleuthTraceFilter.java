@@ -22,24 +22,23 @@ import brave.Tracer;
 @Order(value = Ordered.LOWEST_PRECEDENCE)
 class SleuthTraceFilter extends GenericFilterBean {
 
-    private final Tracer tracer;
+	private final Tracer tracer;
 
-    SleuthTraceFilter(Tracer tracer) {
-        this.tracer = tracer;
-    }
+	SleuthTraceFilter(Tracer tracer) {
+		this.tracer = tracer;
+	}
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response,
-            FilterChain chain) throws IOException, ServletException {
-        Span currentSpan = this.tracer.currentSpan();
-        if (currentSpan == null) {
-            chain.doFilter(request, response);
-            return;
-        }
-        // for readability we're returning trace id in a hex form
-        ((HttpServletResponse) response).addHeader(PlatformConstants.X_TRACE_ID,
-                currentSpan.context().traceIdString());
-        chain.doFilter(request, response);
-    }
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
+		Span currentSpan = this.tracer.currentSpan();
+		if (currentSpan == null) {
+			chain.doFilter(request, response);
+			return;
+		}
+		// for readability we're returning trace id in a hex form
+		((HttpServletResponse) response).addHeader(PlatformConstants.X_TRACE_ID, currentSpan.context().traceIdString());
+		chain.doFilter(request, response);
+	}
 
 }

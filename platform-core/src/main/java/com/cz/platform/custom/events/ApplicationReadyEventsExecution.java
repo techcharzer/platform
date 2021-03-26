@@ -1,8 +1,5 @@
 package com.cz.platform.custom.events;
 
-import java.util.Map;
-import java.util.TreeMap;
-
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
@@ -22,10 +19,8 @@ public class ApplicationReadyEventsExecution {
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void fillInMemoryHeaps() {
-		Map<Integer, String> eventNames = new TreeMap<>();
-		eventNames.putAll(customEventConfig.getListOfCustomeEvents());
-		log.info("list of event names after sorting : {}", eventNames);
-		for (String name : eventNames.values()) {
+		log.info("list of event names after sorting : {}", customEventConfig.getListOfCustomeEvents());
+		for (String name : customEventConfig.getListOfCustomeEvents()) {
 			CustomSpringEvent customSpringEvent = new CustomSpringEvent(this, name);
 			applicationEventPublisher.publishEvent(customSpringEvent);
 		}
