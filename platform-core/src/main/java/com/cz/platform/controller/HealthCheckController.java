@@ -1,4 +1,4 @@
-package com.charzer.platform.controller;
+package com.cz.platform.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

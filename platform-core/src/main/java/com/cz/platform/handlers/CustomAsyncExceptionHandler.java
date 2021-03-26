@@ -1,4 +1,4 @@
-package com.charzer.platform.handlers;
+package com.cz.platform.handlers;
 
 import java.lang.reflect.Method;
 

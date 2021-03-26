@@ -1,30 +1,25 @@
-package org.charzer.platform.cache;
+package com.cz.platform.cache;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.charzer.platform.exception.PlatFormExceptionCodes;
-import org.charzer.platform.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+
+import com.cz.platform.exception.PlatFormExceptionCodes;
+import com.cz.platform.exception.ValidationException;
+import com.cz.platform.functionalInterface.AnonymousMethod;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Service
 @Slf4j
-public class CacheCommonService {
+public abstract class ICacheCommonService {
 
 	@Autowired
 	@Lazy
-	CacheCommonService cacheCommonService;
-
-	@FunctionalInterface
-	private interface AnonymousMethod {
-		void execute();
-	}
+	protected ICacheCommonService cacheCommonService;
 
 	protected static final Map<String, AnonymousMethod> REFRESH_KEY_METHOD = new HashMap<>();
 

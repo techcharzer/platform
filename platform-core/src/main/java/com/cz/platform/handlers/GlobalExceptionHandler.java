@@ -1,12 +1,8 @@
-package com.charzer.platform.handlers;
+package com.cz.platform.handlers;
 
 import java.nio.file.AccessDeniedException;
 import java.text.MessageFormat;
 
-import org.charzer.platform.exception.ApplicationException;
-import org.charzer.platform.exception.ErrorField;
-import org.charzer.platform.exception.PlatFormExceptionCodes;
-import org.charzer.platform.exception.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -16,6 +12,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import com.cz.platform.exception.ApplicationException;
+import com.cz.platform.exception.ErrorField;
+import com.cz.platform.exception.PlatFormExceptionCodes;
+import com.cz.platform.exception.ValidationException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

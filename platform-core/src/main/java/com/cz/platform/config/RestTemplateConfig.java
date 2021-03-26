@@ -1,5 +1,4 @@
-package com.charzer.platform.config;
-
+package com.cz.platform.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,7 +6,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-import com.charzer.platform.PlatformConstants;
+import com.cz.platform.PlatformConstants;
 
 @Configuration
 public class RestTemplateConfig {

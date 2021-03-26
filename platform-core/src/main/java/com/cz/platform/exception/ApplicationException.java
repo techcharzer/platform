@@ -1,4 +1,4 @@
-package org.charzer.platform.exception;
+package com.cz.platform.exception;
 
 public class ApplicationException extends Exception {
 

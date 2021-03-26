@@ -1,4 +1,4 @@
-package org.charzer.platform.cors;
+package com.cz.platform.cors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -21,9 +21,11 @@ public class WebMvcConfigugration {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				if (props.isDisabled()) {
+					// TODO cors config needs to be updated so that api can be called from local as
+					// well.
 					log.info("CORS configuration : DISABLED");
-					registry.addMapping("/**").allowedHeaders("*").allowedOrigins("*").allowedMethods("POST", "PUT",
-							"GET");
+					registry.addMapping("/**").allowedHeaders("*").allowedOriginPatterns(props.getAllowedOrigin())
+							.allowedMethods("POST", "PUT", "GET");
 				} else {
 					log.info("CORS configuration : ENABLED");
 				}

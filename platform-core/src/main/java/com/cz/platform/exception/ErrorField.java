@@ -1,4 +1,4 @@
-package org.charzer.platform.exception;
+package com.cz.platform.exception;
 
 import java.io.Serializable;
 
