@@ -9,4 +9,5 @@ public class PlatformConstants {
 	public static final String EXTERNAL_SLOW_CLIENT = "externalSlowClient";
 	public static final String SUCCESS = "success";
 	public static final String REQUEST_SUBMITTED = "request submitted";
+	public static final String X_TRACE_ID = "x-trace-id";
 }
