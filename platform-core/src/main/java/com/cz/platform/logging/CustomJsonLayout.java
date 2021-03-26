@@ -1,4 +1,4 @@
-package org.charzer.platform.logging;
+package com.cz.platform.logging;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
