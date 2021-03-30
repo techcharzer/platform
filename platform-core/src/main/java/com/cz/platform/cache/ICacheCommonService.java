@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.springframework.util.ObjectUtils;
 
-import com.cz.platform.exception.PlatFormExceptionCodes;
+import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 import com.cz.platform.functionalInterface.AnonymousMethod;
 
@@ -31,7 +31,7 @@ public abstract class ICacheCommonService {
 	private void validateRequest(List<String> cacheIds) {
 		for (String key : cacheIds) {
 			if (!REFRESH_KEY_METHOD.containsKey(key)) {
-				throw new ValidationException(PlatFormExceptionCodes.INVALID_DATA.getCode(),
+				throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
 						"Invalid cacheId : " + key);
 			}
 		}

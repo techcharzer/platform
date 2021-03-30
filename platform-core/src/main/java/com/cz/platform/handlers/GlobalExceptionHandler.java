@@ -15,7 +15,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.ErrorField;
-import com.cz.platform.exception.PlatFormExceptionCodes;
+import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 
 @RestControllerAdvice
@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
 	public ErrorField MethodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException e) {
 		String response = MessageFormat.format("parameter {0} is invalid", e.getName());
 		LOG.error("methodArgumentTypeMismatchException occured: ", e);
-		ErrorField field = new ErrorField(PlatFormExceptionCodes.INVALID_DATA.getCode(), response);
+		ErrorField field = new ErrorField(PlatformExceptionCodes.INVALID_DATA.getCode(), response);
 		return field;
 	}
 
@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
 	@ResponseBody
 	public ErrorField httpReadableException(HttpMessageNotReadableException e) {
 		LOG.error("HttpMessageNotReadableException occured: ", e);
-		ErrorField field = new ErrorField(PlatFormExceptionCodes.INVALID_DATA.getCode(), e.getMessage());
+		ErrorField field = new ErrorField(PlatformExceptionCodes.INVALID_DATA.getCode(), e.getMessage());
 		return field;
 	}
 
@@ -63,8 +63,8 @@ public class GlobalExceptionHandler {
 	@ResponseBody
 	public ErrorField accessDeniedException(AccessDeniedException e) {
 		LOG.error("AccessDeniedException occured: ", e);
-		ErrorField errorField = new ErrorField(PlatFormExceptionCodes.ACCESS_DENIED.getCode(),
-				PlatFormExceptionCodes.ACCESS_DENIED.getMessage());
+		ErrorField errorField = new ErrorField(PlatformExceptionCodes.ACCESS_DENIED.getCode(),
+				PlatformExceptionCodes.ACCESS_DENIED.getMessage());
 		return errorField;
 	}
 
@@ -74,7 +74,7 @@ public class GlobalExceptionHandler {
 	public ErrorField exception(Exception e) {
 		LOG.error("Exception occured: ", e);
 		String message = "Some error occurred please try again later.";
-		ErrorField field = new ErrorField(PlatFormExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message);
+		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message);
 		return field;
 	}
 

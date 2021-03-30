@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum PlatFormExceptionCodes implements IExceptionCodes {
+public enum PlatformExceptionCodes implements IExceptionCodes {
 
 	INVALID_DATA("PL_1000", "Invalid/empty data requested"),
 	INTERNAL_SERVER_ERROR("PL_1001", "Some Internal Server Error occured"),
