@@ -17,7 +17,7 @@ public class CORSConfiguration {
 	private CorsConfigProps props;
 
 	@Bean
-	public CorsConfigurationSource addCorsMappings(CorsRegistry registry) {
+	public CorsConfigurationSource addCorsMappings() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOriginPatterns(props.getAllowedOrigins());
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS"));
