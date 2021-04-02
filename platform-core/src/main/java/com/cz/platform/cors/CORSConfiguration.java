@@ -9,7 +9,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Configuration
+@Slf4j
 public class CORSConfiguration {
 
 	@Autowired
@@ -17,6 +20,7 @@ public class CORSConfiguration {
 
 	@Bean
 	public CorsConfigurationSource addCorsMappings() {
+		log.info("cors configuring : {}", props.getAllowedOrigins());
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOriginPatterns(props.getAllowedOrigins());
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS"));
