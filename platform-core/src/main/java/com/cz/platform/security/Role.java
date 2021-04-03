@@ -2,11 +2,18 @@ package com.cz.platform.security;
 
 import org.springframework.security.core.GrantedAuthority;
 
-public enum Role implements GrantedAuthority {
-	ROLE_ADMIN, ROLE_CLIENT;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
+@Data
+@AllArgsConstructor
+public class Role implements GrantedAuthority {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2211626756942145656L;
+	private String role;
 	public String getAuthority() {
-		return name();
+		return role;
 	}
-
 }

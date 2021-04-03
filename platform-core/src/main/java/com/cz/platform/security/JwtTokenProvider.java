@@ -1,7 +1,6 @@
 package com.cz.platform.security;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -31,12 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtTokenProvider {
 
-	/**
-	 * THIS IS NOT A SECURE PRACTICE! For simplicity, we are storing a static key
-	 * here. Ideally, in a microservices environment, this key would be kept on a
-	 * config-server.
-	 */
-	@Value("${security.jwt.token.secret-key}")
+	private static final String AUTH = "auth";
+
+	@Value("${security.jwt.token.secret-key:secret-key}")
 	private String secretKey;
 
 	@Autowired
@@ -45,15 +41,12 @@ public class JwtTokenProvider {
 	@PostConstruct
 	protected void init() {
 		secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-
-		String testKey = createToken("User-Service", Arrays.asList(Role.ROLE_ADMIN, Role.ROLE_CLIENT));
-		log.info(testKey);
 	}
 
 	public String createToken(String username, List<Role> roles) {
 
 		Claims claims = Jwts.claims().setSubject(username);
-		claims.put("auth", roles);
+		claims.put(AUTH, roles);
 
 		Date now = new Date();
 
@@ -73,11 +66,11 @@ public class JwtTokenProvider {
 
 	public Authentication getServerAuthentication(String token) {
 		String userName = getUsername(token);
-		log.debug("user called : {}", userName);
+		log.debug("server called : {}", userName);
 		Jws<Claims> claimsWrapped = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 		Claims claims = claimsWrapped.getBody();
 		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-		for (String authority : (List<String>) claims.get("auth")) {
+		for (String authority : (List<String>) claims.get(AUTH)) {
 			authorities.add(new SimpleGrantedAuthority(authority));
 		}
 		log.info("authories user having: {}", authorities);

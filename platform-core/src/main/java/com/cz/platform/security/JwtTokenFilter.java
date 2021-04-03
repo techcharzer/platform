@@ -18,6 +18,8 @@ import com.cz.platform.exception.AuthenticationException;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
 	private JwtTokenProvider jwtTokenProvider;
+	
+	private static final String SSO_TOKEN_HEADER = "x-sso-token";
 
 	public JwtTokenFilter(JwtTokenProvider jwtTokenProvider) {
 		this.jwtTokenProvider = jwtTokenProvider;
@@ -32,7 +34,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 				Authentication auth = jwtTokenProvider.getAuthentication(clientToken);
 				SecurityContextHolder.getContext().setAuthentication(auth);
 			} else {
-				String serverSideToken = httpServletRequest.getHeader("x-ss-token");
+				String serverSideToken = httpServletRequest.getHeader(SSO_TOKEN_HEADER);
 				if (!ObjectUtils.isEmpty(serverSideToken)) {
 					Authentication auth = jwtTokenProvider.getServerAuthentication(serverSideToken);
 					SecurityContextHolder.getContext().setAuthentication(auth);
