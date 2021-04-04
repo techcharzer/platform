@@ -22,7 +22,7 @@ public class TestToken {
 	@Autowired
 	private JwtTokenProvider provider;
 
-	@Value("${app.config.security.testingRoles}")
+	@Value("${app.config.security.testing-roles}")
 	private List<String> listOfTestingRoles = new ArrayList<>();
 
 	@PostConstruct
