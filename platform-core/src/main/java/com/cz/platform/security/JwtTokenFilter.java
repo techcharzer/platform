@@ -18,7 +18,7 @@ import com.cz.platform.exception.AuthenticationException;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
 	private JwtTokenProvider jwtTokenProvider;
-	
+
 	private static final String SSO_TOKEN_HEADER = "x-sso-token";
 
 	public JwtTokenFilter(JwtTokenProvider jwtTokenProvider) {
