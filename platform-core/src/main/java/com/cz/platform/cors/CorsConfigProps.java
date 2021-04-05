@@ -1,5 +1,6 @@
 package com.cz.platform.cors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,5 +15,5 @@ import lombok.Data;
 @ConfigurationProperties(prefix = "app.cors.config")
 public class CorsConfigProps {
 	private String allowedOrigin;
-	private List<String> allowedOrigins;
+	private List<String> allowedOrigins = new ArrayList<>();
 }
