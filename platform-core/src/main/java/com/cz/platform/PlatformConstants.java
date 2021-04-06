@@ -13,4 +13,8 @@ public class PlatformConstants {
 	public static final String DEV_PROFILE = "dev";
 	public static final String QA_PROFILE = "qa";
 	public static final String PROD_PROFILE = "prod";
+	public static final String APP_CONFIG_PREFIX = "app.config.";
+	public static final String CUSTOM_EVENT_CONFIG_PREFIX = APP_CONFIG_PREFIX + "events";
+	public static final String CORS_CONFIG_PREFIX = APP_CONFIG_PREFIX + "cors";
+	public static final String SECURITY_CONFIG_PREFIX = APP_CONFIG_PREFIX + "security";
 }
