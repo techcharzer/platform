@@ -5,12 +5,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import com.cz.platform.PlatformConstants;
+
 import io.sentry.Sentry;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Configuration
-@Profile(value = { "qa", "prod" })
+@Profile(PlatformConstants.PROD_PROFILE)
 class SentryLogging {
 
 	@Value("${sentry.dsn}")
@@ -19,15 +21,11 @@ class SentryLogging {
 	@Value("${spring.application.name}")
 	private String applicationName;
 
-	@Value("${spring.profiles.active}")
-	private String env;
-
 	@Bean
 	public void sentryProps() {
 		log.info("SENTRY CONFIGURED");
 		Sentry.init(options -> {
 			options.setDsn(dsn);
-			options.setEnvironment(env);
 			options.setServerName(applicationName);
 		});
 	}
