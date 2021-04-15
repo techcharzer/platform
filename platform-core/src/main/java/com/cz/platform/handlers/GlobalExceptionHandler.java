@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public ErrorField validationException(ValidationException e) {
-		LOG.error("ValidationException occured: {}", e.getError(), e);
+		LOG.warn("ValidationException occured: {}", e.getError(), e);
 		return e.getError();
 	}
 
@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
 	@ResponseBody
 	public ErrorField accessDeniedException(AccessDeniedException e) {
-		LOG.error("AccessDeniedException occured: ", e);
+		LOG.warn("AccessDeniedException occured: ", e);
 		ErrorField errorField = new ErrorField(PlatformExceptionCodes.ACCESS_DENIED.getCode(),
 				PlatformExceptionCodes.ACCESS_DENIED.getMessage());
 		return errorField;
