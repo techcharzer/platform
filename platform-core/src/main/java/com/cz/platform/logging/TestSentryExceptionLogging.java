@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @Profile(PlatformConstants.PROD_PROFILE)
-public class TestSentryException {
+public class TestSentryExceptionLogging {
 
 	@EventListener(condition = "#event.name == 'TEST_SENTRY_EXCEPTION_LOGGING'")
 	private void testSentryExceptoin(CustomSpringEvent event) throws ApplicationException {
