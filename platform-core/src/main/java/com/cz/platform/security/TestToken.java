@@ -1,8 +1,5 @@
 package com.cz.platform.security;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 
 import org.springframework.context.annotation.Profile;
@@ -25,11 +22,7 @@ public class TestToken {
 
 	@PostConstruct
 	private void fillMap() {
-		List<Role> roles = new ArrayList<>();
-		for (String role : props.getTestingRoles()) {
-			roles.add(new Role(role));
-		}
-		String testingToken = provider.createToken("testingSSOToken", roles);
+		String testingToken = provider.createToken("testingSSOToken", props.getTestingRoles());
 		log.info("testing Token : {}", testingToken);
 	}
 }

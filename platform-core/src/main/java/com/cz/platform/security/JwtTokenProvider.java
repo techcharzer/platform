@@ -43,7 +43,7 @@ public class JwtTokenProvider {
 		secretKey = Base64.getEncoder().encodeToString(props.getJwtSecretKey().getBytes());
 	}
 
-	public String createToken(String username, List<Role> roles) {
+	public String createToken(String username, List<String> roles) {
 
 		Claims claims = Jwts.claims().setSubject(username);
 		claims.put(AUTH, roles);
@@ -67,7 +67,7 @@ public class JwtTokenProvider {
 
 	public Authentication getServerAuthentication(String token) {
 		String userName = getUsername(token);
-		log.debug("server called : {}", userName);
+		log.debug("server called : {}, in token : {}", userName, token);
 		Jws<Claims> claimsWrapped = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 		Claims claims = claimsWrapped.getBody();
 		List<SimpleGrantedAuthority> authorities = new ArrayList<>();

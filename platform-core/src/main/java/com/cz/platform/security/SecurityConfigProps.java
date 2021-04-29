@@ -18,6 +18,7 @@ import lombok.Data;
 public class SecurityConfigProps {
 
 	private String jwtSecretKey;
+	private final String generateTokenUrl;
 	private List<String> testingRoles = new ArrayList<>();
 
 }
