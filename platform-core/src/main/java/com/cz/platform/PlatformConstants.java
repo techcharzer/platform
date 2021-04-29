@@ -22,4 +22,5 @@ public class PlatformConstants {
 	public static final String CORS_CONFIG_PREFIX = APP_CONFIG_PREFIX + "cors";
 	public static final String SECURITY_CONFIG_PREFIX = APP_CONFIG_PREFIX + "security";
 	public static final String URL_CONFIG_PREFIX = APP_CONFIG_PREFIX + "url";
+	public static final String SSO_TOKEN_HEADER = "x-sso-token";
 }
