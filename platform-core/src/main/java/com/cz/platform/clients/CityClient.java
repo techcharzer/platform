@@ -19,6 +19,9 @@ import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 import com.cz.platform.security.SecurityConfigProps;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +37,8 @@ public class CityClient {
 
 	private SecurityConfigProps securityProps;
 
+	private ObjectMapper mapper;
+
 	public CityDTO getCityById(Long cityId) throws ApplicationException {
 		if (ObjectUtils.isEmpty(cityId)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid cityId");
@@ -44,6 +49,9 @@ public class CityClient {
 			ResponseEntity<CityDTO> response = template.getForEntity(url, CityDTO.class);
 			return response.getBody();
 		} catch (HttpStatusCodeException exeption) {
+			if (isCityNotFoundError(exeption.getResponseBodyAsString())) {
+				return null;
+			}
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
 					"city Api not working");
 		}
@@ -69,12 +77,15 @@ public class CityClient {
 			ResponseEntity<CityDTO> response = template.getForEntity(url, CityDTO.class);
 			return response.getBody();
 		} catch (HttpStatusCodeException exeption) {
+			if (isCityNotFoundError(exeption.getResponseBodyAsString())) {
+				return null;
+			}
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
 					"city Api not working");
 		}
 	}
 
-	public void saveCity(CityDTO cityDTO) throws ApplicationException {
+	public CityDTO saveCity(CityDTO cityDTO) throws ApplicationException {
 		if (ObjectUtils.isEmpty(cityDTO)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid/empty request");
 		}
@@ -85,11 +96,25 @@ public class CityClient {
 		try {
 			log.debug("saving the city : {}", cityDTO);
 			String url = MessageFormat.format("{0}/config/secure/city", urlConfig.getBaseUrl());
-			HttpEntity<String> response = template.exchange(url, HttpMethod.POST, entity, String.class);
+			HttpEntity<CityDTO> response = template.exchange(url, HttpMethod.POST, entity, CityDTO.class);
 			log.info("response from the server : {}", response.getBody());
+			return response.getBody();
 		} catch (HttpStatusCodeException exeption) {
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
 					"city Api not working");
 		}
+	}
+
+	private boolean isCityNotFoundError(String errorResponse) {
+		JsonNode node = null;
+		try {
+			node = mapper.readTree(errorResponse);
+		} catch (JsonProcessingException e) {
+			return false;
+		}
+		if (node != null && node.has("code") && node.get("code").asText().equals("CS_1005")) {
+			return true;
+		}
+		return false;
 	}
 }
