@@ -14,6 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -24,6 +26,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private AuthService authService;
+
+	@Autowired
+	private ObjectMapper mapper;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -43,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.exceptionHandling().accessDeniedPage("/login");
 
 		// Apply JWT
-		AuthTokenFilter customFilter = new AuthTokenFilter(authService);
+		AuthTokenFilter customFilter = new AuthTokenFilter(authService, mapper);
 		http.addFilterBefore(customFilter, SecurityContextHolderAwareRequestFilter.class);
 
 		http.cors();

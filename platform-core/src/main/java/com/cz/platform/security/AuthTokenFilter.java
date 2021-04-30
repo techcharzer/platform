@@ -16,13 +16,17 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.cz.platform.PlatformConstants;
 import com.cz.platform.exception.AuthenticationException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
 
 	private AuthService authService;
 
-	public AuthTokenFilter(AuthService authService) {
+	private ObjectMapper mapper;
+
+	public AuthTokenFilter(AuthService authService, ObjectMapper mapper) {
 		this.authService = authService;
+		this.mapper = mapper;
 	}
 
 	@Override
@@ -47,7 +51,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		} catch (AuthenticationException ex) {
 			// since it guarantees the user is not authenticated at all
 			SecurityContextHolder.clearContext();
-			httpServletResponse.sendError(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
+			httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+			httpServletResponse.getWriter().write(mapper.writeValueAsString(ex.getError()));
 			return;
 		}
 		filterChain.doFilter(httpServletRequest, httpServletResponse);
