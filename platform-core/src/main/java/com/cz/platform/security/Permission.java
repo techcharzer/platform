@@ -7,14 +7,14 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Role implements GrantedAuthority {
+public class Permission implements GrantedAuthority {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2211626756942145656L;
-	private String role;
+	private String permission;
 
 	public String getAuthority() {
-		return role;
+		return permission;
 	}
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
@@ -26,6 +27,7 @@ import com.cz.platform.clients.UrlConfig;
 import com.cz.platform.exception.AuthenticationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -51,10 +53,10 @@ public class AuthService {
 	private String secretKey;
 
 	@Autowired
-	private MyUserDetails myUserDetails;
+	private RestTemplate template;
 
 	@Autowired
-	private RestTemplate template;
+	private ObjectMapper mapper;
 
 	@PostConstruct
 	protected void init() {
@@ -75,13 +77,22 @@ public class AuthService {
 				.compact();
 	}
 
-	public Authentication getAuthentication(String token) {
-		String userName = resolveClientToken(token);
-		UserDetails userDetails = myUserDetails.loadUserByUsername(userName);
+	public Authentication getClientAuthentication(String token) {
+		UserDTO user = validateClientToken(token);
+		Set<Permission> permissions = Utility.getPermissions(user);
+		UserDetails userDetails = org.springframework.security.core.userdetails.User//
+				.withUsername(user.getUserName())//
+				.password("")//
+				.authorities(permissions)//
+				.accountExpired(false)//
+				.accountLocked(false)//
+				.credentialsExpired(false)//
+				.disabled(false)//
+				.build();
 		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
 
-	private String resolveClientToken(String token) {
+	private UserDTO validateClientToken(String token) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, props.getCreds().get("customer-service"));
@@ -92,12 +103,7 @@ public class AuthService {
 			String url = MessageFormat.format("{0}/customer/validate-token/", urlConfig.getBaseUrl());
 			HttpEntity<JsonNode> response = template.exchange(url, HttpMethod.POST, entity, JsonNode.class);
 			log.debug("response from the server : {}", response.getBody());
-			JsonNode body = response.getBody();
-			if (body.has("status") && body.get("status").asBoolean() && body.has("claims")
-					&& body.get("claims").has("mobile")) {
-				return body.get("claims").get("mobile").asText();
-			}
-			throw new AuthenticationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid auth creds");
+			return mapper.convertValue(response.getBody(), UserDTO.class);
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from  the server : {}", exeption.getResponseBodyAsString());
 			throw new AuthenticationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid auth creds");
@@ -117,7 +123,10 @@ public class AuthService {
 		Jws<Claims> claimsWrapped = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 		Claims claims = claimsWrapped.getBody();
 		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-		for (String authority : (List<String>) claims.get(AUTH)) {
+
+		@SuppressWarnings("unchecked")
+		List<String> auths = (List<String>) claims.get(AUTH);
+		for (String authority : auths) {
 			authorities.add(new SimpleGrantedAuthority(authority));
 		}
 		log.info("authories user having: {}", authorities);

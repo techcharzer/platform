@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -19,7 +20,7 @@ import com.cz.platform.exception.AuthenticationException;
 public class AuthTokenFilter extends OncePerRequestFilter {
 
 	private AuthService authService;
-	
+
 	public AuthTokenFilter(AuthService authService) {
 		this.authService = authService;
 	}
@@ -30,13 +31,17 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		try {
 			String clientToken = resolveAuthToken(httpServletRequest);
 			if (!ObjectUtils.isEmpty(clientToken)) {
-				Authentication auth = authService.getAuthentication(clientToken);
-				SecurityContextHolder.getContext().setAuthentication(auth);
+				Authentication auth = authService.getClientAuthentication(clientToken);
+				SecurityContextImpl secureContext = new SecurityContextImpl();
+				secureContext.setAuthentication(auth);
+				SecurityContextHolder.setContext(secureContext);
 			} else {
 				String serverSideToken = httpServletRequest.getHeader(PlatformConstants.SSO_TOKEN_HEADER);
 				if (!ObjectUtils.isEmpty(serverSideToken)) {
 					Authentication auth = authService.getServerAuthentication(serverSideToken);
-					SecurityContextHolder.getContext().setAuthentication(auth);
+					SecurityContextImpl secureContext = new SecurityContextImpl();
+					secureContext.setAuthentication(auth);
+					SecurityContextHolder.setContext(secureContext);
 				}
 			}
 		} catch (AuthenticationException ex) {
