@@ -10,6 +10,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContextException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -24,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.cz.platform.PlatformConstants;
 import com.cz.platform.clients.UrlConfig;
+import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.AuthenticationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -77,7 +79,7 @@ public class AuthService {
 				.compact();
 	}
 
-	public Authentication getClientAuthentication(String token) {
+	public Authentication getClientAuthentication(String token) throws ApplicationException {
 		UserDTO user = validateClientToken(token);
 		Set<Permission> permissions = Utility.getPermissions(user);
 		UserDetails userDetails = org.springframework.security.core.userdetails.User//
@@ -92,7 +94,7 @@ public class AuthService {
 		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
 
-	private UserDTO validateClientToken(String token) {
+	private UserDTO validateClientToken(String token) throws ApplicationException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, props.getCreds().get("customer-service"));
@@ -106,7 +108,10 @@ public class AuthService {
 			return mapper.convertValue(response.getBody(), UserDTO.class);
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from  the server : {}", exeption.getResponseBodyAsString());
-			throw new AuthenticationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid auth creds");
+			throw new AuthenticationException(PlatformExceptionCodes.AUTHENTICATION_CODE);
+		} catch (Exception exeption) {
+			log.error("error occured while validating token", exeption);
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR);
 		}
 
 	}
@@ -117,29 +122,34 @@ public class AuthService {
 		private String token;
 	}
 
-	public Authentication getServerAuthentication(String token) {
-		String userName = getUsername(token);
-		log.debug("server called : {}, in token : {}", userName, token);
-		Jws<Claims> claimsWrapped = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-		Claims claims = claimsWrapped.getBody();
-		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+	public Authentication getServerAuthentication(String token) throws ApplicationException {
+		try {
+			String userName = getUsername(token);
+			log.debug("server called : {}, in token : {}", userName, token);
+			Jws<Claims> claimsWrapped = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+			Claims claims = claimsWrapped.getBody();
+			List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-		@SuppressWarnings("unchecked")
-		List<String> auths = (List<String>) claims.get(AUTH);
-		for (String authority : auths) {
-			authorities.add(new SimpleGrantedAuthority(authority));
+			@SuppressWarnings("unchecked")
+			List<String> auths = (List<String>) claims.get(AUTH);
+			for (String authority : auths) {
+				authorities.add(new SimpleGrantedAuthority(authority));
+			}
+			log.info("authories user having: {}", authorities);
+			UserDetails userDetails = org.springframework.security.core.userdetails.User//
+					.withUsername(userName)//
+					.password("")//
+					.authorities(authorities)//
+					.accountExpired(false)//
+					.accountLocked(false)//
+					.credentialsExpired(false)//
+					.disabled(false)//
+					.build();
+			return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
+		} catch (Exception e) {
+			log.error("error response from  the server : {}", e);
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR);
 		}
-		log.info("authories user having: {}", authorities);
-		UserDetails userDetails = org.springframework.security.core.userdetails.User//
-				.withUsername(userName)//
-				.password("")//
-				.authorities(authorities)//
-				.accountExpired(false)//
-				.accountLocked(false)//
-				.credentialsExpired(false)//
-				.disabled(false)//
-				.build();
-		return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
 	}
 
 	public String getUsername(String token) {
@@ -150,7 +160,7 @@ public class AuthService {
 		try {
 			return true;
 		} catch (JwtException | IllegalArgumentException e) {
-			throw new AuthenticationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid auth creds");
+			throw new AuthenticationException(PlatformExceptionCodes.AUTHENTICATION_CODE);
 		}
 	}
 
