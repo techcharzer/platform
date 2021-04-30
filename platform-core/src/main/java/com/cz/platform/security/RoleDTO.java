@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class UserDTO {
-	private String userName;
-	private List<RoleDTO> roles;
+public class RoleDTO {
+	private String roleId;
+	private List<String> permissions;
 }

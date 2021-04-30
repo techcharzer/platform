@@ -11,11 +11,10 @@ public class UserService {
 	public UserDTO findByUsername(String username) {
 		// TODO Auto-generated method stub
 		UserDTO dto = new UserDTO();
-		dto.setPassword("adjsfk");
-		List<Role> roles = new ArrayList<>();
-		roles.add(new Role("ROLE_GAME"));
+		List<RoleDTO> roles = new ArrayList<>();
 		dto.setRoles(roles);
-		dto.setUserName("username");
+		dto.setUserName(username);
+
 		return dto;
 	}
 

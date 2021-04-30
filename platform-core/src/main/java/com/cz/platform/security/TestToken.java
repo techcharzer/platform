@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class TestToken {
 
-	private JwtTokenProvider provider;
+	private AuthService provider;
 
 	private SecurityConfigProps props;
 

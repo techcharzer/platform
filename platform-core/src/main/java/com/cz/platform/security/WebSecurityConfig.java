@@ -1,7 +1,5 @@
 package com.cz.platform.security;
 
-import java.util.Arrays;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,32 +12,26 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import com.cz.platform.cors.CorsConfigProps;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	private JwtTokenProvider jwtTokenProvider;
-
-	@Autowired
-	private CorsConfigProps corsProps;
+	private AuthService authService;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		log.info("SECURITY CONFIGURED");
 		// Disable CSRF (cross site request forgery)
 		http.csrf().disable();
+		http.formLogin().disable().logout().disable().httpBasic().disable();
+		http.headers().frameOptions().disable();
 
 		// No session will be created or used by spring security
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -51,8 +43,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.exceptionHandling().accessDeniedPage("/login");
 
 		// Apply JWT
-		JwtTokenFilter customFilter = new JwtTokenFilter(jwtTokenProvider);
-		http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
+		AuthTokenFilter customFilter = new AuthTokenFilter(authService);
+		http.addFilterBefore(customFilter, SecurityContextHolderAwareRequestFilter.class);
 
 		http.cors();
 	}
