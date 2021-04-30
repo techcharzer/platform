@@ -88,7 +88,7 @@ public class AuthService {
 		TokenRequest requets = new TokenRequest(token);
 		HttpEntity<TokenRequest> entity = new HttpEntity<>(requets, headers);
 		try {
-			log.debug("token request : {}", requets);
+			log.debug("token request : {} headers : {}", requets, headers);
 			String url = MessageFormat.format("{0}/customer/validate-token/", urlConfig.getBaseUrl());
 			HttpEntity<JsonNode> response = template.exchange(url, HttpMethod.POST, entity, JsonNode.class);
 			log.debug("response from the server : {}", response.getBody());
@@ -99,6 +99,7 @@ public class AuthService {
 			}
 			throw new AuthenticationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid auth creds");
 		} catch (HttpStatusCodeException exeption) {
+			log.error("error response from  the server : {}", exeption.getResponseBodyAsString());
 			throw new AuthenticationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid auth creds");
 		}
 
