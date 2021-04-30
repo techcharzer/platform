@@ -13,9 +13,8 @@ public class UserService {
 		UserDTO dto = new UserDTO();
 		dto.setPassword("adjsfk");
 		List<Role> roles = new ArrayList<>();
-		roles.add(new Role("ROLE_GAME"));
 		dto.setRoles(roles);
-		dto.setUserName("username");
+		dto.setUserName(username);
 		return dto;
 	}
 

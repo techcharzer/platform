@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	private JwtTokenProvider jwtTokenProvider;
+	private AuthService jwtTokenProvider;
 
 	@Autowired
 	private CorsConfigProps corsProps;
@@ -51,7 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.exceptionHandling().accessDeniedPage("/login");
 
 		// Apply JWT
-		JwtTokenFilter customFilter = new JwtTokenFilter(jwtTokenProvider);
+		AuthTokenFilter customFilter = new AuthTokenFilter(jwtTokenProvider);
 		http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
 
 		http.cors();

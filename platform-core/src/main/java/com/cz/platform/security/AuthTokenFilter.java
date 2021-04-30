@@ -16,12 +16,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.cz.platform.PlatformConstants;
 import com.cz.platform.exception.AuthenticationException;
 
-public class JwtTokenFilter extends OncePerRequestFilter {
+public class AuthTokenFilter extends OncePerRequestFilter {
 
-	private JwtTokenProvider jwtTokenProvider;
-
-	public JwtTokenFilter(JwtTokenProvider jwtTokenProvider) {
-		this.jwtTokenProvider = jwtTokenProvider;
+	private AuthService authService;
+	
+	public AuthTokenFilter(AuthService authService) {
+		this.authService = authService;
 	}
 
 	@Override
@@ -29,13 +29,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 			FilterChain filterChain) throws ServletException, IOException {
 		try {
 			String clientToken = resolveAuthToken(httpServletRequest);
-			if (!ObjectUtils.isEmpty(clientToken) && jwtTokenProvider.validateClientToken(clientToken)) {
-				Authentication auth = jwtTokenProvider.getAuthentication(clientToken);
+			if (!ObjectUtils.isEmpty(clientToken)) {
+				Authentication auth = authService.getAuthentication(clientToken);
 				SecurityContextHolder.getContext().setAuthentication(auth);
 			} else {
 				String serverSideToken = httpServletRequest.getHeader(PlatformConstants.SSO_TOKEN_HEADER);
 				if (!ObjectUtils.isEmpty(serverSideToken)) {
-					Authentication auth = jwtTokenProvider.getServerAuthentication(serverSideToken);
+					Authentication auth = authService.getServerAuthentication(serverSideToken);
 					SecurityContextHolder.getContext().setAuthentication(auth);
 				}
 			}
