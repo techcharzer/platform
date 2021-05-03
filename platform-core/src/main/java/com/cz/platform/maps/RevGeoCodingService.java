@@ -2,8 +2,6 @@ package com.cz.platform.maps;
 
 import java.text.MessageFormat;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -28,12 +26,6 @@ public class RevGeoCodingService {
 	private RestTemplate template;
 
 	private ObjectMapper mapper;
-
-	@PostConstruct
-	private void fil() throws ApplicationException {
-		RevGeoCodeAddressDTO response = getAddress(12.97D, 77.561D);
-		log.info("response : {} ", response);
-	}
 
 	public RevGeoCodeAddressDTO getAddress(Double lat, Double lon) throws ApplicationException {
 		String url = MessageFormat.format(
