@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @RefreshScope
 @Configuration
-@ConfigurationProperties(prefix = "app.config.maps.mapmyindia")
-public class MapMyIndiaConfig {
+@ConfigurationProperties(prefix = "app.config.maps.google")
+public class GoogleMapsConfig {
 	private String secretKey;
 }
