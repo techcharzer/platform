@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 
+import com.cz.platform.PlatformConstants;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,9 +17,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Service
 @Slf4j
 @AllArgsConstructor
+@Service(value = PlatformConstants.MAP_MY_INDIA_SERVICE_REV_GEOCODE_SERVICE)
 public class MapMyIndiaRevGeoCodingService implements RevGeoCodingService {
 
 	private MapMyIndiaConfig config;
