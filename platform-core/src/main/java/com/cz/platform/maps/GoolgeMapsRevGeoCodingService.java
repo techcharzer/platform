@@ -69,13 +69,13 @@ public class GoolgeMapsRevGeoCodingService implements RevGeoCodingService {
 	}
 
 	@Data
-	private class GoogleMapsResponse {
+	private static class GoogleMapsResponse {
 		private List<AddressComponents> address_components;
 		private String formatted_address;
 	}
 
 	@Data
-	private class AddressComponents {
+	private static class AddressComponents {
 		private String long_name;
 		private String short_name;
 		private HashSet<String> types = new HashSet<>();
