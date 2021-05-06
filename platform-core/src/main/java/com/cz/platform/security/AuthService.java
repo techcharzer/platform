@@ -10,7 +10,6 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContextException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -83,7 +82,7 @@ public class AuthService {
 		UserDTO user = validateClientToken(token);
 		Set<Permission> permissions = Utility.getPermissions(user);
 		UserDetails userDetails = org.springframework.security.core.userdetails.User//
-				.withUsername(user.getUserName())//
+				.withUsername(user.getUserId())//
 				.password("")//
 				.authorities(permissions)//
 				.accountExpired(false)//

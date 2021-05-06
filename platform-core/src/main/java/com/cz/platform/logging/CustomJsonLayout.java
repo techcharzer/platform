@@ -57,7 +57,7 @@ public class CustomJsonLayout extends JsonLayoutBase<ILoggingEvent> {
 	}
 
 	@Override
-	protected Map toJsonMap(ILoggingEvent event) {
+	protected Map<String, Object> toJsonMap(ILoggingEvent event) {
 
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 

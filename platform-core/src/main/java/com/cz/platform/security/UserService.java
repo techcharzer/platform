@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-	public UserDTO findByUsername(String username) {
+	public UserDTO findByUsername(String id) {
 		// TODO Auto-generated method stub
 		UserDTO dto = new UserDTO();
 		List<RoleDTO> roles = new ArrayList<>();
 		dto.setRoles(roles);
-		dto.setUserName(username);
+		dto.setUserId(id);
 
 		return dto;
 	}
