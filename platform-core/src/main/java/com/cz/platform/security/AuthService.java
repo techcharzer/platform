@@ -17,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
@@ -64,9 +63,9 @@ public class AuthService {
 		secretKey = Base64.getEncoder().encodeToString(props.getJwtSecretKey().getBytes());
 	}
 
-	public String createToken(String username, List<String> roles) {
+	public String createToken(String clientId, List<String> roles) {
 
-		Claims claims = Jwts.claims().setSubject(username);
+		Claims claims = Jwts.claims().setSubject(clientId);
 		claims.put(AUTH, roles);
 
 		Date now = new Date();
@@ -80,17 +79,8 @@ public class AuthService {
 
 	public Authentication getClientAuthentication(String token) throws ApplicationException {
 		UserDTO user = validateClientToken(token);
-		Set<Permission> permissions = Utility.getPermissions(user);
-		UserDetails userDetails = org.springframework.security.core.userdetails.User//
-				.withUsername(user.getUserId())//
-				.password("")//
-				.authorities(permissions)//
-				.accountExpired(false)//
-				.accountLocked(false)//
-				.credentialsExpired(false)//
-				.disabled(false)//
-				.build();
-		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+		Set<Permission> permissions = Utility.getPermissions(user.getRoles());
+		return new UsernamePasswordAuthenticationToken(user, "", permissions);
 	}
 
 	private UserDTO validateClientToken(String token) throws ApplicationException {
@@ -130,21 +120,21 @@ public class AuthService {
 			List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
 			@SuppressWarnings("unchecked")
-			List<String> auths = (List<String>) claims.get(AUTH);
-			for (String authority : auths) {
-				authorities.add(new SimpleGrantedAuthority(authority));
+			List<String> roles = (List<String>) claims.get(AUTH);
+			List<Permission> permissions = new ArrayList<>();
+			for (String role : roles) {
+				permissions.add(new Permission(role));
 			}
+
 			log.info("authories user having: {}", authorities);
-			UserDetails userDetails = org.springframework.security.core.userdetails.User//
-					.withUsername(userName)//
-					.password("")//
-					.authorities(authorities)//
-					.accountExpired(false)//
-					.accountLocked(false)//
-					.credentialsExpired(false)//
-					.disabled(false)//
-					.build();
-			return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
+			UserDTO user = new UserDTO();
+			user.setRoles(new ArrayList<>());
+			user.setUserId(userName);
+
+			RoleDTO roleDTO = new RoleDTO();
+			roleDTO.setRoleId(PlatformConstants.DEFAULT_ROLE_ID);
+			user.getRoles().add(roleDTO);
+			return new UsernamePasswordAuthenticationToken(user, "", permissions);
 		} catch (Exception e) {
 			log.error("error response from  the server : {}", e);
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR);

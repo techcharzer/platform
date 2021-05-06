@@ -21,7 +21,7 @@ public class MyUserDetails implements UserDetailsService {
 		if (user == null) {
 			throw new UsernameNotFoundException("User '" + id + "' not found");
 		}
-		Set<Permission> permissions = Utility.getPermissions(user);
+		Set<Permission> permissions = Utility.getPermissions(user.getRoles());
 
 		return org.springframework.security.core.userdetails.User//
 				.withUsername(id)//
