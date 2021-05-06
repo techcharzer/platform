@@ -121,9 +121,8 @@ public class AuthService {
 
 			@SuppressWarnings("unchecked")
 			List<String> roles = (List<String>) claims.get(AUTH);
-			List<Permission> permissions = new ArrayList<>();
 			for (String role : roles) {
-				permissions.add(new Permission(role));
+				authorities.add(new SimpleGrantedAuthority(role));
 			}
 
 			log.info("authories user having: {}", authorities);
@@ -134,7 +133,7 @@ public class AuthService {
 			RoleDTO roleDTO = new RoleDTO();
 			roleDTO.setRoleId(PlatformConstants.DEFAULT_ROLE_ID);
 			user.getRoles().add(roleDTO);
-			return new UsernamePasswordAuthenticationToken(user, "", permissions);
+			return new UsernamePasswordAuthenticationToken(user, "", authorities);
 		} catch (Exception e) {
 			log.error("error response from  the server : {}", e);
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR);
