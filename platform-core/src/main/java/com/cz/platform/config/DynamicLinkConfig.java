@@ -16,6 +16,8 @@ public class DynamicLinkConfig {
 	private String deeplinkBaseUrl;
 	private String domainPrefixUrl;
 	private String androidPackageName;
+	private String iosBundleId;
+	private String iosAppStoreId;
 	private String secretKey;
 
 }

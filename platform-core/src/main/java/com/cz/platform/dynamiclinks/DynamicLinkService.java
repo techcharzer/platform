@@ -52,8 +52,13 @@ public class DynamicLinkService {
 
 		AndroidInfo androidInfo = new AndroidInfo();
 		androidInfo.setAndroidPackageName(deeplinkConfig.getAndroidPackageName());
-
 		request.setAndroidInfo(androidInfo);
+		
+		IosInfo iosInfo = new IosInfo();
+		iosInfo.setIosAppStoreId(deeplinkConfig.getIosAppStoreId());
+		iosInfo.setIosBundleId(deeplinkConfig.getIosBundleId());
+		request.setIosInfo(iosInfo);
+		
 		dynamicLinkRequest.setDynamicLinkInfo(request);
 		return generateDynamicLink(dynamicLinkRequest);
 	}
@@ -65,8 +70,9 @@ public class DynamicLinkService {
 		try {
 			String url = MessageFormat.format("https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key={0}",
 					deeplinkConfig.getSecretKey());
+			log.debug("request : {}", entity.toString());
 			HttpEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-			log.info("response from firebase : {}", response.getBody());
+			log.debug("response from firebase : {}", response.getBody());
 			JsonNode node = mapper.readTree(response.getBody());
 			if (node.has("shortLink")) {
 				String deeplink = node.get("shortLink").asText();
@@ -96,11 +102,18 @@ public class DynamicLinkService {
 		private String domainUriPrefix;
 		private String link;
 		private AndroidInfo androidInfo;
+		private IosInfo iosInfo;
 	}
 
 	@Data
 	private class AndroidInfo {
 		private String androidPackageName;
+	}
+	
+	@Data
+	private class IosInfo {
+		private String iosBundleId;
+		private String iosAppStoreId;
 	}
 
 	public String getDeeplink(String page, String id) throws ApplicationException {
