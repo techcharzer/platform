@@ -17,6 +17,8 @@ import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.ErrorField;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -66,6 +68,26 @@ public class GlobalExceptionHandler {
 		ErrorField errorField = new ErrorField(PlatformExceptionCodes.ACCESS_DENIED.getCode(),
 				PlatformExceptionCodes.ACCESS_DENIED.getMessage());
 		return errorField;
+	}
+
+	@ExceptionHandler(JsonParseException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorField exception(JsonParseException e) {
+		LOG.error("Exception occured: ", e);
+		String message = MessageFormat.format("Invalid JSON. {0}", e.getMessage());
+		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message);
+		return field;
+	}
+
+	@ExceptionHandler(InvalidFormatException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorField exception(InvalidFormatException e) {
+		LOG.error("Exception occured: ", e);
+		String message = e.getMessage();
+		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message);
+		return field;
 	}
 
 	@ExceptionHandler(Exception.class)
