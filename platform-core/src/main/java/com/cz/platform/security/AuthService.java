@@ -86,12 +86,11 @@ public class AuthService {
 	private UserDTO validateClientToken(String token) throws ApplicationException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(PlatformConstants.SSO_TOKEN_HEADER, props.getCreds().get("customer-service"));
 		TokenRequest requets = new TokenRequest(token);
 		HttpEntity<TokenRequest> entity = new HttpEntity<>(requets, headers);
 		try {
 			log.debug("token request : {} headers : {}", requets, headers);
-			String url = MessageFormat.format("{0}/customer/validate-token/", urlConfig.getBaseUrl());
+			String url = MessageFormat.format("{0}/auth-service/validate-token/", urlConfig.getBaseUrl());
 			HttpEntity<JsonNode> response = template.exchange(url, HttpMethod.POST, entity, JsonNode.class);
 			log.debug("response from the server : {}", response.getBody());
 			return mapper.convertValue(response.getBody(), UserDTO.class);
