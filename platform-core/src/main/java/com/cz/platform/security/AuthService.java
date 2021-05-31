@@ -89,8 +89,8 @@ public class AuthService {
 		TokenRequest requets = new TokenRequest(token);
 		HttpEntity<TokenRequest> entity = new HttpEntity<>(requets, headers);
 		try {
-			log.debug("token request : {} headers : {}", requets, headers);
 			String url = MessageFormat.format("{0}/auth-service/validate-token/", urlConfig.getBaseUrl());
+			log.debug("url: {} token request : {} headers : {}", url, requets, headers);
 			HttpEntity<JsonNode> response = template.exchange(url, HttpMethod.POST, entity, JsonNode.class);
 			log.debug("response from the server : {}", response.getBody());
 			return mapper.convertValue(response.getBody(), UserDTO.class);
