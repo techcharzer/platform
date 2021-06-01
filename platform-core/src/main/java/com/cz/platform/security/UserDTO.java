@@ -8,5 +8,6 @@ import lombok.Data;
 public class UserDTO {
 	private String mobileNumber;
 	private String userId;
+	private String societyId;
 	private List<RoleDTO> roles;
 }
