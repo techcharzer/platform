@@ -78,12 +78,12 @@ public class AuthService {
 	}
 
 	public Authentication getClientAuthentication(String token) throws ApplicationException {
-		UserDTO user = validateClientToken(token);
+		UserLoggedInDTO user = validateClientToken(token);
 		Set<Permission> permissions = Utility.getPermissions(user.getRoles());
 		return new UsernamePasswordAuthenticationToken(user, "", permissions);
 	}
 
-	private UserDTO validateClientToken(String token) throws ApplicationException {
+	private UserLoggedInDTO validateClientToken(String token) throws ApplicationException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		TokenRequest requets = new TokenRequest(token);
@@ -93,7 +93,7 @@ public class AuthService {
 			log.debug("url: {} token request : {} headers : {}", url, requets, headers);
 			HttpEntity<JsonNode> response = template.exchange(url, HttpMethod.POST, entity, JsonNode.class);
 			log.debug("response from the server : {}", response.getBody());
-			return mapper.convertValue(response.getBody(), UserDTO.class);
+			return mapper.convertValue(response.getBody(), UserLoggedInDTO.class);
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from  the server : {}", exeption.getResponseBodyAsString());
 			throw new AuthenticationException(PlatformExceptionCodes.AUTHENTICATION_CODE);
@@ -125,7 +125,7 @@ public class AuthService {
 			}
 
 			log.info("authories user having: {}", authorities);
-			UserDTO user = new UserDTO();
+			UserLoggedInDTO user = new UserLoggedInDTO();
 			user.setRoles(new ArrayList<>());
 			user.setUserId(userName);
 

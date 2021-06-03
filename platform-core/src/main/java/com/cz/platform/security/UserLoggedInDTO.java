@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class UserDTO {
+public class UserLoggedInDTO {
 	private String mobileNumber;
 	private String userId;
 	private String societyId;
