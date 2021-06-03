@@ -5,7 +5,7 @@ import java.io.Serializable;
 import lombok.Data;
 
 @Data
-public class PCNUserMapping implements Serializable {
+public class ProtectedChargerNetworkUserMapping implements Serializable {
 	/**
 	 * 
 	 */
