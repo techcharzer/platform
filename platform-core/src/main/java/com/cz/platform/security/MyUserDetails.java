@@ -14,7 +14,7 @@ public class MyUserDetails implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-		final UserLoggedInDTO user = new UserLoggedInDTO();
+		final LoggedInUser user = new LoggedInUser();
 		List<RoleDTO> roles = new ArrayList<>();
 		user.setRoles(roles);
 		user.setUserId(id);
