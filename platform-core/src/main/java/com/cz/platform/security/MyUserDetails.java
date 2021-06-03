@@ -1,8 +1,9 @@
 package com.cz.platform.security;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,12 +12,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class MyUserDetails implements UserDetailsService {
 
-	@Autowired
-	private UserService userService;
-
 	@Override
 	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-		final UserLoggedInDTO user = userService.findByUsername(id);
+		final UserLoggedInDTO user = new UserLoggedInDTO();
+		List<RoleDTO> roles = new ArrayList<>();
+		user.setRoles(roles);
+		user.setUserId(id);
 
 		if (user == null) {
 			throw new UsernameNotFoundException("User '" + id + "' not found");
