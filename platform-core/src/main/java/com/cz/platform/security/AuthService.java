@@ -16,7 +16,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
@@ -78,12 +77,12 @@ public class AuthService {
 	}
 
 	public Authentication getClientAuthentication(String token) throws ApplicationException {
-		LoggedInUser user = validateClientToken(token);
+		UserDTO user = validateClientToken(token);
 		Set<Permission> permissions = Utility.getPermissions(user.getRoles());
 		return new UsernamePasswordAuthenticationToken(user, "", permissions);
 	}
 
-	private LoggedInUser validateClientToken(String token) throws ApplicationException {
+	private UserDTO validateClientToken(String token) throws ApplicationException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		TokenRequest requets = new TokenRequest(token);
@@ -111,43 +110,39 @@ public class AuthService {
 	}
 
 	public Authentication getServerAuthentication(String token) throws ApplicationException {
-		try {
-			String userName = getUsername(token);
-			log.debug("server called : {}, in token : {}", userName, token);
-			Jws<Claims> claimsWrapped = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-			Claims claims = claimsWrapped.getBody();
-			List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-
-			@SuppressWarnings("unchecked")
-			List<String> roles = (List<String>) claims.get(AUTH);
-			for (String role : roles) {
-				authorities.add(new SimpleGrantedAuthority(role));
-			}
-
-			log.info("authories user having: {}", authorities);
-			LoggedInUser user = new LoggedInUser();
-			user.setRoles(new ArrayList<>());
-			user.setUserId(userName);
-
-			RoleDTO roleDTO = new RoleDTO();
-			roleDTO.setRoleId(PlatformConstants.DEFAULT_ROLE_ID);
-			user.getRoles().add(roleDTO);
-			return new UsernamePasswordAuthenticationToken(user, "", authorities);
-		} catch (Exception e) {
-			log.error("error response from  the server : {}", e);
-			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR);
-		}
+		UserDTO user = validateServerToken(token);
+		Set<Permission> permissions = Utility.getPermissions(user.getRoles());
+		return new UsernamePasswordAuthenticationToken(user, "", permissions);
 	}
 
 	public String getUsername(String token) {
 		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
 	}
 
-	public boolean validateServerToken(String serverSideToken) {
+	public UserDTO validateServerToken(String token) throws ApplicationException {
 		try {
-			return true;
+			String userName = getUsername(token);
+			log.debug("server called : {}, in token : {}", userName, token);
+			Jws<Claims> claimsWrapped = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+			Claims claims = claimsWrapped.getBody();
+
+			@SuppressWarnings("unchecked")
+			List<String> roles = (List<String>) claims.get(AUTH);
+
+			LoggedInUser user = new LoggedInUser();
+			user.setRoles(new ArrayList<>());
+			user.setUserId(userName);
+
+			RoleDTO roleDTO = new RoleDTO();
+			roleDTO.setRoleId(PlatformConstants.DEFAULT_ROLE_ID);
+			roleDTO.setPermissions(roles);
+			user.getRoles().add(roleDTO);
+			return user;
 		} catch (JwtException | IllegalArgumentException e) {
 			throw new AuthenticationException(PlatformExceptionCodes.AUTHENTICATION_CODE);
+		} catch (Exception exeption) {
+			log.error("error occured while validating token", exeption);
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR);
 		}
 	}
 

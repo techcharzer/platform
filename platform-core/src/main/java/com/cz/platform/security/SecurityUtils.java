@@ -9,7 +9,7 @@ import com.cz.platform.exception.PlatformExceptionCodes;
 
 public class SecurityUtils {
 
-	public static LoggedInUser getLoggedInUser() {
+	public static UserDTO getLoggedInUser() {
 		SecurityContext context = SecurityContextHolder.getContext();
 		if (ObjectUtils.isEmpty(context)) {
 			throw new AuthenticationException(PlatformExceptionCodes.AUTHENTICATION_CODE);
@@ -20,6 +20,6 @@ public class SecurityUtils {
 		if (ObjectUtils.isEmpty(context.getAuthentication().getPrincipal())) {
 			throw new AuthenticationException(PlatformExceptionCodes.AUTHENTICATION_CODE);
 		}
-		return (LoggedInUser) context.getAuthentication().getPrincipal();
+		return (UserDTO) context.getAuthentication().getPrincipal();
 	}
 }
