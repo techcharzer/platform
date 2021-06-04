@@ -49,7 +49,7 @@ public class UserClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
 		HttpEntity<CityDTO> entity = new HttpEntity<>(null, headers);
 		try {
-			String url = MessageFormat.format("{0}/user-serivce/secure/user/{1}", urlConfig.getBaseUrl(), userId);
+			String url = MessageFormat.format("{0}/user-service/secure/user/{1}", urlConfig.getBaseUrl(), userId);
 			ResponseEntity<UserDetails> response = template.exchange(url, HttpMethod.GET, entity, UserDetails.class);
 			return response.getBody();
 		} catch (HttpStatusCodeException exeption) {
