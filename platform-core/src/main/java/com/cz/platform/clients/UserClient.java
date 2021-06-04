@@ -40,16 +40,17 @@ public class UserClient {
 
 	public UserDetails getUserById(String userId) throws ApplicationException {
 		if (ObjectUtils.isEmpty(userId)) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid cityId");
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
 		}
 		log.debug("fetchig userId :{}", userId);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
-		HttpEntity<CityDTO> entity = new HttpEntity<>(null, headers);
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		try {
 			String url = MessageFormat.format("{0}/user-service/secure/user/{1}", urlConfig.getBaseUrl(), userId);
+			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
 			ResponseEntity<UserDetails> response = template.exchange(url, HttpMethod.GET, entity, UserDetails.class);
 			return response.getBody();
 		} catch (HttpStatusCodeException exeption) {
