@@ -7,7 +7,7 @@ public interface UserDTO {
 
 	public String getMobileNumber();
 
-	public ProtectedChargerNetworkUserMapping getSociety();
+	public AllowedChargerNetwork getSociety();
 
 	public List<RoleDTO> getRoles();
 }

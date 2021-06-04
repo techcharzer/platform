@@ -15,6 +15,6 @@ class LoggedInUser implements Serializable, UserDTO {
 	private String userId;
 	private String mobileNumber;
 	private List<RoleDTO> roles;
-	private ProtectedChargerNetworkUserMapping society;
+	private AllowedChargerNetwork society;
 
 }
