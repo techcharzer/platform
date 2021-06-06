@@ -10,7 +10,6 @@ import lombok.Data;
 public class UserDetails {
 	private String userId;
 	private String mobileNumber;
-	private String email;
 	private ChargerNetworkUserMapping society;
 	private LocalDateTime ceatedAt;
 	private LocalDateTime updatedAt;
