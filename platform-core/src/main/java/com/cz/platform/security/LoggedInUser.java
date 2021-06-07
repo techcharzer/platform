@@ -10,6 +10,5 @@ class LoggedInUser implements UserDTO {
 	private String userId;
 	private String mobileNumber;
 	private List<RoleDTO> roles;
-	private ChargerNetworkUserMapping society;
 
 }
