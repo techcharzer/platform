@@ -1,6 +1,6 @@
 package com.cz.platform.exception;
 
-public class ApplicationException extends Exception {
+public class ApplicationException extends RuntimeException {
 
 	private static final long serialVersionUID = 198653274382982L;
 	private ErrorField error;

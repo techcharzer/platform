@@ -1,6 +1,8 @@
 package com.cz.platform.clients;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +15,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.cz.platform.PlatformConstants;
+import com.cz.platform.dto.ProtectedChargerNetworkGlobalDTO;
 import com.cz.platform.dto.UserDetails;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
@@ -38,7 +41,7 @@ public class UserClient {
 
 	private ObjectMapper mapper;
 
-	public UserDetails getUserById(String userId) throws ApplicationException {
+	public UserDetails getUserById(String userId) {
 		if (ObjectUtils.isEmpty(userId)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
 		}
@@ -53,6 +56,33 @@ public class UserClient {
 			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
 			ResponseEntity<UserDetails> response = template.exchange(url, HttpMethod.GET, entity, UserDetails.class);
 			return response.getBody();
+		} catch (HttpStatusCodeException exeption) {
+			if (isUserNotFoundError(exeption.getResponseBodyAsString())) {
+				return null;
+			}
+			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"User api not working");
+		}
+	}
+
+	public List<ProtectedChargerNetworkGlobalDTO> getUserProtectedNetwork(String userId) {
+		if (ObjectUtils.isEmpty(userId)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
+		}
+		log.debug("fetchig userId :{}", userId);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		try {
+			String url = MessageFormat.format("{0}/user-service/secure/protected-charger-networks/{1}",
+					urlConfig.getBaseUrl(), userId);
+			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
+			ResponseEntity<ProtectedChargerNetworkGlobalDTO[]> response = template.exchange(url, HttpMethod.GET, entity,
+					ProtectedChargerNetworkGlobalDTO[].class);
+			return Arrays.asList(response.getBody());
 		} catch (HttpStatusCodeException exeption) {
 			if (isUserNotFoundError(exeption.getResponseBodyAsString())) {
 				return null;
