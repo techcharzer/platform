@@ -107,7 +107,7 @@ public class UserClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		try {
-			String url = MessageFormat.format("{0}/secure/admin/protected-charger-network-mapping/{1}",
+			String url = MessageFormat.format("{0}/user-service/secure/admin/protected-charger-network-mapping/{1}",
 					urlConfig.getBaseUrl(), userId);
 			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
