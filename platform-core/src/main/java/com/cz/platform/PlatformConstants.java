@@ -2,6 +2,8 @@ package com.cz.platform;
 
 import java.time.ZoneId;
 
+import com.cz.platform.exception.PlatformExceptionCodes;
+
 public class PlatformConstants {
 	private PlatformConstants() {
 
@@ -26,4 +28,5 @@ public class PlatformConstants {
 	public static final String SSO_TOKEN_HEADER = "x-sso-token";
 	public static final String MAP_MY_INDIA_SERVICE_REV_GEOCODE_SERVICE = "mapMyIndiaRevGeoCodeService";
 	public static final String DEFAULT_ROLE_ID = "DEFAULT_ROLE";
+	public static final String CODE_404 = PlatformExceptionCodes.NOT_FOUND.getCode();
 }

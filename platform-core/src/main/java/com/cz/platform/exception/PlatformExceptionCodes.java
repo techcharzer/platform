@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public enum PlatformExceptionCodes implements IExceptionCodes {
 
+	NOT_FOUND("PL_404", "Data not found"),
 	INVALID_DATA("PL_1000", "Invalid/empty data requested"),
 	INTERNAL_SERVER_ERROR("PL_1001", "Some Internal Server Error occured"),
 	SERVICE_NOT_WORKING("PL_1002", "Some Internal dependent service not working"),
