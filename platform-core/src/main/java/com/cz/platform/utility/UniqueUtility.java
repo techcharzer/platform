@@ -51,6 +51,7 @@ public class UniqueUtility {
 	}
 
 	private String getString(Long val) {
+		Long copyVal = val;
 		if (ObjectUtils.isEmpty(val)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
 					"Unable to generate the unique random string");
@@ -62,7 +63,7 @@ public class UniqueUtility {
 			sb.append(MAP_OF_INTEGER_TO_CHARACTER.get(modulo));
 			val = val / base;
 		}
-		log.debug("unique string generated : {} for number {}", sb.toString(), val);
+		log.debug("unique string generated : {} for number {}", sb.toString(), copyVal);
 		return sb.reverse().toString();
 	}
 
