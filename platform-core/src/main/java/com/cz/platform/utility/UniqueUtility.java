@@ -27,7 +27,7 @@ public class UniqueUtility {
 	@Qualifier(PlatformConstants.REDIS_TEMPLATE_FOR_UNIQUE_NUMBERS)
 	private RedisTemplate<String, Integer> redisTemplate;
 
-	private static final String BASE_SALT = "0123456789abcdefghijklmnopqrstuvwxyz";
+	private static final String BASE_SALT = "23456789abcdefghijkmnpqrstuvwxyz";
 	private static final Map<Long, Character> MAP_OF_INTEGER_TO_CHARACTER = new HashMap<>();
 
 	private static final Random random = new Random();
@@ -46,7 +46,7 @@ public class UniqueUtility {
 
 	public String getUniqueSmallString(String basePath) {
 		BoundHashOperations<String, String, Integer> x = redisTemplate.boundHashOps(basePath);
-		Long val = x.increment(basePath, random.nextInt(1000));
+		Long val = x.increment(basePath, random.nextInt(100));
 		return getString(val);
 	}
 
