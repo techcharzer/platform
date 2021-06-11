@@ -44,9 +44,15 @@ public class UniqueUtility {
 		}
 	}
 
-	public String getUniqueSmallString(String basePath) {
+	public String getUniqueId(String basePath) {
 		BoundHashOperations<String, String, Integer> x = redisTemplate.boundHashOps(basePath);
 		Long val = x.increment(basePath, random.nextInt(100));
+		return getString(val);
+	}
+	
+	public String getNextId(String basePath) {
+		BoundHashOperations<String, String, Integer> x = redisTemplate.boundHashOps(basePath);
+		Long val = x.increment(basePath, 1);
 		return getString(val);
 	}
 
