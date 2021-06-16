@@ -15,5 +15,6 @@ public class CityDTO implements Serializable {
 	private String state;
 	private Integer sortParam;
 	private Boolean isActive;
+	private String urlSlug;
 	private Integer groupId;
 }
