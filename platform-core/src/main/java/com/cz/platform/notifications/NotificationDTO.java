@@ -1,6 +1,5 @@
 package com.cz.platform.notifications;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -11,12 +10,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 
 @Data
-public class NotificationDTO implements Serializable {
+public class NotificationDTO {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 394202139477492146L;
 	private String id;
 	private Channel channel;
 	private NotificationType type;
