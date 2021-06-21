@@ -22,7 +22,7 @@ public class GlobalNotificationService {
 
 	private RabbitTemplate rabbitTemplate;
 
-	public void sendSMSGeneric(String mobile, Map<String, String> data, String templates) {
+	public void sendSMS(String mobile, Map<String, String> data, String templates) {
 		sendSMS(mobile, data, Arrays.asList(templates));
 	}
 
