@@ -1,8 +1,10 @@
 package com.cz.platform.notifications;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -19,27 +21,45 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalNotificationService {
 
 	private RabbitTemplate rabbitTemplate;
-	
-	
-	
-//	public void sendGenericNotification(String mobile, Map<String, String> data, List<String> templates) {
-//		NotificationDTO notificationDTO  = new NotificationDTO();
-//		notificationDTO.setId(UUID.randomUUID().toString());
-//		notificationDTO.setEventType(NotificationType.GENERIC_NOTIFICATION);
-//		notificationDTO.setMobile(mobile);
-//		notificationDTO.setTemplates(templates);
-//		notificationDTO.setUnidirectional(true);
-//		notificationDTO.setEventData(data);
-//		sendNotification(notificationDTO);
-//	}
-//	
-//	public void sendNotification(NotificationDTO notification) {
-//		validateSendNotification(notification);
-//		rabbitTemplate.convertAndSend();
-//	}
-//
-//	private void validateSendNotification(NotificationDTO notification) {
-//		if(notification.get)
-//		
-//	}
+
+	public void sendSMSGeneric(String mobile, Map<String, String> data, String templates) {
+		sendSMS(mobile, data, Arrays.asList(templates));
+	}
+
+	public void sendSMS(String mobile, Map<String, String> data, List<String> templates) {
+		NotificationDTO notificationDTO = new NotificationDTO();
+		notificationDTO.setId(UUID.randomUUID().toString());
+		notificationDTO.setType(NotificationType.GENERIC_NOTIFICATION);
+		notificationDTO.setChannel(Channel.SMS);
+		SMSNotificationTo smsNotificationTo = new SMSNotificationTo();
+		smsNotificationTo.setMobileNumber(mobile);
+		notificationDTO.setTo(smsNotificationTo);
+		notificationDTO.setTemplates(templates);
+		notificationDTO.setData(data);
+		sendNotification(notificationDTO);
+	}
+
+	public void sendNotification(NotificationDTO notification) {
+		validateSendNotification(notification);
+		notification.setId(UUID.randomUUID().toString());
+		log.info("sending notification : {}", notification);
+		rabbitTemplate.convertAndSend("notification_service", "send_notification", notification);
+	}
+
+	private void validateSendNotification(NotificationDTO notification) {
+		if (ObjectUtils.isEmpty(notification)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
+					"Invalid notification request");
+		}
+		if (ObjectUtils.isEmpty(notification.getChannel())) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
+					"Invalid notification channel");
+		}
+		if (ObjectUtils.isEmpty(notification.getTo())) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid notification to");
+		}
+		if (ObjectUtils.isEmpty(notification.getType())) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid notification type");
+		}
+	}
 }
