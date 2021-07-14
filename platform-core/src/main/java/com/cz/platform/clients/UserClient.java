@@ -101,7 +101,7 @@ public class UserClient {
 	}
 
 	@Data
-	private static class GetOrCreateUserRequest {
+	public static class GetOrCreateUserRequest {
 		private String mobile;
 	}
 
