@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -65,6 +66,43 @@ public class UserClient {
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
 					"User api not working");
 		}
+	}
+
+	public UserGetOrCreateResponse getOrCreateUser(String mobileNumber) {
+		if (ObjectUtils.isEmpty(mobileNumber)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
+		}
+		log.debug("fetching or creating user with mobile :{}", mobileNumber);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
+		GetOrCreateUserRequest request = new GetOrCreateUserRequest();
+		request.setMobile(mobileNumber);
+		HttpEntity<GetOrCreateUserRequest> entity = new HttpEntity<>(request, headers);
+		try {
+			String url = MessageFormat.format("{0}/user-service/secure/user", urlConfig.getBaseUrl());
+			log.debug("request for fetchig/creating user details : {} body and headers {}", url, entity);
+			ResponseEntity<UserGetOrCreateResponse> response = template.exchange(url, HttpMethod.POST, entity,
+					UserGetOrCreateResponse.class);
+			return response.getBody();
+		} catch (HttpStatusCodeException exeption) {
+			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"User api not working");
+		}
+	}
+
+	@Data
+	public static class UserGetOrCreateResponse {
+		private String userId;
+		private String mobileNumber;
+		private boolean isNewCustomer;
+	}
+
+	@Data
+	private static class GetOrCreateUserRequest {
+		private String mobile;
 	}
 
 	public List<ProtectedChargerNetworkGlobalDTO> getUserProtectedNetwork(String userId) {
