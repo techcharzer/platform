@@ -1,6 +1,6 @@
 package com.cz.platform.enums;
 
-public enum ConnectivityType {
+public enum ChargerType {
 	KIRANA_CHARZER_GSM, KIRANA_CHARZER_BLE, MOKOPLUG_BLE;
 
 }
