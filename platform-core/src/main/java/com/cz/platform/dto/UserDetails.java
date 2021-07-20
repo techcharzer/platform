@@ -6,4 +6,9 @@ import lombok.Data;
 public class UserDetails {
 	private String userId;
 	private String mobileNumber;
+	private String name;
+	private String email;
+	private String referralCode;
+	private String walletId;
+	private String corporateWalletId;
 }
