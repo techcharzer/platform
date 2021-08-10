@@ -16,4 +16,5 @@ import lombok.Setter;
 @ConfigurationProperties(prefix = PlatformConstants.URL_CONFIG_PREFIX)
 public class UrlConfig {
 	private String baseUrl;
+	private String websiteUrl;
 }
