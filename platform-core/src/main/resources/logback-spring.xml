@@ -65,9 +65,11 @@
 		</logger>
 		<logger level="DEBUG" name="com.cz" additivity="false">
 			<appender-ref ref="CONSOLE" />
+			<appender-ref ref="Sentry" />
 		</logger>
 	</springProfile>
 		<springProfile name="dev">
+		<appender name="Sentry" class="io.sentry.logback.SentryAppender"></appender>
 		<appender name="CONSOLE"
 			class="ch.qos.logback.core.ConsoleAppender">
 			<encoder>
@@ -83,6 +85,7 @@
 		</logger>
 		<logger level="DEBUG" name="com.cz" additivity="false">
 			<appender-ref ref="CONSOLE" />
+			<appender-ref ref="Sentry" />
 		</logger>
 	</springProfile>
 </configuration>
