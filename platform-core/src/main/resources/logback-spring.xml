@@ -46,6 +46,7 @@
 		</logger>
 	</springProfile>
 	<springProfile name="qa">
+		<appender name="Sentry" class="io.sentry.logback.SentryAppender"></appender>
 		<appender name="CONSOLE"
 			class="ch.qos.logback.core.ConsoleAppender">
 			<encoder>
