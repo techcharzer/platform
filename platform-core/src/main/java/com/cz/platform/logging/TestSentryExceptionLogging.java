@@ -18,7 +18,7 @@ public class TestSentryExceptionLogging {
 	private boolean testSentryExceptoin;
 
 	@PostConstruct
-	private void testSentryExceptoin(CustomSpringEvent event) throws ApplicationException {
+	private void testSentryExceptoin() throws ApplicationException {
 		if (testSentryExceptoin) {
 			try {
 				throw new Exception("Container restarted. And sentry logging is working fine.");
