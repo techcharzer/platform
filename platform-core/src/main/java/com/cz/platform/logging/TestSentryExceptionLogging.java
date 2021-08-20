@@ -5,7 +5,6 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.cz.platform.custom.events.CustomSpringEvent;
 import com.cz.platform.exception.ApplicationException;
 
 import lombok.extern.slf4j.Slf4j;
