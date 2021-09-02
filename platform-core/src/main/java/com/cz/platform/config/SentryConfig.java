@@ -50,6 +50,14 @@ public class SentryConfig {
 				options.setServerName(appName);
 				options.setEnvironment(activeProfile);
 				options.setDsn(props.getSentryDsn());
+				options.setBeforeSend((event, hint) -> {
+					String className = event.getThrowable().getClass().getSimpleName();
+					if (props.getExceptionIgnoreSet().contains(className)) {
+						return null;
+					} else {
+						return event;
+					}
+				});
 			});
 			testSentryExceptoin();
 		} else {

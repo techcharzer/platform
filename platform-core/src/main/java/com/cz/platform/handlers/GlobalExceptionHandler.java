@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public ErrorField validationException(ValidationException e) {
-		LOG.warn("ValidationException occured: {}", e.getError(), e);
+		LOG.error("ValidationException occured: {}", e.getError(), e);
 		return e.getError();
 	}
 
@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	@ResponseBody
 	public ErrorField accessDeniedException(AccessDeniedException e) {
-		LOG.warn("AccessDeniedException occured: ", e);
+		LOG.error("AccessDeniedException occured: ", e);
 		ErrorField errorField = new ErrorField(PlatformExceptionCodes.ACCESS_DENIED.getCode(),
 				PlatformExceptionCodes.ACCESS_DENIED.getMessage());
 		return errorField;
@@ -74,7 +74,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public ErrorField exception(JsonParseException e) {
-		LOG.error("Exception occured: ", e);
+		LOG.error("JsonParseException occured: ", e);
 		String message = MessageFormat.format("Invalid JSON. {0}", e.getMessage());
 		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message);
 		return field;
@@ -84,8 +84,18 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public ErrorField exception(InvalidFormatException e) {
-		LOG.error("Exception occured: ", e);
+		LOG.error("InvalidFormatException occured: ", e);
 		String message = e.getMessage();
+		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message);
+		return field;
+	}
+
+	@ExceptionHandler(RuntimeException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ResponseBody
+	public ErrorField exception(RuntimeException e) {
+		LOG.error("RuntimeException occured: ", e);
+		String message = "Some error occurred please try again later.";
 		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message);
 		return field;
 	}
