@@ -3,6 +3,7 @@ package com.cz.platform.cache;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.util.ObjectUtils;
 
@@ -35,6 +36,10 @@ public abstract class ICacheCommonService {
 						"Invalid cacheId : " + key);
 			}
 		}
+	}
+	
+	public Set<String> refreshCacheKeys() {
+		return REFRESH_KEY_METHOD.keySet();
 	}
 
 }
