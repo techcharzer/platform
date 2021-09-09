@@ -22,7 +22,7 @@ public enum ChargerType {
 		return getConnectivityType(this);
 	}
 
-	private static ConnectivityType getConnectivityType(ChargerType tuype) {
+	public static ConnectivityType getConnectivityType(ChargerType tuype) {
 		return CHARGER_TYPE_TO_CONNECTIVITY.get(tuype);
 	}
 }
