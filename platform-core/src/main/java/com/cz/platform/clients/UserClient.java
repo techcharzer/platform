@@ -3,6 +3,8 @@ package com.cz.platform.clients;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.cz.platform.PlatformConstants;
 import com.cz.platform.dto.ProtectedChargerNetworkGlobalDTO;
@@ -22,6 +25,7 @@ import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 import com.cz.platform.security.SecurityConfigProps;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -67,6 +71,36 @@ public class UserClient {
 					"User api not working");
 		}
 	}
+	
+	public Map<String, UserDetails> getUserById(Set<String> userIds) {
+		if (ObjectUtils.isEmpty(userIds)) {
+			return null;
+		}
+		log.debug("fetchig userId :{}", userIds);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		try {
+			String url = MessageFormat.format("{0}/user-service/secure/admin/user", urlConfig.getBaseUrl());
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+			for(String userId: userIds) {
+				builder.queryParam("id", userId);
+			}
+
+			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
+			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
+					JsonNode.class);
+			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, UserDetails>>() {
+			});
+		} catch (HttpStatusCodeException exeption) {
+			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"User api not working");
+		}
+	}
+
 
 	public UserGetOrCreateResponse getOrCreateUser(String mobileNumber) {
 		if (ObjectUtils.isEmpty(mobileNumber)) {
