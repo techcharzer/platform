@@ -1,11 +1,9 @@
 package com.cz.platform;
 
 import java.time.ZoneId;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 
-import com.cz.platform.enums.ChargerType;
-import com.cz.platform.enums.ConnectivityType;
 import com.cz.platform.exception.PlatformExceptionCodes;
 
 public class PlatformConstants {
@@ -34,5 +32,7 @@ public class PlatformConstants {
 	public static final String DEFAULT_ROLE_ID = "DEFAULT_ROLE";
 	public static final String CODE_404 = PlatformExceptionCodes.NOT_FOUND.getCode();
 	public static final String REDIS_TEMPLATE_FOR_UNIQUE_NUMBERS = "redisUniqueTemplate";
-	public static final Map<ChargerType, ConnectivityType> CHARGER_TYPE_TO_CONNECTIVITY = new HashMap<>();
+	public static final DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
+	public static final DateTimeFormatter DATE_TIME_FORMATTER = builder.parseCaseInsensitive()
+			.append(DateTimeFormatter.ISO_LOCAL_DATE_TIME).appendOffsetId().toFormatter();
 }
