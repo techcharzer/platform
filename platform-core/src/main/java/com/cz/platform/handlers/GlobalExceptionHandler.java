@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -31,6 +32,16 @@ public class GlobalExceptionHandler {
 	public ErrorField MethodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException e) {
 		String response = MessageFormat.format("parameter {0} is invalid", e.getName());
 		LOG.error("methodArgumentTypeMismatchException occured: ", e);
+		ErrorField field = new ErrorField(PlatformExceptionCodes.INVALID_DATA.getCode(), response);
+		return field;
+	}
+
+	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorField exception(HttpRequestMethodNotSupportedException e) {
+		String response = MessageFormat.format("Request method '{0}' not supported", e.getMethod());
+		LOG.error("HttpRequestMethodNotSupportedException occured: ", e);
 		ErrorField field = new ErrorField(PlatformExceptionCodes.INVALID_DATA.getCode(), response);
 		return field;
 	}
