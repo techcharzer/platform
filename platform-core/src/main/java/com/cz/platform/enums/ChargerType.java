@@ -13,10 +13,13 @@ public enum ChargerType {
 	}
 
 	private static void fillConnectivityTypeForAllChargerTypes() {
+		// BLE
+		CHARGER_TYPE_TO_CONNECTIVITY.put(ChargerType.KIRANA_CHARZER_BLE, ConnectivityType.BLUETOOTH);
+
+		// GSM
 		CHARGER_TYPE_TO_CONNECTIVITY.put(ChargerType.OCPP_16_JSON_CHARGER, ConnectivityType.INTERNET);
 		CHARGER_TYPE_TO_CONNECTIVITY.put(ChargerType.KIRANA_CHARZER_GSM, ConnectivityType.INTERNET);
-		CHARGER_TYPE_TO_CONNECTIVITY.put(ChargerType.KIRANA_CHARZER_BLE, ConnectivityType.BLUETOOTH);
-		CHARGER_TYPE_TO_CONNECTIVITY.put(ChargerType.KIRANA_CHARZER_FLEXTRON, ConnectivityType.BLUETOOTH);
+		CHARGER_TYPE_TO_CONNECTIVITY.put(ChargerType.KIRANA_CHARZER_FLEXTRON, ConnectivityType.INTERNET);
 	}
 
 	public ConnectivityType getConnectivityType() {
