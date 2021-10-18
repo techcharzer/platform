@@ -16,6 +16,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.ErrorField;
+import com.cz.platform.exception.IgnorableValidationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -60,6 +61,14 @@ public class GlobalExceptionHandler {
 	@ResponseBody
 	public ErrorField validationException(ValidationException e) {
 		LOG.error("ValidationException occured: {}", e.getError(), e);
+		return e.getError();
+	}
+
+	@ExceptionHandler(IgnorableValidationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorField validationException(IgnorableValidationException e) {
+		LOG.warn("ValidationException occured: {}", e.getError(), e);
 		return e.getError();
 	}
 
