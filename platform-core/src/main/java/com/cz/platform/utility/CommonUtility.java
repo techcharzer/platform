@@ -2,6 +2,8 @@ package com.cz.platform.utility;
 
 import org.springframework.util.ObjectUtils;
 
+import com.cz.platform.dto.Range;
+
 public final class CommonUtility {
 
 	private CommonUtility() {
@@ -13,5 +15,13 @@ public final class CommonUtility {
 
 	public static String replaceSpaceWithHyphen(String str) {
 		return ObjectUtils.isEmpty(str) ? str : str.replace(" ", "-");
+	}
+
+	public static Range<Integer> parseRange(String range, String regexSplitter) {
+		String arr[] = range.split(regexSplitter);
+		if (arr.length != 2) {
+			return null;
+		}
+		return new Range<Integer>(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]));
 	}
 }
