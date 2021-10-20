@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public final class FilterParserService {
 
-	private FilterConfig filterConfig;
+	private GenericFilterConfig filterConfig;
 
 	private static final Map<FilterOperationsType, BiFunction<String, List<String>, AbstractFilter>> MAP_OF_FILTER_PARSING = new HashMap<>();
 

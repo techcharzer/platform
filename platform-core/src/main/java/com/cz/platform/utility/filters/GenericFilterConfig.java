@@ -14,7 +14,7 @@ import lombok.Setter;
 @RefreshScope
 @Configuration
 @ConfigurationProperties(prefix = "app.config.filter")
-public class FilterConfig {
+public class GenericFilterConfig {
 	private Set<String> allowedFilters;
 	private Set<String> excludedParams;
 	private Boolean failFast = false;
