@@ -184,8 +184,8 @@ public class UserClient {
 			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
 			log.info("api response : {}", response.getBody());
 			JsonNode data = response.getBody();
-			if (data.has("networkId")) {
-				return data.get("networkId").asText();
+			if (data.has("groupId")) {
+				return data.get("groupId").asText();
 			}
 			return null;
 		} catch (HttpStatusCodeException exception) {
