@@ -9,6 +9,6 @@ public interface UserDTO {
 	public String getMobileNumber();
 
 	public List<RoleDTO> getRoles();
-	
+
 	public ZoneId getZoneId();
 }

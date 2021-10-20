@@ -49,7 +49,7 @@ public class UniqueUtility {
 		Long val = x.increment(basePath, random.nextInt(100));
 		return getString(val);
 	}
-	
+
 	public String getNextId(String basePath) {
 		BoundHashOperations<String, String, Integer> x = redisTemplate.boundHashOps(basePath);
 		Long val = x.increment(basePath, 1);

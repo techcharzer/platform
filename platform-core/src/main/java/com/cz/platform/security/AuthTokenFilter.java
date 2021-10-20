@@ -24,7 +24,7 @@ import com.cz.platform.exception.PlatformExceptionCodes;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
-	
+
 	private final static Logger log = LoggerFactory.getLogger(AuthTokenFilter.class);
 
 	private AuthService authService;

@@ -37,7 +37,7 @@ public abstract class ICacheCommonService {
 			}
 		}
 	}
-	
+
 	public Set<String> refreshCacheKeys() {
 		return REFRESH_KEY_METHOD.keySet();
 	}

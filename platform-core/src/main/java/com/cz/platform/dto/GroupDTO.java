@@ -19,7 +19,8 @@ public class GroupDTO implements Serializable {
 	private String name;
 	private GroupType groupType;
 	@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXTERNAL_PROPERTY, property = "groupType")
-	@JsonSubTypes({ @Type(value = Society.class, name = "SOCIETY"), @Type(value = Fleet.class, name = "FLEET") })
+	@JsonSubTypes({ @Type(value = Society.class, name = "SOCIETY"), @Type(value = Fleet.class, name = "FLEET"),
+			@Type(value = Hub.class, name = "HUB") })
 	private GroupConfiguration details;
 
 	private Boolean isActive;

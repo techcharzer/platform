@@ -53,12 +53,12 @@ public class DynamicLinkService {
 		AndroidInfo androidInfo = new AndroidInfo();
 		androidInfo.setAndroidPackageName(deeplinkConfig.getAndroidPackageName());
 		request.setAndroidInfo(androidInfo);
-		
+
 		IosInfo iosInfo = new IosInfo();
 		iosInfo.setIosAppStoreId(deeplinkConfig.getIosAppStoreId());
 		iosInfo.setIosBundleId(deeplinkConfig.getIosBundleId());
 		request.setIosInfo(iosInfo);
-		
+
 		dynamicLinkRequest.setDynamicLinkInfo(request);
 		return generateDynamicLink(dynamicLinkRequest);
 	}
@@ -109,7 +109,7 @@ public class DynamicLinkService {
 	private class AndroidInfo {
 		private String androidPackageName;
 	}
-	
+
 	@Data
 	private class IosInfo {
 		private String iosBundleId;

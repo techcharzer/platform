@@ -14,7 +14,7 @@ public class ValidationException extends RuntimeException {
 		super(code.concat(":").concat(message));
 		error = new ErrorField(code, message);
 	}
-	
+
 	public ValidationException(String code, String message, boolean logItAsError) {
 		super(code.concat(":").concat(message));
 		error = new ErrorField(code, message);

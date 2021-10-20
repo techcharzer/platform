@@ -38,7 +38,8 @@ public class SocketTypeClient {
 		}
 		log.debug("fetchig socketType :{}", code);
 		try {
-			String url = MessageFormat.format("{0}/config/socket-type/{1}", urlConfig.getBaseUrl(), String.valueOf(code));
+			String url = MessageFormat.format("{0}/config/socket-type/{1}", urlConfig.getBaseUrl(),
+					String.valueOf(code));
 			ResponseEntity<GlobalSocketTypeDTO> response = template.getForEntity(url, GlobalSocketTypeDTO.class);
 			return response.getBody();
 		} catch (HttpStatusCodeException exeption) {

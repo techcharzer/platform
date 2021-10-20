@@ -149,11 +149,10 @@ public class UserClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		try {
-			String url = MessageFormat.format("{0}/user-service/secure/user/{1}/groups",
-					urlConfig.getBaseUrl(), userId);
+			String url = MessageFormat.format("{0}/user-service/secure/user/{1}/groups", urlConfig.getBaseUrl(),
+					userId);
 			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
-			ResponseEntity<GroupDTO[]> response = template.exchange(url, HttpMethod.GET, entity,
-					GroupDTO[].class);
+			ResponseEntity<GroupDTO[]> response = template.exchange(url, HttpMethod.GET, entity, GroupDTO[].class);
 			List<GroupDTO> list = Arrays.asList(response.getBody());
 			log.info("api response : {}", list);
 			return list;
