@@ -71,7 +71,7 @@ public class UserClient {
 					"User api not working");
 		}
 	}
-	
+
 	public Map<String, UserDetails> getUserById(Set<String> userIds) {
 		if (ObjectUtils.isEmpty(userIds)) {
 			return null;
@@ -85,7 +85,7 @@ public class UserClient {
 		try {
 			String url = MessageFormat.format("{0}/user-service/secure/admin/user", urlConfig.getBaseUrl());
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-			for(String userId: userIds) {
+			for (String userId : userIds) {
 				builder.queryParam("id", userId);
 			}
 
@@ -100,7 +100,6 @@ public class UserClient {
 					"User api not working");
 		}
 	}
-
 
 	public UserGetOrCreateResponse getOrCreateUser(String mobileNumber) {
 		if (ObjectUtils.isEmpty(mobileNumber)) {
@@ -179,8 +178,8 @@ public class UserClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		try {
-			String url = MessageFormat.format("{0}/user-service/secure/group/admin/{1}",
-					urlConfig.getBaseUrl(), userId);
+			String url = MessageFormat.format("{0}/user-service/secure/group/admin/{1}", urlConfig.getBaseUrl(),
+					userId);
 			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
 			log.info("api response : {}", response.getBody());
