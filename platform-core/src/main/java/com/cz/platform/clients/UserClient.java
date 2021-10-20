@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.cz.platform.PlatformConstants;
-import com.cz.platform.dto.ProtectedChargerNetworkGlobalDTO;
+import com.cz.platform.dto.GroupDTO;
 import com.cz.platform.dto.UserDetails;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
@@ -138,7 +138,7 @@ public class UserClient {
 		private String mobile;
 	}
 
-	public List<ProtectedChargerNetworkGlobalDTO> getUserProtectedNetwork(String userId) {
+	public List<GroupDTO> getUserGroups(String userId) {
 		if (ObjectUtils.isEmpty(userId)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
 		}
@@ -149,12 +149,12 @@ public class UserClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		try {
-			String url = MessageFormat.format("{0}/user-service/secure/protected-charger-networks/{1}",
+			String url = MessageFormat.format("{0}/user-service/secure/user/{1}/groups",
 					urlConfig.getBaseUrl(), userId);
 			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
-			ResponseEntity<ProtectedChargerNetworkGlobalDTO[]> response = template.exchange(url, HttpMethod.GET, entity,
-					ProtectedChargerNetworkGlobalDTO[].class);
-			List<ProtectedChargerNetworkGlobalDTO> list = Arrays.asList(response.getBody());
+			ResponseEntity<GroupDTO[]> response = template.exchange(url, HttpMethod.GET, entity,
+					GroupDTO[].class);
+			List<GroupDTO> list = Arrays.asList(response.getBody());
 			log.info("api response : {}", list);
 			return list;
 		} catch (HttpStatusCodeException exeption) {
