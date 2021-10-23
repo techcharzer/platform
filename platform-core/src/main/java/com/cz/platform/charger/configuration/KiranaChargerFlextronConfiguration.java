@@ -12,7 +12,7 @@ public class KiranaChargerFlextronConfiguration implements ChargerConfiguration,
 	 */
 	private static final long serialVersionUID = 1839211805479707179L;
 	private String ccuId;
-	
+
 	@Override
 	public String getChargerControlId() {
 		return ccuId;

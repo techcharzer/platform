@@ -12,7 +12,7 @@ public class KiranaChargerGsmConfiguration implements ChargerConfiguration, Seri
 	 */
 	private static final long serialVersionUID = 1839211805479707179L;
 	private String deviceId;
-	
+
 	@Override
 	public String getChargerControlId() {
 		return deviceId;
