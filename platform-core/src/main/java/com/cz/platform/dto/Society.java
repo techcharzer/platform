@@ -14,6 +14,7 @@ public class Society implements GroupConfiguration, Serializable {
 	private String societyName;
 	private String defaultImageUrl;
 	private String registrationDeeplink;
+	private Double serviceChargePercentage;
 	private List<SocietyBlock> blocks;
 
 	@Override
