@@ -1,14 +1,12 @@
 package com.cz.platform.config;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
+@ToString
 public class QueueConfiguration {
-	private String queuName;
+	private String queueName;
+	private String exchangeName;
 	private String routingKey;
-	private String exchange;
-	private Integer delay;
-	private String deadLetterQueueName;
-	private String deadLetterExchange;
-	private String deadLetterRoutingKey;
 }
