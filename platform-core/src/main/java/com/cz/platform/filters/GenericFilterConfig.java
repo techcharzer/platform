@@ -1,5 +1,7 @@
-package com.cz.platform.utility.filters;
+package com.cz.platform.filters;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -17,5 +19,6 @@ import lombok.Setter;
 public class GenericFilterConfig {
 	private Set<String> allowedFilters;
 	private Set<String> excludedParams;
+	private Map<String, Set<String>> filterToBeServed = new HashMap<>();
 	private Boolean failFast = false;
 }

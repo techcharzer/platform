@@ -1,26 +1,16 @@
-package com.cz.platform.utility.filters;
+package com.cz.platform.filters;
 
 import org.springframework.data.mongodb.core.query.Criteria;
 
-import com.cz.platform.dto.GeoCoordinatesDTO;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 
-import lombok.Getter;
-import lombok.Setter;
-
 @JsonIgnoreType
-@Getter
-@Setter
-public class NearFilter extends AbstractFilter {
+public class CustomLogicFilter extends AbstractFilter {
 
-	private GeoCoordinatesDTO location;
-	private Double maxDistance;
-	private Double minDistance = 0.0D;
-
-	public NearFilter(String field) {
-		super(field, FilterOperationsType.NEAR_TO);
+	public CustomLogicFilter(String field) {
+		super(field, FilterOperationsType.CUSTOM_TYPE);
 	}
 
 	@Override

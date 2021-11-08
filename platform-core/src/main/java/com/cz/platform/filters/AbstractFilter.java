@@ -1,4 +1,4 @@
-package com.cz.platform.utility.filters;
+package com.cz.platform.filters;
 
 import org.springframework.data.mongodb.core.query.Criteria;
 
