@@ -6,7 +6,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum FilterOperationsType {
-	RANGE("range"), IN("in"), GREATER_THAN("gte"), LESS_THAN("lte"), CUSTOM_TYPE("cl"), NEAR_TO("nearTo");
+	RANGE("range"), IN("in"), GREATER_THAN("gte"), LESS_THAN("lte"), CUSTOM_TYPE("cl"), NEAR_TO("nearTo"),
+	DATE_RANGE("dateRange");
 
 	private String operatorName;
 

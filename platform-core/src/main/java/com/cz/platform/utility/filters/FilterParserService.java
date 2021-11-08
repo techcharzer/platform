@@ -1,6 +1,7 @@
 package com.cz.platform.utility.filters;
 
 import java.text.MessageFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,7 @@ public final class FilterParserService {
 		MAP_OF_FILTER_PARSING.put(FilterOperationsType.IN, this::inFilterParsing);
 		MAP_OF_FILTER_PARSING.put(FilterOperationsType.RANGE, this::rangeFilterParsing);
 		MAP_OF_FILTER_PARSING.put(FilterOperationsType.NEAR_TO, this::nearToFilterParsing);
+		MAP_OF_FILTER_PARSING.put(FilterOperationsType.DATE_RANGE, this::dateRangeFilterParsing);
 		MAP_OF_FILTER_PARSING.put(FilterOperationsType.CUSTOM_TYPE, this::customFilterParsing);
 	}
 
@@ -61,6 +63,21 @@ public final class FilterParserService {
 			}
 		}
 		return new RangeFilter<Integer>(field, ranges);
+	}
+
+	private AbstractFilter dateRangeFilterParsing(String field, List<String> value) {
+		List<Range<Instant>> ranges = new ArrayList<>();
+		if (ObjectUtils.isEmpty(value)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
+					"Invalid filter parameters. requestparam or requestparam value is empty.");
+		}
+		for (String range : value) {
+			Range<Long> r = CommonUtility.parseRangeLong(range, "-");
+			if (r != null) {
+				ranges.add(new Range<Instant>(Instant.ofEpochMilli(r.getFrom()), Instant.ofEpochMilli(r.getTo())));
+			}
+		}
+		return new DateRangeFilter(field, ranges);
 	}
 
 	private AbstractFilter nearToFilterParsing(String field, List<String> value) {

@@ -1,6 +1,7 @@
 package com.cz.platform.utility.filters;
 
 import java.text.MessageFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,42 +9,42 @@ import org.springframework.data.mongodb.core.query.Criteria;
 
 import com.cz.platform.dto.Range;
 
-public class RangeFilter<T extends Comparable<T>> extends AbstractFilter {
+public class DateRangeFilter extends AbstractFilter {
 
-	private List<Range<T>> ranges;
+	private List<Range<Instant>> ranges;
 
-	public RangeFilter() {
+	public DateRangeFilter() {
 		super(null, FilterOperationsType.RANGE);
 	}
 
-	public RangeFilter(String field, List<Range<T>> value) {
+	public DateRangeFilter(String field, List<Range<Instant>> value) {
 		super(field, FilterOperationsType.RANGE);
 		this.ranges = value;
 	}
 
-	public RangeFilter(String field, Range<T> value) {
+	public DateRangeFilter(String field, Range<Instant> value) {
 		super(field, FilterOperationsType.RANGE);
-		ranges = new ArrayList<Range<T>>();
+		ranges = new ArrayList<Range<Instant>>();
 		ranges.add(value);
 	}
 
-	public RangeFilter(String field, T start, T end) {
+	public DateRangeFilter(String field, Instant start, Instant end) {
 		super(field, FilterOperationsType.RANGE);
 		ranges = new ArrayList<>();
-		ranges.add(new Range<T>(start, end));
+		ranges.add(new Range<Instant>(start, end));
 	}
 
-	public List<Range<T>> getRanges() {
+	public List<Range<Instant>> getRanges() {
 		return ranges;
 	}
 
-	public void setRanges(List<Range<T>> ranges) {
+	public void setRanges(List<Range<Instant>> ranges) {
 		this.ranges = ranges;
 	}
 
 	public List<String> getValue() {
 		List<String> values = new ArrayList<>();
-		for (Range<T> range : ranges) {
+		for (Range<Instant> range : ranges) {
 			values.add(MessageFormat.format("{0}-{1}", String.valueOf(range.getFrom()), String.valueOf(range.getTo())));
 		}
 		return values;
@@ -57,9 +58,9 @@ public class RangeFilter<T extends Comparable<T>> extends AbstractFilter {
 	@Override
 	public Criteria getCriteria() {
 		Criteria criteria = new Criteria();
-		List<Range<T>> list = this.ranges;
+		List<Range<Instant>> list = this.ranges;
 		List<Criteria> listOfCriterias = new ArrayList<>();
-		for (Range<T> val : list) {
+		for (Range<Instant> val : list) {
 			listOfCriterias.add(Criteria.where(field).gte(val.getFrom()).lte(val.getTo()));
 		}
 		Criteria[] array = listOfCriterias.toArray(new Criteria[listOfCriterias.size()]);
