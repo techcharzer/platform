@@ -1,6 +1,8 @@
-package com.cz.platform.utility;
+package com.cz.platform.unique;
 
+import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -19,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class UniqueUtility {
+class UniqueUtilityService {
 
 	@Autowired
 	@Qualifier(PlatformConstants.REDIS_TEMPLATE_FOR_UNIQUE_NUMBERS)
@@ -29,6 +31,9 @@ public class UniqueUtility {
 	private static final Map<Long, Character> MAP_OF_INTEGER_TO_CHARACTER = new HashMap<>();
 
 	private static final Random random = new Random();
+
+	@Autowired
+	private UniqueUtilityRepository uniqueUtilityRepository;
 
 	static {
 		populate();
@@ -45,12 +50,14 @@ public class UniqueUtility {
 	public String getUniqueId(String basePath) {
 		BoundHashOperations<String, String, Integer> x = redisTemplate.boundHashOps(basePath);
 		Long val = x.increment(basePath, random.nextInt(100));
+		save(basePath, val);
 		return getString(val);
 	}
 
 	public String getNextId(String basePath) {
 		BoundHashOperations<String, String, Integer> x = redisTemplate.boundHashOps(basePath);
 		Long val = x.increment(basePath, 1);
+		save(basePath, val);
 		return getString(val);
 	}
 
@@ -69,6 +76,33 @@ public class UniqueUtility {
 		}
 		log.debug("unique string generated : {} for number {}", sb.toString(), copyVal);
 		return sb.reverse().toString();
+	}
+
+	public List<UniqueUtilityEntity> getUniqueEntityList() {
+		return uniqueUtilityRepository.findAll();
+	}
+
+	public void populateRedisCache() {
+		List<UniqueUtilityEntity> list = getUniqueEntityList();
+		for (UniqueUtilityEntity o : list) {
+			log.info("keys found : {}", o);
+			BoundHashOperations<String, String, Integer> x = redisTemplate.boundHashOps(o.getId());
+			Long oldValue = x.increment(o.getId(), 0);
+			Long currValue = o.getValue();
+			long diff = currValue - oldValue;
+			log.info("diff {} for key : {}", diff, o.getId());
+			x.increment(o.getId(), diff);
+		}
+
+	}
+
+	public void save(String basePath, Long value) {
+		UniqueUtilityEntity obj = new UniqueUtilityEntity();
+		obj.setId(basePath);
+		obj.setValue(value);
+		obj.setUpdatedAt(Instant.now());
+		uniqueUtilityRepository.save(obj);
+		log.info("saved unique object: {}", obj);
 	}
 
 }
