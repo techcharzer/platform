@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 
 @Data
-public class ChargerInventoryDTO implements Serializable {
+public class GlobalChargerHardwareInfo implements Serializable {
 	/**
 	 * 
 	 */
