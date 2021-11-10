@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-class UniqueUtilityController {
+public class UniqueUtilityController {
 
 	private UniqueUtilityService utility;
 
