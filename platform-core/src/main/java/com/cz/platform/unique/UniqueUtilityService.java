@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-class UniqueUtilityService {
+public class UniqueUtilityService {
 
 	@Autowired
 	@Qualifier(PlatformConstants.REDIS_TEMPLATE_FOR_UNIQUE_NUMBERS)
