@@ -25,6 +25,7 @@ public class GlobalChargerHardwareInfo implements Serializable {
 			@Type(value = KiranaChargerFlextronConfiguration.class, name = "KIRANA_CHARZER_FLEXTRON"),
 			@Type(value = KiranaChargerGsmConfiguration.class, name = "KIRANA_CHARZER_GSM") })
 	private ChargerConfiguration configuration;
+	private String deeplink;
 	private Boolean isActive;
 
 	public ConnectivityType getConnectivityType() {
