@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @Document("unique_utility_info")
-class UniqueUtilityEntity {
+public class UniqueUtilityEntity {
 	@Id
 	private String id;
 	private Long value;
