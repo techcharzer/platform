@@ -4,6 +4,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-interface UniqueUtilityRepository extends MongoRepository<UniqueUtilityEntity, String> {
+public interface UniqueUtilityRepository extends MongoRepository<UniqueUtilityEntity, String> {
 
 }
