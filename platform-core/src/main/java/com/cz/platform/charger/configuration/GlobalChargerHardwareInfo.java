@@ -16,8 +16,7 @@ public class GlobalChargerHardwareInfo implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -8410282833774514608L;
-	private String id;
-	private String uniqueIdentifier;
+	private String hardwareId;
 	private ChargerType chargerType;
 	@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXTERNAL_PROPERTY, property = "chargerType")
 	@JsonSubTypes({ @Type(value = OCPP16ChargerConfiguration.class, name = "OCPP_16_JSON_CHARGER"),
