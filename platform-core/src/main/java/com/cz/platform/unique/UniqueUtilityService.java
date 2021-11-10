@@ -8,7 +8,6 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,6 @@ public class UniqueUtilityService {
 	private static final Random random = new Random();
 
 	@Autowired
-	@Lazy
 	private UniqueUtilityRepository uniqueUtilityRepository;
 
 	static {
