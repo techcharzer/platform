@@ -11,6 +11,7 @@ public class HardwareSocket implements Serializable {
 	 */
 	private static final long serialVersionUID = 42362998463993412L;
 	private String id;
-	private String type;
+	private String connectorId;
+	private String socketType;
 	private Double power;
 }
