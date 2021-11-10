@@ -14,6 +14,4 @@ public class Socket implements Serializable {
 	private String connectorId;
 	private String socketType;
 	private Double power;
-	private Double pricePerUnit;
-	private Double price;
 }
