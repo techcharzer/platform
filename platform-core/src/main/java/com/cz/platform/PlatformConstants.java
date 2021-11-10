@@ -35,4 +35,5 @@ public class PlatformConstants {
 	public static final DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
 	public static final DateTimeFormatter DATE_TIME_FORMATTER = builder.parseCaseInsensitive()
 			.append(DateTimeFormatter.ISO_LOCAL_DATE_TIME).appendOffsetId().toFormatter();
+	public static final String UNIQUE_ID_INFO = "unique_id_info";
 }
