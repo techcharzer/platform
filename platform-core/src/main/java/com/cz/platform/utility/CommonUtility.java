@@ -38,7 +38,7 @@ public final class CommonUtility {
 		return new Range<Long>(Long.parseLong(arr[0]), Long.parseLong(arr[1]));
 	}
 
-	public static Criteria chargerControlIdCriteria(String chargerTypeKey, String keyOfConfiguration,
+	public static Criteria chargerControlIdCriteria(String chargerTypeKeyPath, String pathOfConfiguration,
 			String chargerControlId) {
 		Criteria criteria = new Criteria();
 		List<Criteria> list = new ArrayList<>();
@@ -47,18 +47,18 @@ public final class CommonUtility {
 			Criteria valCriteria = null;
 			switch (val) {
 			case KIRANA_CHARZER_BLE:
-				valCriteria = Criteria.where(keyOfConfiguration.concat(".macAddress")).is(chargerControlId);
+				valCriteria = Criteria.where(pathOfConfiguration.concat(".macAddress")).is(chargerControlId);
 				break;
 			case KIRANA_CHARZER_GSM:
-				valCriteria = Criteria.where(keyOfConfiguration.concat(".deviceId")).is(chargerControlId);
+				valCriteria = Criteria.where(pathOfConfiguration.concat(".deviceId")).is(chargerControlId);
 				break;
 			case KIRANA_CHARZER_FLEXTRON:
-				valCriteria = Criteria.where(keyOfConfiguration.concat(".ccuId")).is(chargerControlId);
+				valCriteria = Criteria.where(pathOfConfiguration.concat(".ccuId")).is(chargerControlId);
 				break;
 			case CHARGE_MOD_BHARAT_AC:
 				break;
 			case OCPP_16_JSON_CHARGER:
-				valCriteria = Criteria.where(keyOfConfiguration.concat(".chargerBoxId")).is(chargerControlId);
+				valCriteria = Criteria.where(pathOfConfiguration.concat(".chargerBoxId")).is(chargerControlId);
 				break;
 			case OTHER_NETWORK_CHARGER:
 				break;
@@ -66,7 +66,7 @@ public final class CommonUtility {
 				break;
 			}
 			if (!ObjectUtils.isEmpty(valCriteria)) {
-				Criteria chargerType = Criteria.where(chargerTypeKey).is(val.name());
+				Criteria chargerType = Criteria.where(chargerTypeKeyPath).is(val.name());
 				list.add(inCriteria.andOperator(chargerType, valCriteria));
 			}
 		}
