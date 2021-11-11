@@ -41,7 +41,7 @@ public class FilterService {
 		}
 		return list;
 	}
-	
+
 	public List<FilterDTO<Object>> getFilters(List<String> filters) {
 		log.debug("get filter listOfFiltersTobeServed : {}", filters);
 		List<FilterDTO<Object>> list = new ArrayList<>();
