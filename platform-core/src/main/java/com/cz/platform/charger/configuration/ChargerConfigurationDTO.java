@@ -24,7 +24,7 @@ public class ChargerConfigurationDTO implements Serializable {
 			@Type(value = KiranaChargerFlextronConfiguration.class, name = "KIRANA_CHARZER_FLEXTRON"),
 			@Type(value = KiranaChargerGsmConfiguration.class, name = "KIRANA_CHARZER_GSM") })
 	private ChargerConfiguration configuration;
-
+ 
 	public ConnectivityType getConnectivityType() {
 		return ChargerType.getConnectivityType(this.chargerType);
 	}
