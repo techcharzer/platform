@@ -24,11 +24,11 @@ public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository
 
 	private MongoTemplate mongoTemplate;
 
-	private FilterToQueryMapperFactory factory;
+	private FilterToQueryCreatorFactory factory;
 
 	@Override
 	public Page<T> filter(List<AbstractFilter> filters, Pageable page, String[] includedFields, Class<T> clazz) {
-		GenericFilterToQueryMapper queryMapper = factory.getService(clazz);
+		GenericFilterToQueryCreator queryMapper = factory.getService(clazz);
 		Criteria criterias = queryMapper.getFilter(filters);
 		Query query = new Query();
 		if (!ObjectUtils.isEmpty(criterias)) {
@@ -60,7 +60,7 @@ public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository
 
 	@Override
 	public List<T> filter(List<AbstractFilter> filters, String[] includedFields, Class<T> clazz) {
-		GenericFilterToQueryMapper queryMapper = factory.getService(clazz);
+		GenericFilterToQueryCreator queryMapper = factory.getService(clazz);
 		Criteria criterias = queryMapper.getFilter(filters);
 		Query query = new Query();
 		if (!ObjectUtils.isEmpty(criterias)) {
