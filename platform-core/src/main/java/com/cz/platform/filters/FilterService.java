@@ -4,24 +4,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-@AllArgsConstructor
 public class FilterService {
 
+	@Autowired
+	@Lazy
 	private DynamicFilterDataService dynamicFilterService;
 
+	@Autowired
+	@Lazy
 	private StaticFilterDataService staticFilterService;
 
+	@Autowired
+	@Lazy
 	private GenericFilterConfig filterConfig;
 
 	public List<FilterDTO<Object>> getFiltersViaConfigKey(String key) {
