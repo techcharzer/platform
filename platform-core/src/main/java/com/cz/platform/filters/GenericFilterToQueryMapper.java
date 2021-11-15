@@ -7,9 +7,11 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
-public abstract class GenericFilterToQueryMapper {
+@Component
+public class GenericFilterToQueryMapper {
 
 	protected static final Map<String, Function<AbstractFilter, Criteria>> MAP_OF_FILTER_TO_QUERY_MAPPER = new HashMap<>();
 
