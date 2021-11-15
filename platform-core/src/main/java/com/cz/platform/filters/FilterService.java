@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -24,8 +22,6 @@ public class FilterService {
 
 	private StaticFilterDataService staticFilterService;
 
-	@Autowired
-	@Lazy
 	private GenericFilterConfig filterConfig;
 
 	public List<FilterDTO<Object>> getFiltersViaConfigKey(String key) {
