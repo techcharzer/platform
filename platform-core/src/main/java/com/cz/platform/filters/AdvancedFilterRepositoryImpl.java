@@ -2,8 +2,6 @@ package com.cz.platform.filters;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -16,18 +14,16 @@ import org.springframework.util.ObjectUtils;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-public class AdvancedFilterRepositoryImpl<T> implements FilterRepository<T> {
+@AllArgsConstructor
+public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository<T> {
 
-	@Autowired
-	@Lazy
 	private MongoTemplate mongoTemplate;
 
-	@Autowired
-	@Lazy
 	private GenericFilterToQueryMapper queryMapper;
 
 	@Override

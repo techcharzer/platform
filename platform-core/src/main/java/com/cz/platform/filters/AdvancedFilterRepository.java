@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface FilterRepository<T> {
+public interface AdvancedFilterRepository<T> {
 
 	Page<T> filter(List<AbstractFilter> filters, Pageable page, String[] includedFields, Class<T> clazz);
 
