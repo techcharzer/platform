@@ -101,6 +101,36 @@ public class UserClient {
 		}
 	}
 
+	public List<UserDetails> getUserByMobileNumber(Set<String> mobileNumbers) {
+		if (ObjectUtils.isEmpty(mobileNumbers)) {
+			return null;
+		}
+		log.debug("fetchig userId :{}", mobileNumbers);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		try {
+			String url = MessageFormat.format("{0}/user-service/secure/internal-server/user", urlConfig.getBaseUrl());
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+			for (String userId : mobileNumbers) {
+				builder.queryParam("mobileNumber", userId);
+			}
+
+			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
+			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
+					JsonNode.class);
+			JsonNode content = response.getBody().get("content");
+			return mapper.convertValue(content, new TypeReference<List<UserDetails>>() {
+			});
+		} catch (HttpStatusCodeException exeption) {
+			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"User api not working");
+		}
+	}
+
 	public UserGetOrCreateResponse getOrCreateUser(String mobileNumber) {
 		if (ObjectUtils.isEmpty(mobileNumber)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
