@@ -24,7 +24,7 @@ public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository
 
 	private MongoTemplate mongoTemplate;
 
-	private FilterToQueryCreatorFactory factory;
+	private GenericEntityToQueryCreatorFactory factory;
 
 	@Override
 	public Page<T> filter(List<AbstractFilter> filters, Pageable page, String[] includedFields, Class<T> clazz) {

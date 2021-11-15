@@ -9,7 +9,7 @@ import com.cz.platform.exception.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class FilterToQueryCreatorFactory {
+public abstract class GenericEntityToQueryCreatorFactory {
 
 	protected static final Map<Class, GenericFilterToQueryCreator> MAP_CLASS_TO_FILTER_QUERY_CREATOR = new HashMap<>();
 
