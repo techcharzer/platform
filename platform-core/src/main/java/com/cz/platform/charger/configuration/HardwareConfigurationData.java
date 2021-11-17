@@ -1,5 +1,5 @@
 package com.cz.platform.charger.configuration;
 
-public interface ChargerConfiguration {
+public interface HardwareConfigurationData {
 	String getChargerControlId();
 }

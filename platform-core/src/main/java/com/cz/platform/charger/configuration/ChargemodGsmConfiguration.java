@@ -5,7 +5,7 @@ import java.io.Serializable;
 import lombok.Data;
 
 @Data
-public class ChargemodGsmConfiguration implements ChargerConfiguration, Serializable {
+public class ChargemodGsmConfiguration implements HardwareConfigurationData, Serializable {
 
 	/**
 	 * 

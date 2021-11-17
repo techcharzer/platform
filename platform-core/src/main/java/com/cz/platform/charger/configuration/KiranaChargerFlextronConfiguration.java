@@ -5,7 +5,7 @@ import java.io.Serializable;
 import lombok.Data;
 
 @Data
-public class KiranaChargerFlextronConfiguration implements ChargerConfiguration, Serializable {
+public class KiranaChargerFlextronConfiguration implements HardwareConfigurationData, Serializable {
 
 	/**
 	 * 

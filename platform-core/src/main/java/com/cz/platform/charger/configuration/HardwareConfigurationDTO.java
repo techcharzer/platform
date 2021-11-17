@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 
 @Data
-public class ChargerConfigurationDTO implements Serializable {
+public class HardwareConfigurationDTO implements Serializable {
 	/**
 	 * 
 	 */
@@ -23,7 +23,7 @@ public class ChargerConfigurationDTO implements Serializable {
 			@Type(value = KiranaChargerFlextronConfiguration.class, name = "KIRANA_CHARZER_FLEXTRON"),
 			@Type(value = KiranaChargerGsmConfiguration.class, name = "KIRANA_CHARZER_GSM"),
 			@Type(value = ChargemodGsmConfiguration.class, name = "CHARGE_MOD_BHARAT_AC"), })
-	private ChargerConfiguration configuration;
+	private HardwareConfigurationData configuration;
 
 	public ConnectivityType getConnectivityType() {
 		return ChargerType.getConnectivityType(this.chargerType);
