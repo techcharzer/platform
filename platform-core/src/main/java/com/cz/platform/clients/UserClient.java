@@ -72,7 +72,7 @@ public class UserClient {
 					"User api not working");
 		}
 	}
-	
+
 	public Page<UserDetails> getUserByFilter(MultiValueMap<String, String> queryParams) {
 		if (ObjectUtils.isEmpty(queryParams)) {
 			return null;
