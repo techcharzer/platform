@@ -2,7 +2,9 @@ package com.cz.platform.clients;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.data.domain.Page;
@@ -15,6 +17,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -74,6 +77,36 @@ public class UserClient {
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
 					"User api not working");
 		}
+	}
+
+	public Map<String, UserDetails> getUserByMobileNumber(Set<String> mobileNumbers) {
+		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
+		for (String mobileNumber : mobileNumbers) {
+			filters.add("mobileNumber", mobileNumber);
+		}
+		filters.add("page", "0");
+		filters.add("size", String.valueOf(mobileNumbers.size()));
+		Page<UserDetails> page = getUserByFilter(filters);
+		Map<String, UserDetails> map = new HashMap<>();
+		for (UserDetails userDetails : page.getContent()) {
+			map.put(userDetails.getUserId(), userDetails);
+		}
+		return map;
+	}
+
+	public Map<String, UserDetails> getUserByUserId(Set<String> userIds) {
+		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
+		for (String mobileNumber : userIds) {
+			filters.add("userId", mobileNumber);
+		}
+		filters.add("page", "0");
+		filters.add("size", String.valueOf(userIds.size()));
+		Page<UserDetails> page = getUserByFilter(filters);
+		Map<String, UserDetails> map = new HashMap<>();
+		for (UserDetails userDetails : page.getContent()) {
+			map.put(userDetails.getUserId(), userDetails);
+		}
+		return map;
 	}
 
 	public Page<UserDetails> getUserByFilter(MultiValueMap<String, String> queryParams) {
