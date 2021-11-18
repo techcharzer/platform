@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -91,8 +94,14 @@ public class UserClient {
 			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
 					JsonNode.class);
-			return mapper.convertValue(response.getBody(), new TypeReference<Page<UserDetails>>() {
-			});
+			List<UserDetails> list = mapper.convertValue(response.getBody().get("content"),
+					new TypeReference<List<UserDetails>>() {
+					});
+			int pageNumber = response.getBody().get("pageable").get("pageNumber").asInt();
+			int pageSize = response.getBody().get("pageable").get("pageSize").asInt();
+			Pageable page = PageRequest.of(pageNumber, pageSize);
+			long totalElements = response.getBody().get("totalElements").asLong();
+			return new PageImpl<>(list, page, totalElements);
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
