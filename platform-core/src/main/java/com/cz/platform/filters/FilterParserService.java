@@ -113,6 +113,7 @@ public final class FilterParserService {
 	}
 
 	public List<AbstractFilter> parseQueryParams(MultiValueMap<String, String> map) {
+		log.debug("query params : {}", map);
 		List<AbstractFilter> filters = new ArrayList<AbstractFilter>();
 		try {
 			for (String key : map.keySet()) {

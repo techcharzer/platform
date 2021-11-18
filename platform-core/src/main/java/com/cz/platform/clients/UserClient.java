@@ -3,15 +3,16 @@ package com.cz.platform.clients;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
@@ -71,41 +72,12 @@ public class UserClient {
 					"User api not working");
 		}
 	}
-
-	public Map<String, UserDetails> getUserById(Set<String> userIds) {
-		if (ObjectUtils.isEmpty(userIds)) {
+	
+	public Page<UserDetails> getUserByFilter(MultiValueMap<String, String> queryParams) {
+		if (ObjectUtils.isEmpty(queryParams)) {
 			return null;
 		}
-		log.debug("fetchig userId :{}", userIds);
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
-		HttpEntity<String> entity = new HttpEntity<>(null, headers);
-		try {
-			String url = MessageFormat.format("{0}/user-service/secure/admin/user", urlConfig.getBaseUrl());
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-			for (String userId : userIds) {
-				builder.queryParam("id", userId);
-			}
-
-			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
-			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
-					JsonNode.class);
-			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, UserDetails>>() {
-			});
-		} catch (HttpStatusCodeException exeption) {
-			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
-			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
-					"User api not working");
-		}
-	}
-
-	public List<UserDetails> getUserByMobileNumber(Set<String> mobileNumbers) {
-		if (ObjectUtils.isEmpty(mobileNumbers)) {
-			return null;
-		}
-		log.debug("fetchig userId :{}", mobileNumbers);
+		log.debug("fetchig userId :{}", queryParams);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
@@ -114,15 +86,12 @@ public class UserClient {
 		try {
 			String url = MessageFormat.format("{0}/user-service/secure/internal-server/user", urlConfig.getBaseUrl());
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-			for (String userId : mobileNumbers) {
-				builder.queryParam("mobileNumber", userId);
-			}
+			builder.queryParams(queryParams);
 
 			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
 					JsonNode.class);
-			JsonNode content = response.getBody().get("content");
-			return mapper.convertValue(content, new TypeReference<List<UserDetails>>() {
+			return mapper.convertValue(response.getBody(), new TypeReference<Page<UserDetails>>() {
 			});
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
