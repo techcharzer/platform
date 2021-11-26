@@ -10,6 +10,6 @@ public class DevicePurchasedDealConfiguration extends DealConfigurationData impl
 	 * 
 	 */
 	private static final long serialVersionUID = -8571455224670904026L;
-	private Double electricityRates;
+	private Long electricityRates;
 	private String electricityBillImageUrl;
 }
