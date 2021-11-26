@@ -10,6 +10,4 @@ public class ProfitShareDealConfiguration extends DealConfigurationData implemen
 	 * 
 	 */
 	private static final long serialVersionUID = -8917898772431810695L;
-	private Long electricityRates;
-	private String electricityBillImageUrl;
 }
