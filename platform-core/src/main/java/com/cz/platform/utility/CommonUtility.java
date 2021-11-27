@@ -1,18 +1,32 @@
 package com.cz.platform.utility;
 
+import java.text.MessageFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.util.ObjectUtils;
 
+import com.cz.platform.dto.CodeValueDTO;
 import com.cz.platform.dto.Range;
 import com.cz.platform.enums.ChargerType;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public final class CommonUtility {
 
 	private CommonUtility() {
 	}
+
+	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MMMM yy", Locale.UK)
+			.withZone(ZoneId.systemDefault());
 
 	public static String getUrlSlug(String str) {
 		return ObjectUtils.isEmpty(str) ? str : replaceSpaceWithHyphen(str.toLowerCase());
@@ -73,6 +87,21 @@ public final class CommonUtility {
 		Criteria[] array = list.toArray(new Criteria[list.size()]);
 		criteria.orOperator(array);
 		return criteria;
+	}
+
+	public static List<CodeValueDTO<String, String>> getMonthlyFilterValues(int noOfFilters) {
+		List<CodeValueDTO<String, String>> list = new ArrayList<>();
+		LocalDate nowDate = LocalDate.now();
+		Instant end = nowDate.plusMonths(1).withDayOfMonth(1).atStartOfDay().toInstant(ZoneOffset.UTC);
+		for (int i = 0; i <= noOfFilters; ++i) {
+			log.trace("start time : {}", end);
+			Instant start = nowDate.minusMonths(i).withDayOfMonth(1).atStartOfDay().toInstant(ZoneOffset.UTC);
+			String value = MessageFormat.format("{0}-{1}", String.valueOf(start.toEpochMilli()),
+					String.valueOf(end.toEpochMilli()));
+			list.add(new CodeValueDTO<String, String>(FORMATTER.format(start), value));
+			end = start;
+		}
+		return list;
 	}
 
 }
