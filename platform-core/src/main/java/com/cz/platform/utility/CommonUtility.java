@@ -98,7 +98,7 @@ public final class CommonUtility {
 			Instant start = nowDate.minusMonths(i).withDayOfMonth(1).atStartOfDay().toInstant(ZoneOffset.UTC);
 			String value = MessageFormat.format("{0}-{1}", String.valueOf(start.toEpochMilli()),
 					String.valueOf(end.toEpochMilli()));
-			list.add(new CodeValueDTO<String, String>(FORMATTER.format(start), value));
+			list.add(new CodeValueDTO<String, String>(value, FORMATTER.format(start)));
 			end = start;
 		}
 		return list;
