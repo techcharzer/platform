@@ -94,7 +94,7 @@ public class CityClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("config-service"));
 		HttpEntity<CityDTO> entity = new HttpEntity<>(cityDTO, headers);
 		try {
-			log.debug("saving the city : {}", cityDTO);
+			log.info("saving the city : {}", cityDTO);
 			String url = MessageFormat.format("{0}/config/secure/city", urlConfig.getBaseUrl());
 			HttpEntity<CityDTO> response = template.exchange(url, HttpMethod.POST, entity, CityDTO.class);
 			log.info("response from the server : {}", response.getBody());
