@@ -1,13 +1,17 @@
 package com.cz.platform.clients;
 
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -36,6 +40,19 @@ public class ChargerClient {
 	private SecurityConfigProps securityProps;
 
 	private ObjectMapper mapper;
+
+	public Map<String, ChargerDTO> getChargerById(Set<String> userIds) {
+		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
+		for (String mobileNumber : userIds) {
+			filters.add("id", mobileNumber);
+		}
+		List<ChargerDTO> page = getChargerByFilter(filters);
+		Map<String, ChargerDTO> map = new HashMap<>();
+		for (ChargerDTO obj : page) {
+			map.put(obj.getChargerId(), obj);
+		}
+		return map;
+	}
 
 	public List<ChargerDTO> getChargerByFilter(MultiValueMap<String, String> queryParams) {
 		if (ObjectUtils.isEmpty(queryParams)) {
