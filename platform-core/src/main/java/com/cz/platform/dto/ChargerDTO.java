@@ -19,5 +19,10 @@ public class ChargerDTO {
 	private List<Image> images;
 	private GlobalChargerHardwareInfo hardwareInfo;
 	private Map<String, Long> price;
+	private AddressDTO address;
 	private DealConfigurationDTO dealConfiguration;
+
+	public static final String[] INCLUDED_FIELDS = new String[] { "id", "name", "uniqueIdentifier",
+			"openCloseTimeInSeconds", "sockets", "chargerType", "supportedVehicle", "address", "images", "deeplink",
+			"configuration", "status", "dealConfiguration", "deeplink" };
 }
