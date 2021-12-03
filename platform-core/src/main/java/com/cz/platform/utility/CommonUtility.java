@@ -107,6 +107,9 @@ public final class CommonUtility {
 
 	public static int getSize(MultiValueMap<String, String> queryParams) {
 		int size = 0;
+		if (ObjectUtils.isEmpty(queryParams)) {
+			return size;
+		}
 		for (List<String> list : queryParams.values()) {
 			if (!ObjectUtils.isEmpty(list)) {
 				size += list.size();
