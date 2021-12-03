@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
 
 import com.cz.platform.dto.CodeValueDTO;
@@ -102,6 +103,16 @@ public final class CommonUtility {
 			end = start;
 		}
 		return list;
+	}
+
+	public static int getSize(MultiValueMap<String, String> queryParams) {
+		int size = 0;
+		for (List<String> list : queryParams.values()) {
+			if (!ObjectUtils.isEmpty(list)) {
+				size += list.size();
+			}
+		}
+		return size;
 	}
 
 }

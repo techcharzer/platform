@@ -31,6 +31,7 @@ import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 import com.cz.platform.security.SecurityConfigProps;
+import com.cz.platform.utility.CommonUtility;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -84,8 +85,6 @@ public class UserClient {
 		for (String mobileNumber : mobileNumbers) {
 			filters.add("mobileNumber", mobileNumber);
 		}
-		filters.add("page", "0");
-		filters.add("size", String.valueOf(mobileNumbers.size()));
 		Page<UserDetails> page = getUserByFilter(filters);
 		Map<String, UserDetails> map = new HashMap<>();
 		for (UserDetails userDetails : page.getContent()) {
@@ -99,8 +98,6 @@ public class UserClient {
 		for (String mobileNumber : userIds) {
 			filters.add("userId", mobileNumber);
 		}
-		filters.add("page", "0");
-		filters.add("size", String.valueOf(userIds.size()));
 		Page<UserDetails> page = getUserByFilter(filters);
 		Map<String, UserDetails> map = new HashMap<>();
 		for (UserDetails userDetails : page.getContent()) {
@@ -122,6 +119,9 @@ public class UserClient {
 		try {
 			String url = MessageFormat.format("{0}/user-service/secure/internal-server/user", urlConfig.getBaseUrl());
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+			int size = CommonUtility.getSize(queryParams);
+			queryParams.add("page", "0");
+			queryParams.add("size", String.valueOf(size));
 			builder.queryParams(queryParams);
 
 			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
