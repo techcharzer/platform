@@ -27,7 +27,11 @@ public class ChargerOnlineDTO {
 	}
 
 	public Long getConsumptionRateInWattHour() {
-		return consumptionRateInWattHour;
+		if (BooleanUtils.isTrue(isOnline)) {
+			return consumptionRateInWattHour;
+		} else {
+			return 0L;
+		}
 	}
 
 	public void setConsumptionRateInWattHour(Long consumptionRateInWattHour) {
@@ -35,11 +39,7 @@ public class ChargerOnlineDTO {
 	}
 
 	public Long getUnitsConsumedInWattHour() {
-		if (BooleanUtils.isTrue(isOnline)) {
-			return unitsConsumedInWattHour;
-		} else {
-			return 0L;
-		}
+		return unitsConsumedInWattHour;
 	}
 
 	public void setUnitsConsumedInWattHour(Long unitsConsumedInWattHour) {
