@@ -13,18 +13,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class GenericEntityToQueryCreatorFactory {
 
-	protected final Map<String, GenericFilterToQueryCreator> MAP_CLASS_TO_FILTER_QUERY_CREATOR = new HashMap<>();
+	protected final Map<Class, GenericFilterToQueryCreator> MAP_CLASS_TO_FILTER_QUERY_CREATOR = new HashMap<>();
 
 	public GenericFilterToQueryCreator getService(Class a) {
 		if (ObjectUtils.isEmpty(a)) {
 			return null;
 		}
 		log.info("class name : {}", a.getCanonicalName());
-		if (!MAP_CLASS_TO_FILTER_QUERY_CREATOR.containsKey(a.getCanonicalName())) {
+		if (!MAP_CLASS_TO_FILTER_QUERY_CREATOR.containsKey(a)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
 					"Invalid value of the class : " + a.getCanonicalName());
 		}
-		return MAP_CLASS_TO_FILTER_QUERY_CREATOR.get(a.getCanonicalName());
+		return MAP_CLASS_TO_FILTER_QUERY_CREATOR.get(a);
 	}
 
 }
