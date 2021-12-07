@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class GenericFilterToQueryCreator {
 
-	protected static final Map<String, Function<AbstractFilter, Criteria>> MAP_OF_FILTER_TO_QUERY_MAPPER = new HashMap<>();
+	protected final Map<String, Function<AbstractFilter, Criteria>> MAP_OF_FILTER_TO_QUERY_MAPPER = new HashMap<>();
 
 	public Criteria getFilter(List<AbstractFilter> filters) {
 		log.debug("abstract filters : {}", filters);

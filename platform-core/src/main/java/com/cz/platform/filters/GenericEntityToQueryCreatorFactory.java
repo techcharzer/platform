@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class GenericEntityToQueryCreatorFactory {
 
-	protected static final Map<String, GenericFilterToQueryCreator> MAP_CLASS_TO_FILTER_QUERY_CREATOR = new HashMap<>();
+	protected final Map<String, GenericFilterToQueryCreator> MAP_CLASS_TO_FILTER_QUERY_CREATOR = new HashMap<>();
 
 	public GenericFilterToQueryCreator getService(Class a) {
 		if (ObjectUtils.isEmpty(a)) {
