@@ -71,6 +71,7 @@ public final class CommonUtility {
 				valCriteria = Criteria.where(pathOfConfiguration.concat(".ccuId")).is(chargerControlId);
 				break;
 			case CHARGE_MOD_BHARAT_AC:
+				valCriteria = Criteria.where(pathOfConfiguration.concat(".imeiNumber")).is(chargerControlId);
 				break;
 			case OCPP_16_JSON_CHARGER:
 				valCriteria = Criteria.where(pathOfConfiguration.concat(".chargerBoxId")).is(chargerControlId);
