@@ -6,7 +6,7 @@ import lombok.Data;
 public class HardwareMeterReadingMessage {
 	private String bookingId;
 	private String hardwareId;
-	private Long meterReading;
+	private Long meterReadingInWattHour;
 	private String socketId;
 	private Long lastNPingSameCount;
 }
