@@ -3,7 +3,7 @@ package com.cz.platform.dto;
 import lombok.Data;
 
 @Data
-public class MeterReadingDTO {
+public class HardwareMeterReadingMessage {
 	private String bookingId;
 	private String hardwareId;
 	private Long meterReading;
