@@ -114,8 +114,8 @@ public final class CommonUtility {
 
 	public static List<CodeValueDTO<String, String>> getRecentTimeFilterValues() {
 		List<CodeValueDTO<String, String>> list = new ArrayList<>();
-		getDayFilterValues(2, list);
-		getWeekFilterValues(2, list);
+		getDayFilterValues(1, list);
+		getWeekFilterValues(1, list);
 		getMonthlyFilterValues(4, list);
 		return list;
 	}
@@ -126,9 +126,10 @@ public final class CommonUtility {
 		for (int i = 0; i <= noOfFilters; ++i) {
 			log.trace("start time : {}", end);
 			Instant start = nowDate.minusMonths(i).withDayOfMonth(1).atStartOfDay().toInstant(ZoneOffset.UTC);
-			String value = MessageFormat.format("{0}-{1}", String.valueOf(start.toEpochMilli()),
+			String code = MessageFormat.format("{0}-{1}", String.valueOf(start.toEpochMilli()),
 					String.valueOf(end.toEpochMilli()));
-			list.add(new CodeValueDTO<String, String>(value, FORMATTER.format(start)));
+			String value = MessageFormat.format("By Month - {0}", FORMATTER.format(start));
+			list.add(new CodeValueDTO<String, String>(code, value));
 			end = start;
 		}
 	}
@@ -139,9 +140,10 @@ public final class CommonUtility {
 		for (int i = 0; i <= noOfFilters; ++i) {
 			log.trace("start time : {}", end);
 			Instant start = nowDate.minusDays(i).atStartOfDay().toInstant(ZoneOffset.UTC);
-			String value = MessageFormat.format("{0}-{1}", String.valueOf(start.toEpochMilli()),
+			String code = MessageFormat.format("{0}-{1}", String.valueOf(start.toEpochMilli()),
 					String.valueOf(end.toEpochMilli()));
-			list.add(new CodeValueDTO<String, String>(value, DAYS_MAPPING.get(i)));
+			String value = MessageFormat.format("By Day - {0}", DAYS_MAPPING.get(i));
+			list.add(new CodeValueDTO<String, String>(code, value));
 			end = start;
 		}
 	}
@@ -153,9 +155,10 @@ public final class CommonUtility {
 		for (int i = 0; i <= noOfFilters; ++i) {
 			log.trace("start time : {}", end);
 			Instant start = nowDate.minusWeeks(i).atStartOfDay().toInstant(ZoneOffset.UTC);
-			String value = MessageFormat.format("{0}-{1}", String.valueOf(start.toEpochMilli()),
+			String code = MessageFormat.format("{0}-{1}", String.valueOf(start.toEpochMilli()),
 					String.valueOf(end.toEpochMilli()));
-			list.add(new CodeValueDTO<String, String>(value, WEEKS_MAPPING.get(i)));
+			String value = MessageFormat.format("By Week - {0}", WEEKS_MAPPING.get(i));
+			list.add(new CodeValueDTO<String, String>(code, value));
 			end = start;
 		}
 		return list;
