@@ -45,6 +45,16 @@ public class ChargerClient {
 
 	private ObjectMapper mapper;
 
+	public ChargerDTO getChargerById(String userIds) {
+		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
+		filters.add("id", userIds);
+		List<ChargerDTO> page = getChargerByFilter(filters);
+		if (ObjectUtils.isEmpty(page)) {
+			return null;
+		}
+		return page.get(0);
+	}
+
 	public Map<String, ChargerDTO> getChargerById(Set<String> userIds) {
 		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
 		for (String mobileNumber : userIds) {
