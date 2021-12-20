@@ -7,8 +7,10 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.util.MultiValueMap;
@@ -22,6 +24,25 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public final class CommonUtility {
+
+	private static final Map<Integer, String> DAYS_MAPPING = new HashMap<>();
+	private static final Map<Integer, String> WEEKS_MAPPING = new HashMap<>();
+
+	static {
+		DAYS_MAPPING.put(0, "Today");
+		DAYS_MAPPING.put(1, "Yesterday");
+		DAYS_MAPPING.put(2, "2 days ago");
+		DAYS_MAPPING.put(3, "3 days ago");
+		DAYS_MAPPING.put(4, "4 days ago");
+		DAYS_MAPPING.put(5, "5 days ago");
+		DAYS_MAPPING.put(6, "6 days ago");
+
+		WEEKS_MAPPING.put(0, "This Week");
+		WEEKS_MAPPING.put(1, "Last Week");
+		WEEKS_MAPPING.put(2, "2 weeks ago");
+		WEEKS_MAPPING.put(3, "3 weeks ago");
+		WEEKS_MAPPING.put(4, "4 weeks ago");
+	}
 
 	private CommonUtility() {
 	}
@@ -91,8 +112,15 @@ public final class CommonUtility {
 		return criteria;
 	}
 
-	public static List<CodeValueDTO<String, String>> getMonthlyFilterValues(int noOfFilters) {
+	public static List<CodeValueDTO<String, String>> getRecentTimeFilterValues() {
 		List<CodeValueDTO<String, String>> list = new ArrayList<>();
+		getDayFilterValues(2, list);
+		getWeekFilterValues(2, list);
+		getMonthlyFilterValues(4, list);
+		return list;
+	}
+
+	public static void getMonthlyFilterValues(int noOfFilters, List<CodeValueDTO<String, String>> list) {
 		LocalDate nowDate = LocalDate.now();
 		Instant end = nowDate.plusMonths(1).withDayOfMonth(1).atStartOfDay().toInstant(ZoneOffset.UTC);
 		for (int i = 0; i <= noOfFilters; ++i) {
@@ -101,6 +129,33 @@ public final class CommonUtility {
 			String value = MessageFormat.format("{0}-{1}", String.valueOf(start.toEpochMilli()),
 					String.valueOf(end.toEpochMilli()));
 			list.add(new CodeValueDTO<String, String>(value, FORMATTER.format(start)));
+			end = start;
+		}
+	}
+
+	public static void getDayFilterValues(int noOfFilters, List<CodeValueDTO<String, String>> list) {
+		LocalDate nowDate = LocalDate.now();
+		Instant end = nowDate.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC);
+		for (int i = 0; i <= noOfFilters; ++i) {
+			log.trace("start time : {}", end);
+			Instant start = nowDate.minusDays(i).atStartOfDay().toInstant(ZoneOffset.UTC);
+			String value = MessageFormat.format("{0}-{1}", String.valueOf(start.toEpochMilli()),
+					String.valueOf(end.toEpochMilli()));
+			list.add(new CodeValueDTO<String, String>(value, DAYS_MAPPING.get(i)));
+			end = start;
+		}
+	}
+
+	public static List<CodeValueDTO<String, String>> getWeekFilterValues(int noOfFilters,
+			List<CodeValueDTO<String, String>> list) {
+		LocalDate nowDate = LocalDate.now();
+		Instant end = nowDate.plusWeeks(1).atStartOfDay().toInstant(ZoneOffset.UTC);
+		for (int i = 0; i <= noOfFilters; ++i) {
+			log.trace("start time : {}", end);
+			Instant start = nowDate.minusWeeks(i).atStartOfDay().toInstant(ZoneOffset.UTC);
+			String value = MessageFormat.format("{0}-{1}", String.valueOf(start.toEpochMilli()),
+					String.valueOf(end.toEpochMilli()));
+			list.add(new CodeValueDTO<String, String>(value, WEEKS_MAPPING.get(i)));
 			end = start;
 		}
 		return list;
