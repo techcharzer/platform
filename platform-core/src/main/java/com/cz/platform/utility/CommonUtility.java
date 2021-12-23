@@ -151,6 +151,7 @@ public final class CommonUtility {
 	public static List<CodeValueDTO<String, String>> getWeekFilterValues(int noOfFilters,
 			List<CodeValueDTO<String, String>> list) {
 		LocalDate nowDate = LocalDate.now();
+		nowDate = nowDate.minusDays(nowDate.getDayOfWeek().getValue() - 1);
 		Instant end = nowDate.plusWeeks(1).atStartOfDay().toInstant(ZoneOffset.UTC);
 		for (int i = 0; i <= noOfFilters; ++i) {
 			log.trace("start time : {}", end);
