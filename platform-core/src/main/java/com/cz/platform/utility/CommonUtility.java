@@ -114,8 +114,8 @@ public final class CommonUtility {
 
 	public static List<CodeValueDTO<String, String>> getRecentTimeFilterValues() {
 		List<CodeValueDTO<String, String>> list = new ArrayList<>();
-		getDayFilterValues(1, list);
-		getWeekFilterValues(1, list);
+		getDayFilterValues(3, list);
+		getWeekFilterValues(3, list);
 		getMonthlyFilterValues(4, list);
 		return list;
 	}
