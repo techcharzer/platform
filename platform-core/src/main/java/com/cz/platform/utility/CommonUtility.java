@@ -19,6 +19,8 @@ import org.springframework.util.ObjectUtils;
 import com.cz.platform.dto.CodeValueDTO;
 import com.cz.platform.dto.Range;
 import com.cz.platform.enums.ChargerType;
+import com.cz.platform.exception.PlatformExceptionCodes;
+import com.cz.platform.exception.ValidationException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -113,10 +115,22 @@ public final class CommonUtility {
 	}
 
 	public static List<CodeValueDTO<String, String>> getRecentTimeFilterValues() {
+		return getRecentTimeFilterValues(3, 3, 4);
+	}
+
+	public static List<CodeValueDTO<String, String>> getRecentTimeFilterValues(int day, int week, int month) {
 		List<CodeValueDTO<String, String>> list = new ArrayList<>();
-		getDayFilterValues(3, list);
-		getWeekFilterValues(3, list);
-		getMonthlyFilterValues(4, list);
+		if (!DAYS_MAPPING.containsKey(day)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
+					"Invalid filter day configuration");
+		}
+		if (!WEEKS_MAPPING.containsKey(week)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
+					"Invalid filter week configuration");
+		}
+		getDayFilterValues(day, list);
+		getWeekFilterValues(week, list);
+		getMonthlyFilterValues(month, list);
 		return list;
 	}
 
