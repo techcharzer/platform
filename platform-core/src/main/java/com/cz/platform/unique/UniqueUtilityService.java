@@ -61,6 +61,12 @@ public class UniqueUtilityService {
 		return getString(val);
 	}
 
+	public Long getNextNumber(String basePath) {
+		BoundHashOperations<String, String, Integer> x = redisTemplate.boundHashOps(basePath);
+		Long val = x.increment(basePath, 1);
+		return val;
+	}
+
 	private String getString(Long val) {
 		Long copyVal = val;
 		if (ObjectUtils.isEmpty(val)) {
