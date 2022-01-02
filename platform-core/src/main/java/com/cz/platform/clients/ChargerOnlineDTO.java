@@ -7,8 +7,8 @@ import org.apache.commons.lang3.BooleanUtils;
 public class ChargerOnlineDTO {
 	private Boolean isOnline = false;
 	private Instant lastSeen;
-	private Long consumptionRateInWattHour;
-	private Long unitsConsumedInWattHour;
+	private Long electricCurrentInAmpere;
+	private Long currentMeterReading;
 
 	public Boolean getIsOnline() {
 		return isOnline;
@@ -26,23 +26,23 @@ public class ChargerOnlineDTO {
 		this.lastSeen = lastSeen;
 	}
 
-	public Long getConsumptionRateInWattHour() {
+	public Long getUnitsConsumedInWattHour() {
+		return currentMeterReading;
+	}
+
+	public void setUnitsConsumedInWattHour(Long unitsConsumedInWattHour) {
+		this.currentMeterReading = unitsConsumedInWattHour;
+	}
+
+	public Long getCurrentInAmpere() {
 		if (BooleanUtils.isTrue(isOnline)) {
-			return consumptionRateInWattHour;
+			return electricCurrentInAmpere;
 		} else {
 			return 0L;
 		}
 	}
 
-	public void setConsumptionRateInWattHour(Long consumptionRateInWattHour) {
-		this.consumptionRateInWattHour = consumptionRateInWattHour;
-	}
-
-	public Long getUnitsConsumedInWattHour() {
-		return unitsConsumedInWattHour;
-	}
-
-	public void setUnitsConsumedInWattHour(Long unitsConsumedInWattHour) {
-		this.unitsConsumedInWattHour = unitsConsumedInWattHour;
+	public void setCurrentInAmpere(Long currentInAmpere) {
+		this.electricCurrentInAmpere = currentInAmpere;
 	}
 }
