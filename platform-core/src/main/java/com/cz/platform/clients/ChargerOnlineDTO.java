@@ -7,8 +7,8 @@ import org.apache.commons.lang3.BooleanUtils;
 public class ChargerOnlineDTO {
 	private Boolean isOnline = false;
 	private Instant lastSeen;
-	private Long electricCurrentInAmpere;
-	private Long currentMeterReading;
+	private Long ecInmA;
+	private Long cmrInWH;
 
 	public Boolean getIsOnline() {
 		return isOnline;
@@ -26,23 +26,23 @@ public class ChargerOnlineDTO {
 		this.lastSeen = lastSeen;
 	}
 
-	public Long getCurrentInAmpere() {
+	public Long getEcInmA() {
 		if (BooleanUtils.isTrue(isOnline)) {
-			return electricCurrentInAmpere;
+			return ecInmA;
 		} else {
 			return 0L;
 		}
 	}
 
-	public void setCurrentInAmpere(Long currentInAmpere) {
-		this.electricCurrentInAmpere = currentInAmpere;
+	public void setEcInmA(Long ecInmA) {
+		this.ecInmA = ecInmA;
 	}
 
-	public Long getCurrentMeterReading() {
-		return currentMeterReading;
+	public Long getCmrInWH() {
+		return cmrInWH;
 	}
 
-	public void setCurrentMeterReading(Long currentMeterReading) {
-		this.currentMeterReading = currentMeterReading;
+	public void setCmrInWH(Long cmrInWH) {
+		this.cmrInWH = cmrInWH;
 	}
 }
