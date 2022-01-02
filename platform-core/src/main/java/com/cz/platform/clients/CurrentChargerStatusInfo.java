@@ -3,7 +3,7 @@ package com.cz.platform.clients;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 
-public class ChargerStatusInfo {
+public class CurrentChargerStatusInfo {
 	private ChargerOnlineDTO onlineDTO;
 	private Boolean relay;
 	private Long ecInmA;
