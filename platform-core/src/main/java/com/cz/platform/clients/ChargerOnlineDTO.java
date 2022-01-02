@@ -26,14 +26,6 @@ public class ChargerOnlineDTO {
 		this.lastSeen = lastSeen;
 	}
 
-	public Long getUnitsConsumedInWattHour() {
-		return currentMeterReading;
-	}
-
-	public void setUnitsConsumedInWattHour(Long unitsConsumedInWattHour) {
-		this.currentMeterReading = unitsConsumedInWattHour;
-	}
-
 	public Long getCurrentInAmpere() {
 		if (BooleanUtils.isTrue(isOnline)) {
 			return electricCurrentInAmpere;
@@ -44,5 +36,13 @@ public class ChargerOnlineDTO {
 
 	public void setCurrentInAmpere(Long currentInAmpere) {
 		this.electricCurrentInAmpere = currentInAmpere;
+	}
+
+	public Long getCurrentMeterReading() {
+		return currentMeterReading;
+	}
+
+	public void setCurrentMeterReading(Long currentMeterReading) {
+		this.currentMeterReading = currentMeterReading;
 	}
 }
