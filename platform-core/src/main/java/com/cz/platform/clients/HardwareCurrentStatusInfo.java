@@ -6,7 +6,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import lombok.Data;
 
 @Data
-public class CurrentChargerStatusInfo {
+public class HardwareCurrentStatusInfo {
 	private ChargerOnlineDTO onlineDTO;
 	private Boolean relay;
 	private Long ecInmA;
