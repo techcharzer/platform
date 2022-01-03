@@ -3,6 +3,9 @@ package com.cz.platform.clients;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 
+import lombok.Data;
+
+@Data
 public class CurrentChargerStatusInfo {
 	private ChargerOnlineDTO onlineDTO;
 	private Boolean relay;
@@ -17,23 +20,4 @@ public class CurrentChargerStatusInfo {
 		}
 	}
 
-	public void setEcInmA(Long ecInmA) {
-		this.ecInmA = ecInmA;
-	}
-
-	public Long getCmrInWH() {
-		return cmrInWH;
-	}
-
-	public void setCmrInWH(Long cmrInWH) {
-		this.cmrInWH = cmrInWH;
-	}
-
-	public Boolean getRelay() {
-		return relay;
-	}
-
-	public void setRelay(Boolean relay) {
-		this.relay = relay;
-	}
 }
