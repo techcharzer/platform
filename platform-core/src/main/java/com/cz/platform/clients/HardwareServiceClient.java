@@ -98,6 +98,13 @@ public class HardwareServiceClient {
 		}
 	}
 
+	public HardwareCurrentStatusInfo getHardwareCurrentStatusInfo(String hardwareId) {
+		Set<String> hardwareIdSet = new HashSet<>();
+		hardwareIdSet.add(hardwareId);
+		Map<String, HardwareCurrentStatusInfo> map = getHardwareCurrentStatusInfo(hardwareIdSet);
+		return map.get(hardwareId);
+	}
+
 	public Map<String, HardwareCurrentStatusInfo> getHardwareCurrentStatusInfo(Set<String> hardwareIds) {
 		if (ObjectUtils.isEmpty(hardwareIds)) {
 			return new HashMap<>();
