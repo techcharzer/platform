@@ -29,6 +29,7 @@ public final class CommonUtility {
 
 	private static final Map<Integer, String> DAYS_MAPPING = new HashMap<>();
 	private static final Map<Integer, String> WEEKS_MAPPING = new HashMap<>();
+	private static final ZoneOffset INDIA_ZONE_OFFSET = ZoneOffset.ofHoursMinutes(5, 30);
 
 	static {
 		DAYS_MAPPING.put(0, "Today");
@@ -136,10 +137,10 @@ public final class CommonUtility {
 
 	public static void getMonthlyFilterValues(int noOfFilters, List<CodeValueDTO<String, String>> list) {
 		LocalDate nowDate = LocalDate.now();
-		Instant end = nowDate.plusMonths(1).withDayOfMonth(1).atStartOfDay().toInstant(ZoneOffset.UTC);
+		Instant end = nowDate.plusMonths(1).withDayOfMonth(1).atStartOfDay().toInstant(INDIA_ZONE_OFFSET);
 		for (int i = 0; i <= noOfFilters; ++i) {
 			log.trace("start time : {}", end);
-			Instant start = nowDate.minusMonths(i).withDayOfMonth(1).atStartOfDay().toInstant(ZoneOffset.UTC);
+			Instant start = nowDate.minusMonths(i).withDayOfMonth(1).atStartOfDay().toInstant(INDIA_ZONE_OFFSET);
 			String code = MessageFormat.format("{0}-{1}", String.valueOf(start.toEpochMilli()),
 					String.valueOf(end.toEpochMilli()));
 			String value = MessageFormat.format("By Month - {0}", FORMATTER.format(start));
@@ -150,10 +151,10 @@ public final class CommonUtility {
 
 	public static void getDayFilterValues(int noOfFilters, List<CodeValueDTO<String, String>> list) {
 		LocalDate nowDate = LocalDate.now();
-		Instant end = nowDate.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC);
+		Instant end = nowDate.plusDays(1).atStartOfDay().toInstant(INDIA_ZONE_OFFSET);
 		for (int i = 0; i <= noOfFilters; ++i) {
 			log.trace("start time : {}", end);
-			Instant start = nowDate.minusDays(i).atStartOfDay().toInstant(ZoneOffset.UTC);
+			Instant start = nowDate.minusDays(i).atStartOfDay().toInstant(INDIA_ZONE_OFFSET);
 			String code = MessageFormat.format("{0}-{1}", String.valueOf(start.toEpochMilli()),
 					String.valueOf(end.toEpochMilli()));
 			String value = MessageFormat.format("By Day - {0}", DAYS_MAPPING.get(i));
@@ -166,10 +167,10 @@ public final class CommonUtility {
 			List<CodeValueDTO<String, String>> list) {
 		LocalDate nowDate = LocalDate.now();
 		nowDate = nowDate.minusDays(nowDate.getDayOfWeek().getValue() - 1);
-		Instant end = nowDate.plusWeeks(1).atStartOfDay().toInstant(ZoneOffset.UTC);
+		Instant end = nowDate.plusWeeks(1).atStartOfDay().toInstant(INDIA_ZONE_OFFSET);
 		for (int i = 0; i <= noOfFilters; ++i) {
 			log.trace("start time : {}", end);
-			Instant start = nowDate.minusWeeks(i).atStartOfDay().toInstant(ZoneOffset.UTC);
+			Instant start = nowDate.minusWeeks(i).atStartOfDay().toInstant(INDIA_ZONE_OFFSET);
 			String code = MessageFormat.format("{0}-{1}", String.valueOf(start.toEpochMilli()),
 					String.valueOf(end.toEpochMilli()));
 			String value = MessageFormat.format("By Week - {0}", WEEKS_MAPPING.get(i));
