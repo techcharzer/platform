@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public enum Channel {
-	SMS, WHATSAPP(new Channel[] { Channel.SMS });
+	PUSH_NOTIFICATION, SMS, WHATSAPP(new Channel[] { Channel.SMS });
 
 	Channel[] fallbackChannel;
 }
