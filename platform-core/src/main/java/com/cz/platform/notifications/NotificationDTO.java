@@ -17,7 +17,8 @@ public class NotificationDTO {
 	private NotificationType type;
 	@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXTERNAL_PROPERTY, property = "channel")
 	@JsonSubTypes({ @Type(value = WhatsappNotificationTo.class, name = "WHATSAPP"),
-			@Type(value = SMSNotificationTo.class, name = "SMS") })
+			@Type(value = SMSNotificationTo.class, name = "SMS"),
+			@Type(value = PushNotificationTo.class, name = "PUSH_NOTIFICATION") })
 	private NotificationTO to;
 	private Map<String, String> data;
 	private List<String> templates;
