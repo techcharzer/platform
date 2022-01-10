@@ -8,5 +8,4 @@ public class UserDetails {
 	private String mobileNumber;
 	private String name;
 	private String email;
-	private String referralCode;
 }
