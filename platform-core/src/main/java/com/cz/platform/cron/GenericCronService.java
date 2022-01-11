@@ -24,7 +24,7 @@ public abstract class GenericCronService {
 	}
 
 	public void executeCron(String key) {
-		log.info("key cron execution started: {}", key);
+		log.info("cron execution started: {}", key);
 		if (!MAP_OF_KEY_CRONS.containsKey(key)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
 					"Invalid cron key for execution");
@@ -34,7 +34,7 @@ public abstract class GenericCronService {
 		} catch (Exception e) {
 			log.error("error occured while executing the cron: {}", key, e);
 		}
-		log.info("key cron execution completed: {}", key);
+		log.info("cron execution completed: {}", key);
 	}
 
 }
