@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class GenericCronService {
+public abstract class GenericCronService {
 
 	protected static final Map<String, CustomCronConsumer> MAP_OF_KEY_CRONS = new HashMap<>();
 
