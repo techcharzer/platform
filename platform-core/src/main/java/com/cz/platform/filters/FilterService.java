@@ -43,7 +43,11 @@ public class FilterService {
 		List<FilterDTO<Object>> list = new ArrayList<>();
 		for (String filterEnum : filters) {
 			FilterDTO<Object> filter = getFilter(filterEnum);
-			list.add(filter);
+			if (!ObjectUtils.isEmpty(filters)) {
+				list.add(filter);
+			} else {
+				log.warn("filter not found : {}", filterEnum);
+			}
 		}
 		return list;
 	}
@@ -53,7 +57,11 @@ public class FilterService {
 		List<FilterDTO<Object>> list = new ArrayList<>();
 		for (String filterEnum : filters) {
 			FilterDTO<Object> filter = getFilter(filterEnum);
-			list.add(filter);
+			if (!ObjectUtils.isEmpty(filters)) {
+				list.add(filter);
+			} else {
+				log.warn("filter not found : {}", filterEnum);
+			}
 		}
 		return list;
 	}
