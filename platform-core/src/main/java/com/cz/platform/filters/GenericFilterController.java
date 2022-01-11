@@ -15,7 +15,7 @@ public class GenericFilterController {
 	private FilterService filterService;
 
 	@GetMapping("/secure/filter/{key}")
-	public List<FilterDTO<Object>> getCZOInventoryFilter(@PathVariable("key") String key) {
+	public List<FilterDTO<Object>> getFiltersViaConfigKey(@PathVariable("key") String key) {
 		return filterService.getFiltersViaConfigKey(key);
 	}
 
