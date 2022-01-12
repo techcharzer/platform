@@ -12,7 +12,7 @@ public class KiranaChargerFlextronConfiguration implements HardwareConfiguration
 	 */
 	private static final long serialVersionUID = 1839211805479707179L;
 	private String ccuId;
-	private String serverKey;
+	private String mqttBrokerKey;
 
 	@Override
 	public String getChargerControlId() {
