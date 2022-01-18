@@ -3,7 +3,6 @@ package com.cz.platform.utility;
 import java.text.MessageFormat;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -16,6 +15,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
 
+import com.cz.platform.PlatformConstants;
 import com.cz.platform.dto.CodeValueDTO;
 import com.cz.platform.dto.Range;
 import com.cz.platform.enums.ChargerType;
@@ -51,7 +51,7 @@ public final class CommonUtility {
 	}
 
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MMMM yy", Locale.UK)
-			.withZone(ZoneId.systemDefault());
+			.withZone(PlatformConstants.CURRENT_ZONE_ID);
 
 	public static String getUrlSlug(String str) {
 		return ObjectUtils.isEmpty(str) ? str : replaceSpaceWithHyphen(str.toLowerCase());
