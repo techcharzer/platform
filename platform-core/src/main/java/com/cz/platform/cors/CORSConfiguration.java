@@ -56,11 +56,11 @@ public class CORSConfiguration {
 								props.getAllowedOrigins().get(i++), props.getAllowedOrigins().get(i++),
 								props.getAllowedOrigins().get(i++));
 					}
-					registration.allowedMethods("POST", "PUT", "GET", "OPTIONS");
+					registration.allowedMethods("POST", "PUT", "GET", "OPTIONS", "DELETE");
 					registration.allowCredentials(true);
 				} else {
 					registry.addMapping("/**").allowedHeaders("*").allowedOrigins("*").allowedMethods("POST", "PUT",
-							"GET");
+							"GET", "DELETE");
 				}
 			}
 		};
