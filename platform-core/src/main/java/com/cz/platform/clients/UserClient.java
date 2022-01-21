@@ -142,6 +142,79 @@ public class UserClient {
 		}
 	}
 
+	public UserDetails getCZOUser(String mobileNumber) {
+		if (ObjectUtils.isEmpty(mobileNumber)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
+		}
+		log.debug("fetching czo user with mobile :{}", mobileNumber);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
+		HttpEntity<GetOrCreateUserRequest> entity = new HttpEntity<>(null, headers);
+		try {
+			String url = MessageFormat.format("{0}/user-service/secure/internal-server/czo-user/mobileNumber/{1}",
+					urlConfig.getBaseUrl(), mobileNumber);
+			log.debug("request for fetchig/creating user details : {} body and headers {}", url, entity);
+			ResponseEntity<UserDetails> response = template.exchange(url, HttpMethod.GET, entity, UserDetails.class);
+			return response.getBody();
+		} catch (HttpStatusCodeException exeption) {
+			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"User api not working");
+		}
+	}
+
+	public Map<String, UserDetails> getCZOUserById(Set<String> userIds) {
+		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
+		for (String mobileNumber : userIds) {
+			filters.add("id", mobileNumber);
+		}
+		Page<UserDetails> page = getCZOUserByFilter(filters);
+		Map<String, UserDetails> map = new HashMap<>();
+		for (UserDetails userDetails : page.getContent()) {
+			map.put(userDetails.getUserId(), userDetails);
+		}
+		return map;
+	}
+
+	public Page<UserDetails> getCZOUserByFilter(MultiValueMap<String, String> queryParams) {
+		if (ObjectUtils.isEmpty(queryParams)) {
+			return null;
+		}
+		log.debug("fetchig userId :{}", queryParams);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		try {
+			String url = MessageFormat.format("{0}/user-service/secure/internal-server/czo-user",
+					urlConfig.getBaseUrl());
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+			int size = CommonUtility.getSize(queryParams);
+			queryParams.add("page", "0");
+			queryParams.add("size", String.valueOf(size));
+			builder.queryParams(queryParams);
+
+			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
+			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
+					JsonNode.class);
+			List<UserDetails> list = mapper.convertValue(response.getBody().get("content"),
+					new TypeReference<List<UserDetails>>() {
+					});
+			int pageNumber = response.getBody().get("pageable").get("pageNumber").asInt();
+			int pageSize = response.getBody().get("pageable").get("pageSize").asInt();
+			Pageable page = PageRequest.of(pageNumber, pageSize);
+			long totalElements = response.getBody().get("totalElements").asLong();
+			return new PageImpl<>(list, page, totalElements);
+		} catch (HttpStatusCodeException exeption) {
+			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"User api not working");
+		}
+	}
+
 	public UserGetOrCreateResponse getOrCreateUser(String mobileNumber) {
 		if (ObjectUtils.isEmpty(mobileNumber)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
