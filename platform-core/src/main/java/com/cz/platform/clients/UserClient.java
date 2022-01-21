@@ -142,7 +142,7 @@ public class UserClient {
 		}
 	}
 
-	public UserDetails getCZOUser(String mobileNumber) {
+	public UserDetails getCZOUserByMobileNumber(String mobileNumber) {
 		if (ObjectUtils.isEmpty(mobileNumber)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
 		}
@@ -159,6 +159,9 @@ public class UserClient {
 			ResponseEntity<UserDetails> response = template.exchange(url, HttpMethod.GET, entity, UserDetails.class);
 			return response.getBody();
 		} catch (HttpStatusCodeException exeption) {
+			if (handle404Error(exeption.getResponseBodyAsString())) {
+				return null;
+			}
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
 					"User api not working");
@@ -168,7 +171,7 @@ public class UserClient {
 	public Map<String, UserDetails> getCZOUserById(Set<String> userIds) {
 		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
 		for (String mobileNumber : userIds) {
-			filters.add("id", mobileNumber);
+			filters.add("czoUserId", mobileNumber);
 		}
 		Page<UserDetails> page = getCZOUserByFilter(filters);
 		Map<String, UserDetails> map = new HashMap<>();
