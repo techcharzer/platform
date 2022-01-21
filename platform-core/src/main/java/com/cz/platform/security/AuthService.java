@@ -22,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.cz.platform.PlatformConstants;
 import com.cz.platform.clients.UrlConfig;
+import com.cz.platform.enums.UserType;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.AuthenticationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
@@ -132,6 +133,7 @@ public class AuthService {
 			LoggedInUser user = new LoggedInUser();
 			user.setRoles(new ArrayList<>());
 			user.setUserId(userName);
+			user.setUserType(UserType.INTERNAL_SERVICE);
 
 			RoleDTO roleDTO = new RoleDTO();
 			roleDTO.setRoleId(PlatformConstants.DEFAULT_ROLE_ID);
