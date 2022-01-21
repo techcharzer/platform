@@ -31,7 +31,6 @@ import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 import com.cz.platform.security.SecurityConfigProps;
-import com.cz.platform.utility.CommonUtility;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -82,10 +81,12 @@ public class UserClient {
 
 	public Map<String, UserDetails> getUserByMobileNumber(Set<String> mobileNumbers) {
 		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
+		int count = 1;
 		for (String mobileNumber : mobileNumbers) {
 			filters.add("mobileNumber", mobileNumber);
+			++count;
 		}
-		Page<UserDetails> page = getUserByFilter(filters);
+		Page<UserDetails> page = getUserByFilter(filters, PageRequest.of(0, count));
 		Map<String, UserDetails> map = new HashMap<>();
 		for (UserDetails userDetails : page.getContent()) {
 			map.put(userDetails.getUserId(), userDetails);
@@ -95,10 +96,12 @@ public class UserClient {
 
 	public Map<String, UserDetails> getUserByUserId(Set<String> userIds) {
 		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
+		int count = 1;
 		for (String mobileNumber : userIds) {
 			filters.add("userId", mobileNumber);
+			++count;
 		}
-		Page<UserDetails> page = getUserByFilter(filters);
+		Page<UserDetails> page = getUserByFilter(filters, PageRequest.of(0, count));
 		Map<String, UserDetails> map = new HashMap<>();
 		for (UserDetails userDetails : page.getContent()) {
 			map.put(userDetails.getUserId(), userDetails);
@@ -106,7 +109,7 @@ public class UserClient {
 		return map;
 	}
 
-	public Page<UserDetails> getUserByFilter(MultiValueMap<String, String> queryParams) {
+	public Page<UserDetails> getUserByFilter(MultiValueMap<String, String> queryParams, Pageable pageRequest) {
 		if (ObjectUtils.isEmpty(queryParams)) {
 			return null;
 		}
@@ -119,9 +122,8 @@ public class UserClient {
 		try {
 			String url = MessageFormat.format("{0}/user-service/secure/internal-server/user", urlConfig.getBaseUrl());
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-			int size = CommonUtility.getSize(queryParams);
-			queryParams.add("page", "0");
-			queryParams.add("size", String.valueOf(size));
+			queryParams.add("page", String.valueOf(pageRequest.getPageNumber()));
+			queryParams.add("size", String.valueOf(pageRequest.getPageSize()));
 			builder.queryParams(queryParams);
 
 			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
@@ -170,10 +172,12 @@ public class UserClient {
 
 	public Map<String, UserDetails> getCZOUserById(Set<String> userIds) {
 		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
+		int count = 1;
 		for (String mobileNumber : userIds) {
 			filters.add("czoUserId", mobileNumber);
+			++count;
 		}
-		Page<UserDetails> page = getCZOUserByFilter(filters);
+		Page<UserDetails> page = getCZOUserByFilter(filters, PageRequest.of(0, count));
 		Map<String, UserDetails> map = new HashMap<>();
 		for (UserDetails userDetails : page.getContent()) {
 			map.put(userDetails.getUserId(), userDetails);
@@ -181,7 +185,7 @@ public class UserClient {
 		return map;
 	}
 
-	public Page<UserDetails> getCZOUserByFilter(MultiValueMap<String, String> queryParams) {
+	public Page<UserDetails> getCZOUserByFilter(MultiValueMap<String, String> queryParams, Pageable pageRequest) {
 		if (ObjectUtils.isEmpty(queryParams)) {
 			return null;
 		}
@@ -195,9 +199,8 @@ public class UserClient {
 			String url = MessageFormat.format("{0}/user-service/secure/internal-server/czo-user",
 					urlConfig.getBaseUrl());
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-			int size = CommonUtility.getSize(queryParams);
-			queryParams.add("page", "0");
-			queryParams.add("size", String.valueOf(size));
+			queryParams.add("page", String.valueOf(pageRequest.getPageNumber()));
+			queryParams.add("size", String.valueOf(pageRequest.getPageSize()));
 			builder.queryParams(queryParams);
 
 			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
