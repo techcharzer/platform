@@ -1,4 +1,4 @@
-package com.cz.platform.annotation;
+package com.cz.platform.config;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
