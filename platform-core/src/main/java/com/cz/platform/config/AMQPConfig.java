@@ -79,6 +79,11 @@ class AMQPConfig implements RabbitListenerConfigurer {
 				} else {
 					createQueue(entry.getKey(), entry.getValue());
 				}
+			} else {
+				log.debug(
+						"queue beans creation ignored as server specific {},"
+								+ " server specific queue props are missing in: {}",
+						entry.getKey(), queueConfiguration.getQueueConsumers());
 			}
 		}
 	}
