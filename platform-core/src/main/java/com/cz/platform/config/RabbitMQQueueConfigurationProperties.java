@@ -1,5 +1,6 @@
 package com.cz.platform.config;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,7 +15,7 @@ import lombok.Data;
 class RabbitMQQueueConfigurationProperties {
 	private Map<String, QueueConfiguration> queueConfiguration;
 	private Integer slashingForTesting = 1;
-	private Set<String> queueConsumers;
+	private Set<String> queueConsumers = new HashSet<>();
 	private Integer retryCount = 5;
 	
 	public QueueConfiguration getQueueConfiguration(String abc) {
