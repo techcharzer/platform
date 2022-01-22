@@ -73,10 +73,12 @@ class AMQPConfig implements RabbitListenerConfigurer {
 	@PostConstruct
 	private void createQueuesAndBindings() {
 		for (Entry<String, QueueConfiguration> entry : queueConfiguration.getQueueConfiguration().entrySet()) {
-			if (BooleanUtils.isTrue(entry.getValue().getEnableDeadLetter())) {
-				createQueueWithDeadLetter(entry.getKey(), entry.getValue());
-			} else {
-				createQueue(entry.getKey(), entry.getValue());
+			if (queueConfiguration.getQueueConsumers().contains(entry.getKey())) {
+				if (BooleanUtils.isTrue(entry.getValue().getEnableDeadLetter())) {
+					createQueueWithDeadLetter(entry.getKey(), entry.getValue());
+				} else {
+					createQueue(entry.getKey(), entry.getValue());
+				}
 			}
 		}
 	}
