@@ -30,7 +30,7 @@ public class PushToDeadLetterAspect {
 	@Autowired
 	private Environment environment;
 
-	@Around("@annotation(EnableDeadLetterQueue)")
+	@Around("@annotation(PushToDeadLetterQueue)")
 	public void trace(ProceedingJoinPoint joinPoint) throws Throwable {
 		Message message = (Message) joinPoint.getArgs()[0];
 		boolean countExceeded = exceededRetryCount(message.getMessageProperties().getXDeathHeader(),
@@ -39,9 +39,9 @@ public class PushToDeadLetterAspect {
 		if (countExceeded) {
 			MethodSignature signature = (MethodSignature) joinPoint.getSignature();
 			Method method = signature.getMethod();
-			EnableDeadLetterQueue annotations = method.getAnnotation(EnableDeadLetterQueue.class);
-			log.debug("queu name: {} in data : {}", annotations.queueName(), props.getQueueConfiguration());
+			PushToDeadLetterQueue annotations = method.getAnnotation(PushToDeadLetterQueue.class);
 			String queueName = environment.resolvePlaceholders(annotations.queueName());
+			log.debug("queu name: {} in data : {}", queueName, props.getQueueConfiguration());
 			QueueConfiguration qConfig = props.getQueueConfig(queueName);
 			String data = new String(message.getBody());
 			log.error("pushing the message to dead letter queue : {}", data, qConfig.getDeadLetterQueueName());
