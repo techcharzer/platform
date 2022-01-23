@@ -37,7 +37,7 @@ public class PushToDeadLetterAspect {
 			Method method = signature.getMethod();
 			EnableDeadLetterQueue annotations = method.getAnnotation(EnableDeadLetterQueue.class);
 			log.debug("queu name: {} in data : {}", annotations.queueName(), props.getQueueConfiguration());
-			QueueConfiguration qConfig = props.getQueueNameConfigMap().get(annotations.queueName());
+			QueueConfiguration qConfig = props.getQueueConfig(annotations.queueName());
 			String data = new String(message.getBody());
 			log.error("pushing the message to dead letter queue : {}", data, qConfig.getDeadLetterQueueName());
 			rabbitTemplate.send(qConfig.getExchangeName(), qConfig.getDeadLetterRoutingKey(), message);

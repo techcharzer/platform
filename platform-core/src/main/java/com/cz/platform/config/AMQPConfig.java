@@ -3,11 +3,13 @@ package com.cz.platform.config;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -26,6 +28,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
+
+import com.cz.platform.exception.PlatformExceptionCodes;
+import com.cz.platform.exception.ValidationException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -71,18 +76,24 @@ class AMQPConfig implements RabbitListenerConfigurer {
 
 	@PostConstruct
 	private void createQueuesAndBindings() {
-		for (QueueConfiguration config : props.getQueueConfiguration()) {
-			if (props.getQueueConsumers().contains(config.getQueueName())) {
-				if (BooleanUtils.isTrue(config.getEnableDeadLetter())) {
-					createQueueWithDeadLetter(config.getQueueName(), config);
+		for (Entry<String, QueueConfiguration> entry : props.getQueueConfiguration().entrySet()) {
+			if (!StringUtils.equals(entry.getKey(), entry.getValue().getQueueName())) {
+				String errorLog = MessageFormat.format(
+						"Invalid configuration. map key name ({0}) and queue name ({1}) should be same. ",
+						entry.getKey(), entry.getValue().getQueueName());
+				throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), errorLog);
+			}
+			if (props.getQueueConsumers().contains(entry.getKey())) {
+				if (BooleanUtils.isTrue(entry.getValue().getEnableDeadLetter())) {
+					createQueueWithDeadLetter(entry.getKey(), entry.getValue());
 				} else {
-					createQueue(config.getQueueName(), config);
+					createQueue(entry.getKey(), entry.getValue());
 				}
 			} else {
 				log.debug(
 						"queue beans creation ignored as server specific {},"
 								+ " server specific queue props are missing in: {}",
-						config.getQueueName(), props.getQueueConsumers());
+						entry.getKey(), props.getQueueConsumers());
 			}
 		}
 	}

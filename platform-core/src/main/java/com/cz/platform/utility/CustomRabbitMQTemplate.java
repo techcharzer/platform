@@ -21,7 +21,7 @@ public class CustomRabbitMQTemplate {
 
 	public void convertAndSend(String queueName, Object data) {
 		log.debug("queueName: {}", queueName);
-		QueueConfiguration q = props.getQueueNameConfigMap().get(queueName);
+		QueueConfiguration q = props.getQueueConfig(queueName);
 		if (ObjectUtils.isEmpty(q)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid queue configuration");
 		}
