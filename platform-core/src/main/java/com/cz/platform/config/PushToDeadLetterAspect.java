@@ -33,7 +33,7 @@ public class PushToDeadLetterAspect {
 	@Around("@annotation(PushToDeadLetterQueue)")
 	public void trace(ProceedingJoinPoint joinPoint) throws Throwable {
 		Message message = (Message) joinPoint.getArgs()[0];
-		int count = getRetryCount(message.getMessageProperties().getXDeathHeader());
+		Long count = getRetryCount(message.getMessageProperties().getXDeathHeader());
 		log.debug("current count: {}, retry count", count, props.getRetryCount());
 		if (count >= props.getRetryCount()) {
 			MethodSignature signature = (MethodSignature) joinPoint.getSignature();
@@ -50,11 +50,11 @@ public class PushToDeadLetterAspect {
 		}
 	}
 
-	public int getRetryCount(List<Map<String, ?>> xDeath) {
+	public Long getRetryCount(List<Map<String, ?>> xDeath) {
 		if (xDeath != null && xDeath.size() >= 1) {
-			return (int) xDeath.get(0).get("count");
+			return (Long) xDeath.get(0).get("count");
 		}
-		return 0;
+		return 0L;
 	}
 
 }
