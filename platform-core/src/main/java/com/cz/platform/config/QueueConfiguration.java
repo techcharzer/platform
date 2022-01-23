@@ -7,7 +7,7 @@ import lombok.ToString;
 
 @Data
 @ToString
-class QueueConfiguration {
+public class QueueConfiguration {
 	private String queueName;
 	private String exchangeName;
 	private String routingKey;

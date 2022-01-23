@@ -74,6 +74,8 @@ class AMQPConfig implements RabbitListenerConfigurer {
 	private void createQueuesAndBindings() {
 		for (Entry<String, QueueConfiguration> entry : queueConfiguration.getQueueConfiguration().entrySet()) {
 			if (queueConfiguration.getQueueConsumers().contains(entry.getKey())) {
+				// only one source of information
+				entry.getValue().setQueueName(entry.getKey());
 				if (BooleanUtils.isTrue(entry.getValue().getEnableDeadLetter())) {
 					createQueueWithDeadLetter(entry.getKey(), entry.getValue());
 				} else {
