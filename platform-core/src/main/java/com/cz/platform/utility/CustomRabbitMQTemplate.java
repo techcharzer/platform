@@ -5,7 +5,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import com.cz.platform.config.QueueConfiguration;
-import com.cz.platform.config.RabbitMQQueueConfigurationProperties;
+import com.cz.platform.config.RabbitMQProperties;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 
@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @AllArgsConstructor
 public class CustomRabbitMQTemplate {
-	private RabbitMQQueueConfigurationProperties props;
+	private RabbitMQProperties props;
 	private RabbitTemplate template;
 
 	public void convertAndSend(String queueName, Object data) {

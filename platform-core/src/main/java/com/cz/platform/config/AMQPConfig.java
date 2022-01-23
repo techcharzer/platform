@@ -15,6 +15,7 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
@@ -25,8 +26,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import com.cz.platform.config.RabbitMQProperties.ConnectionProps;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -65,15 +70,15 @@ class AMQPConfig implements RabbitListenerConfigurer {
 	}
 
 	@Autowired
-	private RabbitMQQueueConfigurationProperties queueConfiguration;
+	private RabbitMQProperties props;
 
 	@Autowired
 	private ApplicationContext applicationContext;
 
 	@PostConstruct
 	private void createQueuesAndBindings() {
-		for (Entry<String, QueueConfiguration> entry : queueConfiguration.getQueueConfiguration().entrySet()) {
-			if (queueConfiguration.getQueueConsumers().contains(entry.getKey())) {
+		for (Entry<String, QueueConfiguration> entry : props.getQueueConfiguration().entrySet()) {
+			if (props.getQueueConsumers().contains(entry.getKey())) {
 				// only one source of information
 				entry.getValue().setQueueName(entry.getKey());
 				if (BooleanUtils.isTrue(entry.getValue().getEnableDeadLetter())) {
@@ -85,9 +90,33 @@ class AMQPConfig implements RabbitListenerConfigurer {
 				log.debug(
 						"queue beans creation ignored as server specific {},"
 								+ " server specific queue props are missing in: {}",
-						entry.getKey(), queueConfiguration.getQueueConsumers());
+						entry.getKey(), props.getQueueConsumers());
 			}
 		}
+	}
+
+	@Bean
+	public ConnectionFactory connectionFactory() {
+		CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
+		ConnectionProps conn = props.getConnection();
+		connectionFactory.setAddresses(conn.getHost());
+		connectionFactory.setUsername(conn.getUsername());
+		connectionFactory.setPassword(conn.getPassword());
+		connectionFactory.setVirtualHost(conn.getVirtualHost());
+		connectionFactory.setPort(conn.getPort());
+		connectionFactory.setExecutor(threadPoolTaskExecutor());
+		return connectionFactory;
+	}
+
+	public TaskExecutor threadPoolTaskExecutor() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(props.getCorePoolSize());
+		executor.setMaxPoolSize(props.getMaxPoolSize());
+		executor.setQueueCapacity(props.getPoolQueueCapacity());
+		executor.setThreadNamePrefix("worker_thread_");
+		executor.setWaitForTasksToCompleteOnShutdown(true);
+		executor.initialize();
+		return executor;
 	}
 
 	private Queue createQueueWithDeadLetter(QueueConfiguration queueConfig) {
@@ -105,7 +134,7 @@ class AMQPConfig implements RabbitListenerConfigurer {
 		if (ObjectUtils.isEmpty(delayTimeInSeconds)) {
 			delayTimeInSeconds = 300;
 		}
-		delayTimeInSeconds = delayTimeInSeconds * 1000 / queueConfiguration.getSlashingForTesting();
+		delayTimeInSeconds = delayTimeInSeconds * 1000 / props.getSlashingForTesting();
 		args.put("x-message-ttl", delayTimeInSeconds);
 		return new Queue(queueConfig.getDelayQueueName(), true, false, false, args);
 	}

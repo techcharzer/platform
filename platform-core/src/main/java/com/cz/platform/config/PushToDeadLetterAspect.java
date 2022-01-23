@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PushToDeadLetterAspect {
 
 	@Autowired
-	private RabbitMQQueueConfigurationProperties props;
+	private RabbitMQProperties props;
 
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
