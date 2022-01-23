@@ -11,6 +11,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,9 @@ public class PushToDeadLetterAspect {
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
 
+	@Autowired
+	private Environment environment;
+
 	@Around("@annotation(EnableDeadLetterQueue)")
 	public void trace(ProceedingJoinPoint joinPoint) throws Throwable {
 		Message message = (Message) joinPoint.getArgs()[0];
@@ -37,7 +41,8 @@ public class PushToDeadLetterAspect {
 			Method method = signature.getMethod();
 			EnableDeadLetterQueue annotations = method.getAnnotation(EnableDeadLetterQueue.class);
 			log.debug("queu name: {} in data : {}", annotations.queueName(), props.getQueueConfiguration());
-			QueueConfiguration qConfig = props.getQueueConfig(annotations.queueName());
+			String queueName = environment.resolvePlaceholders(annotations.queueName());
+			QueueConfiguration qConfig = props.getQueueConfig(queueName);
 			String data = new String(message.getBody());
 			log.error("pushing the message to dead letter queue : {}", data, qConfig.getDeadLetterQueueName());
 			rabbitTemplate.send(qConfig.getExchangeName(), qConfig.getDeadLetterRoutingKey(), message);

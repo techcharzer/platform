@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.ObjectUtils;
 
 import lombok.Data;
 
@@ -22,7 +23,18 @@ public class RabbitMQProperties {
 	private Integer maxPoolSize = 6;
 	private Integer poolQueueCapacity = 50;
 
+	private static final Map<String, QueueConfiguration> QUEUE_CONFIG_MAP = new HashMap<>();
+
+	public Map<String, QueueConfiguration> getQueuConfig() {
+		if (ObjectUtils.isEmpty(QUEUE_CONFIG_MAP)) {
+			for (QueueConfiguration config : queueConfiguration.values()) {
+				QUEUE_CONFIG_MAP.put(config.getQueueName(), config);
+			}
+		}
+		return QUEUE_CONFIG_MAP;
+	}
+
 	public QueueConfiguration getQueueConfig(String queueName) {
-		return queueConfiguration.get(queueName);
+		return getQueuConfig().get(queueName);
 	}
 }
