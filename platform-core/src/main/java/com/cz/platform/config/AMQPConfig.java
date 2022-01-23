@@ -3,7 +3,6 @@ package com.cz.platform.config;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 
@@ -72,20 +71,18 @@ class AMQPConfig implements RabbitListenerConfigurer {
 
 	@PostConstruct
 	private void createQueuesAndBindings() {
-		for (Entry<String, QueueConfiguration> entry : props.getQueueConfiguration().entrySet()) {
-			if (props.getQueueConsumers().contains(entry.getKey())) {
-				// only one source of information
-				entry.getValue().setQueueName(entry.getKey());
-				if (BooleanUtils.isTrue(entry.getValue().getEnableDeadLetter())) {
-					createQueueWithDeadLetter(entry.getKey(), entry.getValue());
+		for (QueueConfiguration config : props.getQueueConfiguration()) {
+			if (props.getQueueConsumers().contains(config.getQueueName())) {
+				if (BooleanUtils.isTrue(config.getEnableDeadLetter())) {
+					createQueueWithDeadLetter(config.getQueueName(), config);
 				} else {
-					createQueue(entry.getKey(), entry.getValue());
+					createQueue(config.getQueueName(), config);
 				}
 			} else {
 				log.debug(
 						"queue beans creation ignored as server specific {},"
 								+ " server specific queue props are missing in: {}",
-						entry.getKey(), props.getQueueConsumers());
+						config.getQueueName(), props.getQueueConsumers());
 			}
 		}
 	}
