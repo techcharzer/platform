@@ -14,7 +14,6 @@ import lombok.Data;
 @Configuration
 @ConfigurationProperties(prefix = "rabbitmq")
 public class RabbitMQProperties {
-	private ConnectionProps connection;
 	private Map<String, QueueConfiguration> queueConfiguration;
 	private Integer slashingForTesting = 1;
 	private Set<String> queueConsumers = new HashSet<>();
@@ -30,12 +29,4 @@ public class RabbitMQProperties {
 		return queueConfiguration.get(abc);
 	}
 
-	@Data
-	public static class ConnectionProps {
-		private String host;
-		private Integer port;
-		private String username;
-		private String password;
-		private String virtualHost;
-	}
 }
