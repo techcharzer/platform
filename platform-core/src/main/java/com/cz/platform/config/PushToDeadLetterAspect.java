@@ -33,30 +33,28 @@ public class PushToDeadLetterAspect {
 	@Around("@annotation(PushToDeadLetterQueue)")
 	public void trace(ProceedingJoinPoint joinPoint) throws Throwable {
 		Message message = (Message) joinPoint.getArgs()[0];
-		boolean countExceeded = exceededRetryCount(message.getMessageProperties().getXDeathHeader(),
-				props.getRetryCount());
-		log.debug("retry count exceeded: {}", countExceeded);
-		if (countExceeded) {
+		int count = getRetryCount(message.getMessageProperties().getXDeathHeader());
+		log.debug("current count: {}, retry count", count, props.getRetryCount());
+		if (count >= props.getRetryCount()) {
 			MethodSignature signature = (MethodSignature) joinPoint.getSignature();
 			Method method = signature.getMethod();
 			PushToDeadLetterQueue annotations = method.getAnnotation(PushToDeadLetterQueue.class);
 			String queueName = environment.resolvePlaceholders(annotations.queueName());
-			log.debug("queu name: {} in data : {}", queueName, props.getQueueConfiguration());
 			QueueConfiguration qConfig = props.getQueueConfig(queueName);
+			log.debug("queue name: {} and its config : {}", queueName, qConfig);
 			String data = new String(message.getBody());
-			log.error("pushing the message to dead letter queue : {}", data, qConfig.getDeadLetterQueueName());
+			log.error("pushing the message: {} to dead letter queue: {}", data, qConfig.getDeadLetterQueueName());
 			rabbitTemplate.send(qConfig.getExchangeName(), qConfig.getDeadLetterRoutingKey(), message);
 		} else {
 			joinPoint.proceed();
 		}
 	}
 
-	public static boolean exceededRetryCount(List<Map<String, ?>> xDeath, Integer maxRetryCount) {
+	public int getRetryCount(List<Map<String, ?>> xDeath) {
 		if (xDeath != null && xDeath.size() >= 1) {
-			Long count = (Long) xDeath.get(0).get("count");
-			return count >= maxRetryCount;
+			return (int) xDeath.get(0).get("count");
 		}
-		return false;
+		return 0;
 	}
 
 }
