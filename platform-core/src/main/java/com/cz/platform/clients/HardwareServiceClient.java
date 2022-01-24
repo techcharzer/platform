@@ -98,14 +98,14 @@ public class HardwareServiceClient {
 		}
 	}
 
-	public HardwareCurrentStatusInfo getHardwareCurrentStatusInfo(String hardwareId) {
+	public HardwareStatusInfo getHardwareCurrentStatusInfo(String hardwareId) {
 		Set<String> hardwareIdSet = new HashSet<>();
 		hardwareIdSet.add(hardwareId);
-		Map<String, HardwareCurrentStatusInfo> map = getHardwareCurrentStatusInfo(hardwareIdSet);
+		Map<String, HardwareStatusInfo> map = getHardwareCurrentStatusInfo(hardwareIdSet);
 		return map.get(hardwareId);
 	}
 
-	public Map<String, HardwareCurrentStatusInfo> getHardwareCurrentStatusInfo(Set<String> hardwareIds) {
+	public Map<String, HardwareStatusInfo> getHardwareCurrentStatusInfo(Set<String> hardwareIds) {
 		if (ObjectUtils.isEmpty(hardwareIds)) {
 			return new HashMap<>();
 		}
@@ -124,7 +124,7 @@ public class HardwareServiceClient {
 			log.debug("request for fetchig details : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
 					JsonNode.class);
-			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, HardwareCurrentStatusInfo>>() {
+			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, HardwareStatusInfo>>() {
 			});
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
