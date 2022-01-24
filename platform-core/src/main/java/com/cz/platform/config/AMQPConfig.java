@@ -27,6 +27,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -34,9 +36,12 @@ import lombok.extern.slf4j.Slf4j;
 @EnableRabbit
 class AMQPConfig implements RabbitListenerConfigurer {
 
+	@Autowired
+	private ObjectMapper mapper;
+
 	@Bean
 	public Jackson2JsonMessageConverter messageConverter() {
-		return new Jackson2JsonMessageConverter();
+		return new Jackson2JsonMessageConverter(mapper);
 	}
 
 	@Bean
@@ -48,7 +53,9 @@ class AMQPConfig implements RabbitListenerConfigurer {
 
 	@Bean
 	public MappingJackson2MessageConverter consumerJackson2MessageConverter() {
-		return new MappingJackson2MessageConverter();
+		MappingJackson2MessageConverter obj = new MappingJackson2MessageConverter();
+		obj.setObjectMapper(mapper);
+		return obj;
 	}
 
 	@Bean
