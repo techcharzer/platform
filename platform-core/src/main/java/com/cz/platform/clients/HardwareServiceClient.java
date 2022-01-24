@@ -1,8 +1,10 @@
 package com.cz.platform.clients;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,6 +30,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -98,33 +101,37 @@ public class HardwareServiceClient {
 		}
 	}
 
-	public HardwareStatusInfo getHardwareCurrentStatusInfo(String hardwareId) {
-		Set<String> hardwareIdSet = new HashSet<>();
-		hardwareIdSet.add(hardwareId);
-		Map<String, HardwareStatusInfo> map = getHardwareCurrentStatusInfo(hardwareIdSet);
-		return map.get(hardwareId);
+	public HardwareStatusInfo getHardwareCurrentStatusInfo(String hardwareId, String socketId) {
+		List<CurrentStatusInfoRequest> request = new ArrayList<>();
+		request.add(new CurrentStatusInfoRequest(hardwareId, socketId));
+		List<HardwareStatusInfo> response = getHardwareCurrentStatusInfo(request);
+		return response.get(0);
 	}
 
-	public Map<String, HardwareStatusInfo> getHardwareCurrentStatusInfo(Set<String> hardwareIds) {
+	@Data
+	@AllArgsConstructor
+	public static class CurrentStatusInfoRequest {
+		private String hardwareId;
+		private String socketId;
+	}
+
+	public List<HardwareStatusInfo> getHardwareCurrentStatusInfo(List<CurrentStatusInfoRequest> hardwareIds) {
 		if (ObjectUtils.isEmpty(hardwareIds)) {
-			return new HashMap<>();
+			return new ArrayList<>();
 		}
 		log.debug("fetchig userId :{}", hardwareIds);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("ccu-service"));
-		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		HttpEntity<List<CurrentStatusInfoRequest>> entity = new HttpEntity<>(hardwareIds, headers);
 		try {
 			String url = MessageFormat.format("{0}/ccu/secure/hardware/status", urlConfig.getBaseUrl());
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-			for (String hardwareId : hardwareIds) {
-				builder.queryParam("id", hardwareId);
-			}
 			log.debug("request for fetchig details : {} body and headers {}", url, entity);
-			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
+			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.POST, entity,
 					JsonNode.class);
-			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, HardwareStatusInfo>>() {
+			return mapper.convertValue(response.getBody(), new TypeReference<List<HardwareStatusInfo>>() {
 			});
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
