@@ -100,6 +100,9 @@ public final class CommonUtility {
 			case OCPP_16_JSON_CHARGER:
 				valCriteria = Criteria.where(pathOfConfiguration.concat(".chargerBoxId")).is(chargerControlId);
 				break;
+			case EV_POINT_CHARGER:
+				valCriteria = Criteria.where(pathOfConfiguration.concat(".deviceId")).is(chargerControlId);
+				break;
 			case OTHER_NETWORK_CHARGER:
 				break;
 			default:
