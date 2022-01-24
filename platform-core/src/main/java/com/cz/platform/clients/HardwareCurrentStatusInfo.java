@@ -7,6 +7,8 @@ import lombok.Data;
 
 @Data
 public class HardwareCurrentStatusInfo {
+	private String hardwareId;
+	private String socketId;
 	private ChargerOnlineDTO onlineDTO;
 	private Boolean relay;
 	private Long ecInmA;
