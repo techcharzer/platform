@@ -25,6 +25,7 @@ import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 import com.cz.platform.security.SecurityConfigProps;
+import com.cz.platform.utility.CommonUtility;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -104,8 +105,8 @@ public class HardwareServiceClient {
 	public HardwareStatusInfo getHardwareCurrentStatusInfo(String hardwareId, String socketId) {
 		List<CurrentStatusInfoRequest> request = new ArrayList<>();
 		request.add(new CurrentStatusInfoRequest(hardwareId, socketId));
-		List<HardwareStatusInfo> response = getHardwareCurrentStatusInfo(request);
-		return response.get(0);
+		Map<String, HardwareStatusInfo> response = getHardwareCurrentStatusInfo(request);
+		return response.get(CommonUtility.getKey(hardwareId, socketId));
 	}
 
 	@Data
@@ -115,9 +116,9 @@ public class HardwareServiceClient {
 		private String socketId;
 	}
 
-	public List<HardwareStatusInfo> getHardwareCurrentStatusInfo(List<CurrentStatusInfoRequest> hardwareIds) {
+	public Map<String, HardwareStatusInfo> getHardwareCurrentStatusInfo(List<CurrentStatusInfoRequest> hardwareIds) {
 		if (ObjectUtils.isEmpty(hardwareIds)) {
-			return new ArrayList<>();
+			return new HashMap<>();
 		}
 		log.debug("fetchig userId :{}", hardwareIds);
 		HttpHeaders headers = new HttpHeaders();
@@ -131,7 +132,7 @@ public class HardwareServiceClient {
 			log.debug("request for fetchig details : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.POST, entity,
 					JsonNode.class);
-			return mapper.convertValue(response.getBody(), new TypeReference<List<HardwareStatusInfo>>() {
+			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, HardwareStatusInfo>>() {
 			});
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());

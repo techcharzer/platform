@@ -196,4 +196,8 @@ public final class CommonUtility {
 		return size;
 	}
 
+	public static String getKey(String first, String second) {
+		return MessageFormat.format("{0}###{1}", first, second);
+	}
+
 }
