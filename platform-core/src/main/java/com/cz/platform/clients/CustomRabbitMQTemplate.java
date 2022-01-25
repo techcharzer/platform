@@ -28,6 +28,9 @@ public class CustomRabbitMQTemplate {
 		if (ObjectUtils.isEmpty(qConfig.getExchangeName())) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid queue exchangeName");
 		}
+		if (ObjectUtils.isEmpty(data)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid data");
+		}
 		template.convertAndSend(qConfig.getExchangeName(), qConfig.getRoutingKey(), data);
 	}
 }
