@@ -78,7 +78,7 @@ class AMQPConfig implements RabbitListenerConfigurer {
 
 	@PostConstruct
 	private void createQueuesAndBindings() {
-		for (QueueConfiguration config : props.getQueueConfiguration().values()) {
+		for (QueueConfiguration config : props.getQueues().values()) {
 			if (props.getQueueConsumers().contains(config.getQueueName())) {
 				if (BooleanUtils.isTrue(config.getEnableDeadLetter())) {
 					createQueueWithDeadLetter(config.getQueueName(), config);

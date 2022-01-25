@@ -15,7 +15,7 @@ import lombok.Data;
 @Configuration
 @ConfigurationProperties(prefix = "rabbitmq")
 public class RabbitMQProperties {
-	private Map<String, QueueConfiguration> queueConfiguration = new HashMap<>();
+	private Map<String, QueueConfiguration> queues = new HashMap<>();
 	private Integer slashingForTesting = 1;
 	private Set<String> queueConsumers = new HashSet<>();
 	private long retryCount = 5;
@@ -27,7 +27,7 @@ public class RabbitMQProperties {
 
 	public Map<String, QueueConfiguration> getQueuConfig() {
 		if (ObjectUtils.isEmpty(QUEUE_CONFIG_MAP)) {
-			for (QueueConfiguration config : queueConfiguration.values()) {
+			for (QueueConfiguration config : queues.values()) {
 				QUEUE_CONFIG_MAP.put(config.getQueueName(), config);
 			}
 		}
