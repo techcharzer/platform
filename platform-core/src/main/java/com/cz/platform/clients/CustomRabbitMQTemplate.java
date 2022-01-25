@@ -18,6 +18,7 @@ public class CustomRabbitMQTemplate {
 	private RabbitTemplate template;
 
 	public void convertAndSend(QueueConfiguration qConfig, Object data) {
+		log.info("messgae {} queued to: {}", data, qConfig);
 		if (ObjectUtils.isEmpty(qConfig)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid queue configuration");
 		}
@@ -27,7 +28,6 @@ public class CustomRabbitMQTemplate {
 		if (ObjectUtils.isEmpty(qConfig.getExchangeName())) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid queue exchangeName");
 		}
-		log.info("messgae {} queued to: {}", data, qConfig);
 		template.convertAndSend(qConfig.getExchangeName(), qConfig.getRoutingKey(), data);
 	}
 }
