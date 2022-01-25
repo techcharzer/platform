@@ -31,7 +31,7 @@ public class PushToDeadLetterAspect {
 	private Environment environment;
 
 	@Around("@annotation(PushToDeadLetterQueue)")
-	public void trace(ProceedingJoinPoint joinPoint) throws Throwable {
+	public void pushToDeadLetterQueue(ProceedingJoinPoint joinPoint) throws Throwable {
 		Message message = (Message) joinPoint.getArgs()[0];
 		Long count = getRetryCount(message.getMessageProperties().getXDeathHeader());
 		log.debug("current count: {}, retry count", count, props.getRetryCount());
