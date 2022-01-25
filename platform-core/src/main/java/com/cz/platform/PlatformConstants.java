@@ -21,6 +21,7 @@ public class PlatformConstants {
 	public static final String REQUEST_SUBMITTED = "request submitted";
 	public static final String X_TRACE_ID = "x-trace-id";
 	public static final String PARENT_PACKAGE = "com.cz";
+	public static final String QUEUE_CONFIGURATION_KEY_PATH = "rabbitmq.queues";
 	public static final String DEV_PROFILE = "dev";
 	public static final String QA_PROFILE = "qa";
 	public static final String PROD_PROFILE = "prod";
