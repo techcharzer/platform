@@ -17,18 +17,13 @@ import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistrar;
-import org.springframework.amqp.support.converter.Jackson2JavaTypeMapper.TypePrecedence;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,36 +32,14 @@ import lombok.extern.slf4j.Slf4j;
 @EnableRabbit
 class AMQPConfig implements RabbitListenerConfigurer {
 
-	@Autowired
-	private ObjectMapper mapper;
-
-	@Bean
-	public Jackson2JsonMessageConverter messageConverter() {
-		Jackson2JsonMessageConverter convertor =  new Jackson2JsonMessageConverter(mapper);
-		convertor.setTypePrecedence(TypePrecedence.TYPE_ID);
-		convertor.setAlwaysConvertToInferredType(true);
-		return convertor;
-	}
-
 	@Bean
 	public RabbitTemplate amqpTemplate(ConnectionFactory connectionFactory) {
 		final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-		rabbitTemplate.setMessageConverter(messageConverter());
 		return rabbitTemplate;
 	}
 
-	@Bean
-	public MappingJackson2MessageConverter consumerJackson2MessageConverter() {
-		MappingJackson2MessageConverter obj = new MappingJackson2MessageConverter();
-		obj.setObjectMapper(mapper);
-		return obj;
-	}
-
-	@Bean
 	public DefaultMessageHandlerMethodFactory messageHandlerMethodFactory() {
-		DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();
-		factory.setMessageConverter(consumerJackson2MessageConverter());
-		return factory;
+		return new DefaultMessageHandlerMethodFactory();
 	}
 
 	@Override
