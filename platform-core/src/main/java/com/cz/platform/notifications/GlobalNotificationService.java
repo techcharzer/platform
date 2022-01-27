@@ -5,22 +5,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import com.cz.platform.clients.CustomRabbitMQTemplate;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@AllArgsConstructor
 @Service
-@Slf4j
+@AllArgsConstructor
 public class GlobalNotificationService {
 
-	private RabbitTemplate rabbitTemplate;
+	private CustomRabbitMQTemplate rabbitTemplate;
+	
+	private RabbitQueueConfiguration rabbitQueueConfiguration;
 
 	public void sendSMS(String mobile, Map<String, String> data, String templates) {
 		sendSMS(mobile, data, Arrays.asList(templates));
@@ -42,8 +42,7 @@ public class GlobalNotificationService {
 	public void sendNotification(NotificationDTO notification) {
 		validateSendNotification(notification);
 		notification.setId(UUID.randomUUID().toString());
-		log.info("sending notification : {}", notification);
-		rabbitTemplate.convertAndSend("notification_service", "send_notification", notification);
+		rabbitTemplate.convertAndSend(rabbitQueueConfiguration.getSendNotification(), notification);
 	}
 
 	private void validateSendNotification(NotificationDTO notification) {
