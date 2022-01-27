@@ -11,6 +11,6 @@ import lombok.Data;
 @Data
 @Configuration
 @ConfigurationProperties(prefix = PlatformConstants.QUEUE_CONFIGURATION_KEY_PATH)
-public class RabbitQueueConfiguration {
+public class GenericRabbitQueueConfiguration {
 	private QueueConfiguration sendNotification;
 }

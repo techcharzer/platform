@@ -19,8 +19,8 @@ import lombok.AllArgsConstructor;
 public class GlobalNotificationService {
 
 	private CustomRabbitMQTemplate rabbitTemplate;
-	
-	private RabbitQueueConfiguration rabbitQueueConfiguration;
+
+	private GenericRabbitQueueConfiguration rabbitQueueConfiguration;
 
 	public void sendSMS(String mobile, Map<String, String> data, String templates) {
 		sendSMS(mobile, data, Arrays.asList(templates));
