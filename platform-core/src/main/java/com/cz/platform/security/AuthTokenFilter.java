@@ -1,9 +1,11 @@
 package com.cz.platform.security;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -40,8 +42,15 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
 			FilterChain filterChain) throws ServletException, IOException {
 		try {
+			String clientTokenFromCookie = getTokenFromCookie(httpServletRequest);
 			String clientToken = resolveAuthToken(httpServletRequest);
-			if (!ObjectUtils.isEmpty(clientToken)) {
+			if (!ObjectUtils.isEmpty(clientTokenFromCookie)) {
+				log.debug("cookie based authentication : {}", clientTokenFromCookie);
+				Authentication auth = authService.getClientAuthentication(clientTokenFromCookie);
+				SecurityContextImpl secureContext = new SecurityContextImpl();
+				secureContext.setAuthentication(auth);
+				SecurityContextHolder.setContext(secureContext);
+			} else if (!ObjectUtils.isEmpty(clientToken)) {
 				Authentication auth = authService.getClientAuthentication(clientToken);
 				SecurityContextImpl secureContext = new SecurityContextImpl();
 				secureContext.setAuthentication(auth);
@@ -75,6 +84,18 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 			return;
 		}
 		filterChain.doFilter(httpServletRequest, httpServletResponse);
+	}
+
+	private String getTokenFromCookie(HttpServletRequest req) {
+		Cookie[] allCookies = req.getCookies();
+		if (!ObjectUtils.isEmpty(allCookies)) {
+			Cookie session = Arrays.stream(allCookies).filter(x -> x.getName().equals("Authorization")).findFirst()
+					.orElse(null);
+			if (!ObjectUtils.isEmpty(session)) {
+				return session.getValue();
+			}
+		}
+		return null;
 	}
 
 	public String resolveAuthToken(HttpServletRequest req) {
