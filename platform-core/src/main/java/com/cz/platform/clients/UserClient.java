@@ -248,6 +248,10 @@ public class UserClient {
 	}
 
 	public UserGetOrCreateResponse getOrCreateUser(String mobileNumber) {
+		return getOrCreateUser(mobileNumber, "CHARZER_APP");
+	}
+
+	public UserGetOrCreateResponse getOrCreateUser(String mobileNumber, String appSource) {
 		if (ObjectUtils.isEmpty(mobileNumber)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
 		}
@@ -258,6 +262,7 @@ public class UserClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
 		GetOrCreateUserRequest request = new GetOrCreateUserRequest();
 		request.setMobile(mobileNumber);
+		request.setAppSource(appSource);
 		HttpEntity<GetOrCreateUserRequest> entity = new HttpEntity<>(request, headers);
 		try {
 			String url = MessageFormat.format("{0}/user-service/secure/user", urlConfig.getBaseUrl());
@@ -282,6 +287,7 @@ public class UserClient {
 	@Data
 	public static class GetOrCreateUserRequest {
 		private String mobile;
+		private String appSource;
 	}
 
 	public List<GroupDTO> getUserGroups(String userId) {
