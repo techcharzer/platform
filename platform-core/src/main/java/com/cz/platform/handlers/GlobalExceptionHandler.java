@@ -59,10 +59,15 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public ErrorField validationException(ValidationException e) {
-		if (e.isLogItAsError()) {
+		switch (e.getLogType()) {
+		case ERROR:
 			LOG.error("ValidationException occured: {}", e.getError(), e);
-		} else {
-			LOG.warn("ValidationException occured: {}", e.getError());
+			break;
+		case WARN:
+			LOG.warn("ValidationException occured: {}", e.getError(), e);
+			break;
+		default:
+			break;
 		}
 		return e.getError();
 	}
