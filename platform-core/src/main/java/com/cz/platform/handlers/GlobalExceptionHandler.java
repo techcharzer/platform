@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
 		if (e.isLogItAsError()) {
 			LOG.error("ValidationException occured: {}", e.getError(), e);
 		} else {
-			LOG.warn("ValidationException occured: {}", e.getError(), e);
+			LOG.warn("ValidationException occured: {}", e.getError());
 		}
 		return e.getError();
 	}
