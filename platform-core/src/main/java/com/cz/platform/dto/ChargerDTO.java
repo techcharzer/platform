@@ -9,6 +9,7 @@ import org.springframework.util.ObjectUtils;
 import com.cz.platform.charger.configuration.GlobalChargerHardwareInfo;
 import com.cz.platform.enums.ChargerStatus;
 import com.cz.platform.enums.VehicleType;
+import com.cz.platform.utility.CommonUtility;
 
 import lombok.Data;
 
@@ -43,5 +44,9 @@ public class ChargerDTO {
 			sockets.add(dto);
 		}
 		return sockets;
+	}
+
+	public Image getDefaultImage() {
+		return CommonUtility.getDefaultImage(images);
 	}
 }

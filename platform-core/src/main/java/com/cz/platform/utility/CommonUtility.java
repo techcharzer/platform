@@ -17,6 +17,7 @@ import org.springframework.util.ObjectUtils;
 
 import com.cz.platform.PlatformConstants;
 import com.cz.platform.dto.CodeValueDTO;
+import com.cz.platform.dto.Image;
 import com.cz.platform.dto.Range;
 import com.cz.platform.enums.ChargerType;
 import com.cz.platform.exception.PlatformExceptionCodes;
@@ -198,6 +199,16 @@ public final class CommonUtility {
 
 	public static String getKey(String first, String second) {
 		return MessageFormat.format("{0}###{1}", first, second);
+	}
+
+	public static Image getDefaultImage(List<Image> images) {
+		if (ObjectUtils.isEmpty(images)) {
+			Image image = new Image();
+			image.setName("Charzer Image");
+			image.setRelativePath("static/default_charger_img.jpg");
+			return new Image();
+		}
+		return images.get(0);
 	}
 
 }
