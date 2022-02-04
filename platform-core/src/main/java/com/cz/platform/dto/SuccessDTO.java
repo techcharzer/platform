@@ -19,4 +19,5 @@ public class SuccessDTO {
 	public static SuccessDTO requestSubmitted() {
 		return new SuccessDTO(PlatformConstants.REQUEST_SUBMITTED);
 	}
+
 }

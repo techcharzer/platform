@@ -21,6 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.cz.platform.PlatformConstants;
 import com.cz.platform.dto.ChargerDTO;
+import com.cz.platform.dto.ChargerV3DTO;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.security.SecurityConfigProps;
@@ -95,7 +96,48 @@ public class ChargerClient {
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
-					"User api not working");
+					"Charger api not working");
+		}
+	}
+
+	public ChargerV3DTO getChargerV2ById(String userIds) {
+		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
+		filters.add("id", userIds);
+		List<ChargerV3DTO> page = getChargerV2ByFilter(filters);
+		if (ObjectUtils.isEmpty(page)) {
+			return null;
+		}
+		return page.get(0);
+	}
+
+	public List<ChargerV3DTO> getChargerV2ByFilter(MultiValueMap<String, String> queryParams) {
+		if (ObjectUtils.isEmpty(queryParams)) {
+			return null;
+		}
+		log.debug("fetchig chargerId :{}", queryParams);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("charger-service"));
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		try {
+			String url = MessageFormat.format("{0}/charger-service/secure/internal-call/v3/charger",
+					urlConfig.getBaseUrl());
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+			int size = CommonUtility.getSize(queryParams);
+			queryParams.add("page", "0");
+			queryParams.add("size", String.valueOf(size));
+			builder.queryParams(queryParams);
+
+			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
+			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
+					JsonNode.class);
+			return mapper.convertValue(response.getBody().get("content"), new TypeReference<List<ChargerV3DTO>>() {
+			});
+		} catch (HttpStatusCodeException exeption) {
+			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"Charger api not working");
 		}
 	}
 }
