@@ -1,7 +1,10 @@
 package com.cz.platform.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.util.ObjectUtils;
 
 import com.cz.platform.charger.configuration.GlobalChargerHardwareInfo;
 import com.cz.platform.enums.ChargerStatus;
@@ -25,4 +28,20 @@ public class ChargerDTO {
 	public static final String[] INCLUDED_FIELDS = new String[] { "id", "name", "uniqueIdentifier",
 			"openCloseTimeInSeconds", "sockets", "chargerType", "supportedVehicle", "address", "images", "deeplink",
 			"configuration", "status", "dealConfiguration", "deeplink" };
+
+	public List<SocketDTO> getSockets() {
+		List<SocketDTO> sockets = new ArrayList<>();
+		for (HardwareSocket hs : hardwareInfo.getSockets()) {
+			SocketDTO dto = new SocketDTO();
+			dto.setConnectorId(hs.getConnectorId());
+			dto.setId(hs.getId());
+			dto.setPower(hs.getPower());
+			dto.setSocketType(hs.getSocketType());
+			if (!ObjectUtils.isEmpty(price)) {
+				dto.setPricePerUnit(price.get(dto.getId()));
+			}
+			sockets.add(dto);
+		}
+		return sockets;
+	}
 }
