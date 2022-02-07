@@ -2,6 +2,7 @@ package com.cz.platform.clients;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,11 +107,16 @@ public class UserClient {
 	}
 
 	public Map<String, UserDetails> getUserByMobileNumber(Set<String> mobileNumbers) {
+		if (ObjectUtils.isEmpty(mobileNumbers)) {
+			return Collections.emptyMap();
+		}
 		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
 		int count = 1;
 		for (String mobileNumber : mobileNumbers) {
-			filters.add("mobileNumber", mobileNumber);
-			++count;
+			if (!ObjectUtils.isEmpty(mobileNumber)) {
+				filters.add("mobileNumber", mobileNumber);
+				++count;
+			}
 		}
 		Page<UserDetails> page = getUserByFilter(filters, PageRequest.of(0, count));
 		Map<String, UserDetails> map = new HashMap<>();
@@ -121,11 +127,16 @@ public class UserClient {
 	}
 
 	public Map<String, UserDetails> getUserByUserId(Set<String> userIds) {
+		if (ObjectUtils.isEmpty(userIds)) {
+			return Collections.emptyMap();
+		}
 		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
 		int count = 1;
-		for (String mobileNumber : userIds) {
-			filters.add("userId", mobileNumber);
-			++count;
+		for (String userId : userIds) {
+			if (!ObjectUtils.isEmpty(userId)) {
+				filters.add("userId", userId);
+				++count;
+			}
 		}
 		Page<UserDetails> page = getUserByFilter(filters, PageRequest.of(0, count));
 		Map<String, UserDetails> map = new HashMap<>();
@@ -197,11 +208,16 @@ public class UserClient {
 	}
 
 	public Map<String, UserDetails> getCZOUserById(Set<String> userIds) {
+		if (ObjectUtils.isEmpty(userIds)) {
+			return Collections.emptyMap();
+		}
 		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
 		int count = 1;
 		for (String mobileNumber : userIds) {
-			filters.add("czoUserId", mobileNumber);
-			++count;
+			if (ObjectUtils.isEmpty(mobileNumber)) {
+				filters.add("czoUserId", mobileNumber);
+				++count;
+			}
 		}
 		Page<UserDetails> page = getCZOUserByFilter(filters, PageRequest.of(0, count));
 		Map<String, UserDetails> map = new HashMap<>();
