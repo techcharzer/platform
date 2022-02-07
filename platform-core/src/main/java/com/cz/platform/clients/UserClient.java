@@ -118,6 +118,9 @@ public class UserClient {
 				++count;
 			}
 		}
+		if (ObjectUtils.isEmpty(filters)) {
+			return Collections.emptyMap();
+		}
 		Page<UserDetails> page = getUserByFilter(filters, PageRequest.of(0, count));
 		Map<String, UserDetails> map = new HashMap<>();
 		for (UserDetails userDetails : page.getContent()) {
@@ -137,6 +140,9 @@ public class UserClient {
 				filters.add("userId", userId);
 				++count;
 			}
+		}
+		if (ObjectUtils.isEmpty(filters)) {
+			return Collections.emptyMap();
 		}
 		Page<UserDetails> page = getUserByFilter(filters, PageRequest.of(0, count));
 		Map<String, UserDetails> map = new HashMap<>();
@@ -213,11 +219,14 @@ public class UserClient {
 		}
 		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
 		int count = 1;
-		for (String mobileNumber : userIds) {
-			if (ObjectUtils.isEmpty(mobileNumber)) {
-				filters.add("czoUserId", mobileNumber);
+		for (String userId : userIds) {
+			if (!ObjectUtils.isEmpty(userId)) {
+				filters.add("czoUserId", userId);
 				++count;
 			}
+		}
+		if (ObjectUtils.isEmpty(filters)) {
+			return Collections.emptyMap();
 		}
 		Page<UserDetails> page = getCZOUserByFilter(filters, PageRequest.of(0, count));
 		Map<String, UserDetails> map = new HashMap<>();
