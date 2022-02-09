@@ -39,7 +39,7 @@ public class CityClient {
 
 	private ObjectMapper mapper;
 
-	public CityDTO getCityById(Long cityId) throws ApplicationException {
+	public CityDTO getCityById(String cityId) throws ApplicationException {
 		if (ObjectUtils.isEmpty(cityId)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid cityId");
 		}
