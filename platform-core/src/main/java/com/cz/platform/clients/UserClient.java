@@ -213,6 +213,24 @@ public class UserClient {
 		}
 	}
 
+	public UserDetails getCZOUserById(String userId) {
+		if (ObjectUtils.isEmpty(userId)) {
+			return null;
+		}
+		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
+		int count = 1;
+		if (!ObjectUtils.isEmpty(userId)) {
+			filters.add("czoUserId", userId);
+			++count;
+		}
+		Page<UserDetails> page = getCZOUserByFilter(filters, PageRequest.of(0, count));
+		Map<String, UserDetails> map = new HashMap<>();
+		for (UserDetails userDetails : page.getContent()) {
+			map.put(userDetails.getUserId(), userDetails);
+		}
+		return map.get(userId);
+	}
+
 	public Map<String, UserDetails> getCZOUserById(Set<String> userIds) {
 		if (ObjectUtils.isEmpty(userIds)) {
 			return Collections.emptyMap();
