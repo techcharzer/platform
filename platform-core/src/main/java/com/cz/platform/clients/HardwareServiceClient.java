@@ -26,6 +26,7 @@ import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 import com.cz.platform.security.SecurityConfigProps;
 import com.cz.platform.utility.CommonUtility;
+import com.cz.platform.utility.PlatformCommonService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,6 +44,7 @@ public class HardwareServiceClient {
 	private SecurityConfigProps securityProps;
 	private UrlConfig urlConfig;
 	private ObjectMapper mapper;
+	private PlatformCommonService platformCommonService;
 
 	public ChargerOnlineDTO getChargerOnline(String hardwareId) {
 		Set<String> hardwareIdSet = new HashSet<>();
@@ -96,6 +98,9 @@ public class HardwareServiceClient {
 					GlobalChargerHardwareInfo.class);
 			return response.getBody();
 		} catch (HttpStatusCodeException exeption) {
+			if (platformCommonService.handle404Error(exeption.getResponseBodyAsString())) {
+				return null;
+			}
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
 					"ccu api not working");
