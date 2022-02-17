@@ -95,6 +95,9 @@ public final class CommonUtility {
 			case KIRANA_CHARZER_FLEXTRON:
 				valCriteria = Criteria.where(pathOfConfiguration.concat(".ccuId")).is(chargerControlId);
 				break;
+			case KIRANA_CHARZER_FLEXTRON_WIFI:
+				valCriteria = Criteria.where(pathOfConfiguration.concat(".ccuId")).is(chargerControlId);
+				break;
 			case CHARGE_MOD_BHARAT_AC:
 				valCriteria = Criteria.where(pathOfConfiguration.concat(".imeiNumber")).is(chargerControlId);
 				break;

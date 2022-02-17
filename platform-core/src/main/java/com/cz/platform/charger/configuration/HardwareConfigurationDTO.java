@@ -21,6 +21,7 @@ public class HardwareConfigurationDTO implements Serializable {
 	@JsonSubTypes({ @Type(value = OCPP16ChargerConfiguration.class, name = "OCPP_16_JSON_CHARGER"),
 			@Type(value = KiranaChargerBleConfiguration.class, name = "KIRANA_CHARZER_BLE"),
 			@Type(value = KiranaChargerFlextronConfiguration.class, name = "KIRANA_CHARZER_FLEXTRON"),
+			@Type(value = KiranaChargerFlextronConfiguration.class, name = "KIRANA_CHARZER_FLEXTRON_WIFI"),
 			@Type(value = KiranaChargerGsmConfiguration.class, name = "KIRANA_CHARZER_GSM"),
 			@Type(value = ChargemodGsmConfiguration.class, name = "CHARGE_MOD_BHARAT_AC"),
 			@Type(value = EVPointChargerConfiguration.class, name = "EV_POINT_CHARGER"), })
