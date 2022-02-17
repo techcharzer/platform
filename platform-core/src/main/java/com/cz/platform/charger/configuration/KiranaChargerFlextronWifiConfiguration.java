@@ -8,11 +8,10 @@ import lombok.Data;
 public class KiranaChargerFlextronWifiConfiguration implements HardwareConfigurationData, Serializable {
 
 	/**
-	 * ccuId mqttBrokerKey
+	 * ccuId
 	 */
-	private static final long serialVersionUID = 1839211805479707179L;
+	private static final long serialVersionUID = 1837645389707179L;
 	private String ccuId;
-	private String mqttBrokerKey;
 
 	@Override
 	public String getChargerControlId() {
