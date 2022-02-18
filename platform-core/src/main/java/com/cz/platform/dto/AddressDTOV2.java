@@ -19,6 +19,7 @@ public class AddressDTOV2 implements Serializable {
 	private AddressType type;
 	@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXTERNAL_PROPERTY, property = "type")
 	@JsonSubTypes({ @Type(value = GeoCoordinatesDTO.class, name = "GPS_COORDINATES"),
-			@Type(value = PostalAddress.class, name = "POSTAL_ADDRESS"), })
+			@Type(value = PostalAddress.class, name = "POSTAL_ADDRESS"),
+			@Type(value = HybridAddressDTO.class, name = "HYBRID_ADDRESS"),})
 	private Address address;
 }
