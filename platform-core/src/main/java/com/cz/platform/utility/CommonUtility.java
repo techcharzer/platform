@@ -16,8 +16,13 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
 
 import com.cz.platform.PlatformConstants;
+import com.cz.platform.dto.AddressDTOV2;
+import com.cz.platform.dto.AddressData;
 import com.cz.platform.dto.CodeValueDTO;
+import com.cz.platform.dto.GeoCoordinatesDTO;
+import com.cz.platform.dto.HybridAddressDTO;
 import com.cz.platform.dto.Image;
+import com.cz.platform.dto.PostalAddress;
 import com.cz.platform.dto.Range;
 import com.cz.platform.enums.ChargerType;
 import com.cz.platform.exception.PlatformExceptionCodes;
@@ -212,6 +217,68 @@ public final class CommonUtility {
 			return new Image();
 		}
 		return images.get(0);
+	}
+
+	public static void validateAddress(AddressDTOV2 address) {
+
+		if (ObjectUtils.isEmpty(address)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid address");
+		}
+		if (ObjectUtils.isEmpty(address.getType())) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid address.type");
+		}
+		if (ObjectUtils.isEmpty(address.getData())) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid address.data");
+		}
+		switch (address.getType()) {
+		case GPS_COORDINATES:
+			validateGeoCoordinates(address.getData());
+			break;
+		case POSTAL_ADDRESS:
+			validatePostalAddress(address.getData());
+			break;
+		case HYBRID_ADDRESS:
+			validateHybridAddress(address.getData());
+			break;
+
+		default:
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid addressType");
+		}
+
+	}
+
+	private static void validateHybridAddress(AddressData data) {
+		HybridAddressDTO address = (HybridAddressDTO) data;
+		validateGeoCoordinates(address.getCoordinates());
+		if (ObjectUtils.isEmpty(address.getPostalAddress())) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid data.postalAddress");
+		}
+		if (ObjectUtils.isEmpty(address.getPinCode())) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid data.pinCode");
+		}
+		if (ObjectUtils.isEmpty(address.getCityId())) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid data.cityId");
+		}
+	}
+
+	private static void validatePostalAddress(AddressData data) {
+		PostalAddress address = (PostalAddress) data;
+		if (ObjectUtils.isEmpty(address.getPinCode())) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid data.pinCode");
+		}
+		if (ObjectUtils.isEmpty(address.getPostalAddress())) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid data.postalAddress");
+		}
+	}
+
+	private static void validateGeoCoordinates(AddressData addressData) {
+		GeoCoordinatesDTO coordinates = (GeoCoordinatesDTO) addressData;
+		if (ObjectUtils.isEmpty(coordinates.getLat())) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid data.lat");
+		}
+		if (ObjectUtils.isEmpty(coordinates.getLon())) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid data.lon");
+		}
 	}
 
 }
