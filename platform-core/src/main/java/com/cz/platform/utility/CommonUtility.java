@@ -256,9 +256,6 @@ public final class CommonUtility {
 		if (ObjectUtils.isEmpty(address.getPinCode())) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid data.pinCode");
 		}
-		if (ObjectUtils.isEmpty(address.getCityId())) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid data.cityId");
-		}
 	}
 
 	private static void validatePostalAddress(AddressData data) {
