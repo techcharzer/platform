@@ -41,6 +41,7 @@ public class GenericDailyTrackerService {
 		for (Pair<String, Long> val : values) {
 			map.put(getKey(val.getFirst()), val.getSecond());
 		}
+		request.setKeyValuePair(map);
 		template.convertAndSend(rabbitQueueConfiguration.getUpdateDailyTracker(), request);
 	}
 
@@ -51,6 +52,7 @@ public class GenericDailyTrackerService {
 		for (Pair<String, Long> val : values) {
 			map.put(getKey(val.getFirst()), val.getSecond());
 		}
+		request.setKeyValuePair(map);
 		template.convertAndSend(rabbitQueueConfiguration.getUpdateDailyTracker(), request);
 	}
 
