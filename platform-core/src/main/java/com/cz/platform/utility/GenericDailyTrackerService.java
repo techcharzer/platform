@@ -3,10 +3,12 @@ package com.cz.platform.utility;
 import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import com.cz.platform.clients.CustomRabbitMQTemplate;
@@ -32,12 +34,23 @@ public class GenericDailyTrackerService {
 		incrementValue(key, Instant.now());
 	}
 
-	public void updateValue(String key, Long value) {
+	public void updateValue(Instant instant, List<Pair<String, Long>> values) {
+		DailyTrackerSaveUpdateRequest request = new DailyTrackerSaveUpdateRequest();
+		request.setTime(instant);
+		Map<String, Long> map = new HashMap<>();
+		for (Pair<String, Long> val : values) {
+			map.put(getKey(val.getFirst()), val.getSecond());
+		}
+		template.convertAndSend(rabbitQueueConfiguration.getUpdateDailyTracker(), request);
+	}
+
+	public void updateValue(List<Pair<String, Long>> values) {
 		DailyTrackerSaveUpdateRequest request = new DailyTrackerSaveUpdateRequest();
 		request.setTime(Instant.now());
 		Map<String, Long> map = new HashMap<>();
-		map.put(getKey(key), value);
-		request.setKeyValuePair(map);
+		for (Pair<String, Long> val : values) {
+			map.put(getKey(val.getFirst()), val.getSecond());
+		}
 		template.convertAndSend(rabbitQueueConfiguration.getUpdateDailyTracker(), request);
 	}
 
