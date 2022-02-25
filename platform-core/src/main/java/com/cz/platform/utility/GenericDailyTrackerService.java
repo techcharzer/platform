@@ -32,6 +32,15 @@ public class GenericDailyTrackerService {
 		incrementValue(key, Instant.now());
 	}
 
+	public void updateValue(String key, Long value) {
+		DailyTrackerSaveUpdateRequest request = new DailyTrackerSaveUpdateRequest();
+		request.setTime(Instant.now());
+		Map<String, Long> map = new HashMap<>();
+		map.put(getKey(key), value);
+		request.setKeyValuePair(map);
+		template.convertAndSend(rabbitQueueConfiguration.getUpdateDailyTracker(), request);
+	}
+
 	public void incrementValue(String key, Instant instant) {
 		DailyTrackerSaveUpdateRequest request = new DailyTrackerSaveUpdateRequest();
 		request.setTime(instant);
