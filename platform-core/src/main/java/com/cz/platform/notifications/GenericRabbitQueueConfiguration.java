@@ -13,4 +13,5 @@ import lombok.Data;
 @ConfigurationProperties(prefix = PlatformConstants.QUEUE_CONFIGURATION_KEY_PATH)
 public class GenericRabbitQueueConfiguration {
 	private QueueConfiguration sendNotification;
+	private QueueConfiguration updateDailyTracker;
 }
