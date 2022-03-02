@@ -36,6 +36,7 @@ public final class CommonUtility {
 	private static final Map<Integer, String> DAYS_MAPPING = new HashMap<>();
 	private static final Map<Integer, String> WEEKS_MAPPING = new HashMap<>();
 	private static final ZoneOffset INDIA_ZONE_OFFSET = ZoneOffset.ofHoursMinutes(5, 30);
+	private static final DateTimeFormatter FOMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 	static {
 		DAYS_MAPPING.put(0, "Today");
@@ -276,6 +277,10 @@ public final class CommonUtility {
 		if (ObjectUtils.isEmpty(coordinates.getLon())) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid data.lon");
 		}
+	}
+
+	public String getDate(Instant instant) {
+		return instant.atZone(PlatformConstants.CURRENT_ZONE_ID).format(FOMATTER);
 	}
 
 }

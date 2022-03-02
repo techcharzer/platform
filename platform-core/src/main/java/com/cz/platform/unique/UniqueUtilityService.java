@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.BoundHashOperations;
@@ -48,22 +49,29 @@ public class UniqueUtilityService {
 	}
 
 	public String getUniqueId(String basePath) {
-		BoundHashOperations<String, String, Integer> x = redisTemplate.boundHashOps(basePath);
-		Long val = x.increment(basePath, random.nextInt(100));
-		save(basePath, val);
+		Long val = getNextNumber(basePath, true, random.nextInt(100));
 		return getString(val);
 	}
 
 	public String getNextId(String basePath) {
-		BoundHashOperations<String, String, Integer> x = redisTemplate.boundHashOps(basePath);
-		Long val = x.increment(basePath, 1);
-		save(basePath, val);
+		Long val = getNextNumber(basePath, true, 1);
 		return getString(val);
 	}
 
 	public Long getNextNumber(String basePath) {
+		return getNextNumber(basePath, false, 1);
+	}
+
+	public Long getNextNumber(String basePath, boolean persistInDB) {
+		return getNextNumber(basePath, persistInDB, 1);
+	}
+
+	private Long getNextNumber(String basePath, boolean persistInDB, Integer count) {
 		BoundHashOperations<String, String, Integer> x = redisTemplate.boundHashOps(basePath);
-		Long val = x.increment(basePath, 1);
+		Long val = x.increment(basePath, count);
+		if (BooleanUtils.isTrue(persistInDB)) {
+			save(basePath, val);
+		}
 		return val;
 	}
 
