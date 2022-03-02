@@ -1,5 +1,10 @@
 package com.cz.platform.config;
 
+import java.text.MessageFormat;
+
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -34,6 +39,15 @@ public class RedisConfiguration {
 		redisTemplate.setValueSerializer(new GenericToStringSerializer<>(String.class));
 		redisTemplate.setConnectionFactory(jedisConnectionFactory());
 		return redisTemplate;
+	}
+
+	@Bean
+	public RedissonClient getRedisson() {
+		Config config = new Config();
+		String url = MessageFormat.format("redis://{0}:{1}", props.getHost(), String.valueOf(props.getPort()));
+		config.useSingleServer().setAddress(url).setDatabase(props.getDb());
+		RedissonClient client = Redisson.create(config);
+		return client;
 	}
 
 }
