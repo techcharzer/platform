@@ -279,7 +279,10 @@ public final class CommonUtility {
 		}
 	}
 
-	public String getDate(Instant instant) {
+	public static String getDate(Instant instant) {
+		if (ObjectUtils.isEmpty(instant)) {
+			return null;
+		}
 		return instant.atZone(PlatformConstants.CURRENT_ZONE_ID).format(FOMATTER);
 	}
 
