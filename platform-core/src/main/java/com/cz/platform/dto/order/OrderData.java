@@ -10,6 +10,8 @@ import lombok.Data;
 public class OrderData {
 	private OrderType type;
 	@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXTERNAL_PROPERTY, property = "type")
-	@JsonSubTypes({ @Type(value = FreeInstallationOrderConfiguration.class, name = "FREE_INSTALLATION") })
+	@JsonSubTypes({ @Type(value = FreeInstallationOrderConfiguration.class, name = "FREE_INSTALLATION"),
+			@Type(value = HardwarePurchasedOrderConfiguration.class, name = "HARDWARE_PURCHASED"),
+			@Type(value = NetworkBuyersOrderConfiguration.class, name = "NETWORK_BUYERS") })
 	private OrderConfiguration configuration;
 }
