@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -24,7 +26,6 @@ import com.cz.platform.dto.ChargerDTO;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.security.SecurityConfigProps;
-import com.cz.platform.utility.CommonUtility;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,7 +49,7 @@ public class ChargerClient {
 	public ChargerDTO getChargerById(String userIds) {
 		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
 		filters.add("id", userIds);
-		List<ChargerDTO> page = getChargerByFilter(filters);
+		List<ChargerDTO> page = getChargerByFilter(filters, PageRequest.of(0, 1));
 		if (ObjectUtils.isEmpty(page)) {
 			return null;
 		}
@@ -60,7 +61,7 @@ public class ChargerClient {
 		for (String mobileNumber : userIds) {
 			filters.add("id", mobileNumber);
 		}
-		List<ChargerDTO> page = getChargerByFilter(filters);
+		List<ChargerDTO> page = getChargerByFilter(filters, PageRequest.of(0, userIds.size()));
 		Map<String, ChargerDTO> map = new HashMap<>();
 		for (ChargerDTO obj : page) {
 			map.put(obj.getChargerId(), obj);
@@ -68,7 +69,7 @@ public class ChargerClient {
 		return map;
 	}
 
-	public List<ChargerDTO> getChargerByFilter(MultiValueMap<String, String> queryParams) {
+	public List<ChargerDTO> getChargerByFilter(MultiValueMap<String, String> queryParams, Pageable page) {
 		if (ObjectUtils.isEmpty(queryParams)) {
 			return null;
 		}
@@ -82,9 +83,8 @@ public class ChargerClient {
 			String url = MessageFormat.format("{0}/charger-service/secure/internal-call/v2/charger",
 					urlConfig.getBaseUrl());
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-			int size = CommonUtility.getSize(queryParams);
-			queryParams.add("page", "0");
-			queryParams.add("size", String.valueOf(size));
+			queryParams.add("page", String.valueOf(page.getPageNumber()));
+			queryParams.add("size", String.valueOf(page.getPageSize()));
 			builder.queryParams(queryParams);
 
 			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
