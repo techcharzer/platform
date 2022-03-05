@@ -36,7 +36,7 @@ public final class CommonUtility {
 	private static final Map<Integer, String> WEEKS_MAPPING = new HashMap<>();
 	private static final ZoneOffset INDIA_ZONE_OFFSET = ZoneOffset.ofHoursMinutes(5, 30);
 	private static final DateTimeFormatter IST_DATE_FOMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-	private static final DateTimeFormatter IST_MONTH_FOMATTER = DateTimeFormatter.ofPattern("MM/yyyy");
+	private static final DateTimeFormatter IST_MONTH_FOMATTER = DateTimeFormatter.ofPattern("MMMM yy");
 
 	static {
 		DAYS_MAPPING.put(0, "Today");
