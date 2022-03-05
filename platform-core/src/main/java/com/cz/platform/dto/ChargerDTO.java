@@ -8,6 +8,7 @@ import org.springframework.util.ObjectUtils;
 
 import com.cz.platform.charger.configuration.GlobalChargerHardwareInfo;
 import com.cz.platform.enums.ChargerStatus;
+import com.cz.platform.enums.ChargerUsageType;
 import com.cz.platform.enums.VehicleType;
 import com.cz.platform.utility.CommonUtility;
 
@@ -23,12 +24,14 @@ public class ChargerDTO {
 	private List<Image> images;
 	private GlobalChargerHardwareInfo hardwareInfo;
 	private Map<String, Long> price;
+	private String groupId;
+	private ChargerUsageType usageType;
 	private AddressDTO address;
 	private DealConfigurationDTO dealConfiguration;
 
 	public static final String[] INCLUDED_FIELDS = new String[] { "id", "name", "uniqueIdentifier",
 			"openCloseTimeInSeconds", "sockets", "chargerType", "supportedVehicle", "address", "images", "deeplink",
-			"configuration", "status", "dealConfiguration", "deeplink" };
+			"configuration", "status", "dealConfiguration", "deeplink", "usageType", "protectedNetworkId" };
 
 	public List<SocketDTO> getSockets() {
 		List<SocketDTO> sockets = new ArrayList<>();
