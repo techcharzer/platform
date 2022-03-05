@@ -12,7 +12,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
 
 import com.cz.platform.PlatformConstants;
@@ -36,7 +35,8 @@ public final class CommonUtility {
 	private static final Map<Integer, String> DAYS_MAPPING = new HashMap<>();
 	private static final Map<Integer, String> WEEKS_MAPPING = new HashMap<>();
 	private static final ZoneOffset INDIA_ZONE_OFFSET = ZoneOffset.ofHoursMinutes(5, 30);
-	private static final DateTimeFormatter FOMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	private static final DateTimeFormatter IST_DATE_FOMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	private static final DateTimeFormatter IST_MONTH_FOMATTER = DateTimeFormatter.ofPattern("MM/yyyy");
 
 	static {
 		DAYS_MAPPING.put(0, "Today");
@@ -270,7 +270,14 @@ public final class CommonUtility {
 		if (ObjectUtils.isEmpty(instant)) {
 			return null;
 		}
-		return instant.atZone(PlatformConstants.CURRENT_ZONE_ID).format(FOMATTER);
+		return instant.atZone(PlatformConstants.CURRENT_ZONE_ID).format(IST_DATE_FOMATTER);
+	}
+
+	public static String getMonth(Instant instant) {
+		if (ObjectUtils.isEmpty(instant)) {
+			return null;
+		}
+		return instant.atZone(PlatformConstants.CURRENT_ZONE_ID).format(IST_MONTH_FOMATTER);
 	}
 
 }
