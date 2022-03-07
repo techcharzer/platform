@@ -30,10 +30,6 @@ public class GenericDailyTrackerService {
 	@Value("${spring.application.name}")
 	private String applicationName;
 
-	public void incrementValue(String key) {
-		incrementValue(key, Instant.now());
-	}
-
 	public void updateValue(Instant instant, List<Pair<String, Long>> values) {
 		DailyTrackerSaveUpdateRequest request = new DailyTrackerSaveUpdateRequest();
 		request.setTime(instant);
@@ -56,11 +52,19 @@ public class GenericDailyTrackerService {
 		template.convertAndSend(rabbitQueueConfiguration.getUpdateDailyTracker(), request);
 	}
 
+	public void incrementValue(String key) {
+		incrementValue(key, Instant.now(), 1l);
+	}
+
 	public void incrementValue(String key, Instant instant) {
+		incrementValue(key, instant, 1l);
+	}
+
+	public void incrementValue(String key, Instant instant, Long delta) {
 		DailyTrackerSaveUpdateRequest request = new DailyTrackerSaveUpdateRequest();
 		request.setTime(instant);
 		Map<String, Long> map = new HashMap<>();
-		map.put(getKey(key), 1L);
+		map.put(getKey(key), delta);
 		request.setKeyValuePair(map);
 		template.convertAndSend(rabbitQueueConfiguration.getUpdateDailyTracker(), request);
 	}
