@@ -15,9 +15,7 @@ import com.cz.platform.clients.CustomRabbitMQTemplate;
 import com.cz.platform.notifications.GenericRabbitQueueConfiguration;
 
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 public class GenericDailyTrackerService {
 
@@ -30,41 +28,41 @@ public class GenericDailyTrackerService {
 	@Value("${spring.application.name}")
 	private String applicationName;
 
-	public void updateValue(Instant instant, List<Pair<String, Long>> values) {
+	public void updateValue(Instant instant, List<Pair<TrackerKey, Long>> values) {
 		DailyTrackerSaveUpdateRequest request = new DailyTrackerSaveUpdateRequest();
 		request.setTime(instant);
 		Map<String, Long> map = new HashMap<>();
-		for (Pair<String, Long> val : values) {
-			map.put(getKey(val.getFirst()), val.getSecond());
+		for (Pair<TrackerKey, Long> val : values) {
+			map.put(getKey(val.getFirst().getKey()), val.getSecond());
 		}
 		request.setKeyValuePair(map);
 		template.convertAndSend(rabbitQueueConfiguration.getUpdateDailyTracker(), request);
 	}
 
-	public void updateValue(List<Pair<String, Long>> values) {
+	public void updateValue(List<Pair<TrackerKey, Long>> values) {
 		DailyTrackerSaveUpdateRequest request = new DailyTrackerSaveUpdateRequest();
 		request.setTime(Instant.now());
 		Map<String, Long> map = new HashMap<>();
-		for (Pair<String, Long> val : values) {
-			map.put(getKey(val.getFirst()), val.getSecond());
+		for (Pair<TrackerKey, Long> val : values) {
+			map.put(getKey(val.getFirst().getKey()), val.getSecond());
 		}
 		request.setKeyValuePair(map);
 		template.convertAndSend(rabbitQueueConfiguration.getUpdateDailyTracker(), request);
 	}
 
-	public void incrementValue(String key) {
+	public void incrementValue(TrackerKey key) {
 		incrementValue(key, Instant.now(), 1l);
 	}
 
-	public void incrementValue(String key, Instant instant) {
+	public void incrementValue(TrackerKey key, Instant instant) {
 		incrementValue(key, instant, 1l);
 	}
 
-	public void incrementValue(String key, Instant instant, Long delta) {
+	public void incrementValue(TrackerKey key, Instant instant, Long delta) {
 		DailyTrackerSaveUpdateRequest request = new DailyTrackerSaveUpdateRequest();
 		request.setTime(instant);
 		Map<String, Long> map = new HashMap<>();
-		map.put(getKey(key), delta);
+		map.put(getKey(key.getKey()), delta);
 		request.setKeyValuePair(map);
 		template.convertAndSend(rabbitQueueConfiguration.getUpdateDailyTracker(), request);
 	}
@@ -77,6 +75,10 @@ public class GenericDailyTrackerService {
 
 	private String getKey(String key) {
 		return MessageFormat.format("{0}#{1}", applicationName.toUpperCase(), key.toUpperCase());
+	}
+
+	public static interface TrackerKey {
+		String getKey();
 	}
 
 }
