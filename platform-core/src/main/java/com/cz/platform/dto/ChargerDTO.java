@@ -1,5 +1,6 @@
 package com.cz.platform.dto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,11 @@ import com.cz.platform.utility.CommonUtility;
 import lombok.Data;
 
 @Data
-public class ChargerDTO {
+public class ChargerDTO implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7652796832659881532L;
 	private String chargerId;
 	private String name;
 	private ChargerStatus status;
