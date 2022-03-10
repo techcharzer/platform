@@ -26,6 +26,7 @@ import com.cz.platform.dto.ChargerDTO;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.security.SecurityConfigProps;
+import com.cz.platform.utility.PlatformCommonService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,6 +46,35 @@ public class ChargerClient {
 	private SecurityConfigProps securityProps;
 
 	private ObjectMapper mapper;
+	private PlatformCommonService platformCommonService;
+
+	public ChargerDTO getChargerByHardwareId(String hardwareId) {
+		log.debug("fetchig :{}", hardwareId);
+		if (ObjectUtils.isEmpty(hardwareId)) {
+			return null;
+		}
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("charger-service"));
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		try {
+			String url = MessageFormat.format("{0}/charger-service/secure/internal-call/v2/charger/hardware/{1}",
+					urlConfig.getBaseUrl(), hardwareId);
+
+			log.debug("request : {} body and headers {}", url, entity);
+			ResponseEntity<ChargerDTO> response = template.exchange(url, HttpMethod.GET, entity, ChargerDTO.class);
+			log.debug("response : {}", response);
+			return response.getBody();
+		} catch (HttpStatusCodeException exeption) {
+			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
+			if (platformCommonService.handle404Error(exeption.getResponseBodyAsString())) {
+				return null;
+			}
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"Charger api not working");
+		}
+	}
 
 	public ChargerDTO getChargerById(String userIds) {
 		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
@@ -73,7 +103,7 @@ public class ChargerClient {
 		if (ObjectUtils.isEmpty(queryParams)) {
 			return null;
 		}
-		log.debug("fetchig chargerId :{}", queryParams);
+		log.debug("fetchig :{}", queryParams);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
@@ -87,7 +117,7 @@ public class ChargerClient {
 			queryParams.add("size", String.valueOf(page.getPageSize()));
 			builder.queryParams(queryParams);
 
-			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
+			log.debug("request : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
 					JsonNode.class);
 			return mapper.convertValue(response.getBody().get("content"), new TypeReference<List<ChargerDTO>>() {
