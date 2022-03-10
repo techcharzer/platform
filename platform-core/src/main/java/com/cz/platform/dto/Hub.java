@@ -12,7 +12,6 @@ public class Hub implements GroupConfiguration, Serializable {
 	private static final long serialVersionUID = 72367225763954329L;
 	private String hubName;
 	private Double maxElectricityConsumptionAllowed;
-	private Range<Integer> chargerOnTimings;
 
 	@Override
 	public String getName() {
