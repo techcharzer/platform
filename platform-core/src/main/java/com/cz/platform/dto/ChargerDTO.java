@@ -23,7 +23,6 @@ public class ChargerDTO {
 	private List<Image> images;
 	private GlobalChargerHardwareInfo hardwareInfo;
 	private Map<String, Long> price;
-	private String groupId;
 	private ChargerUsageTypeConfiguration usageConfiguration;
 	private AddressDTO address;
 	private DealConfigurationDTO dealConfiguration;
