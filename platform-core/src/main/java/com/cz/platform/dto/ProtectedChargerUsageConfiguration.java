@@ -2,7 +2,6 @@ package com.cz.platform.dto;
 
 import java.io.Serializable;
 
-import com.cz.platform.dto.GroupDTO;
 import com.cz.platform.enums.ChargerUsageType;
 
 import lombok.Data;
