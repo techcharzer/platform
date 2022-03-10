@@ -76,14 +76,18 @@ public class ChargerClient {
 		}
 	}
 
-	public ChargerDTO getChargerById(String userIds) {
+	public ChargerDTO getChargerById(String chargerId) {
 		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
-		filters.add("id", userIds);
+		filters.add("id", chargerId);
 		List<ChargerDTO> page = getChargerByFilter(filters, PageRequest.of(0, 1));
 		if (ObjectUtils.isEmpty(page)) {
 			return null;
 		}
-		return page.get(0);
+		Map<String, ChargerDTO> map = new HashMap<String, ChargerDTO>();
+		for (ChargerDTO charger : page) {
+			map.put(charger.getChargerId(), charger);
+		}
+		return map.get(chargerId);
 	}
 
 	public Map<String, ChargerDTO> getChargerById(Set<String> userIds) {
