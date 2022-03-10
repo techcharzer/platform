@@ -77,17 +77,31 @@ public class ChargerClient {
 	}
 
 	public ChargerDTO getChargerById(String chargerId) {
-		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
-		filters.add("id", chargerId);
-		List<ChargerDTO> page = getChargerByFilter(filters, PageRequest.of(0, 1));
-		if (ObjectUtils.isEmpty(page)) {
+		log.debug("fetchig :{}", chargerId);
+		if (ObjectUtils.isEmpty(chargerId)) {
 			return null;
 		}
-		Map<String, ChargerDTO> map = new HashMap<String, ChargerDTO>();
-		for (ChargerDTO charger : page) {
-			map.put(charger.getChargerId(), charger);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("charger-service"));
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		try {
+			String url = MessageFormat.format("{0}/charger-service/secure/internal-call/v2/charger/{1}",
+					urlConfig.getBaseUrl(), chargerId);
+
+			log.debug("request : {} body and headers {}", url, entity);
+			ResponseEntity<ChargerDTO> response = template.exchange(url, HttpMethod.GET, entity, ChargerDTO.class);
+			log.debug("response : {}", response);
+			return response.getBody();
+		} catch (HttpStatusCodeException exeption) {
+			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
+			if (platformCommonService.handle404Error(exeption.getResponseBodyAsString())) {
+				return null;
+			}
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"Charger api not working");
 		}
-		return map.get(chargerId);
 	}
 
 	public Map<String, ChargerDTO> getChargerById(Set<String> userIds) {
