@@ -19,7 +19,7 @@ public abstract class GenericEntityToQueryCreatorFactory {
 		if (ObjectUtils.isEmpty(a)) {
 			return null;
 		}
-		log.info("class name : {}", a.getCanonicalName());
+		log.debug("class name : {}", a.getCanonicalName());
 		if (!MAP_CLASS_TO_FILTER_QUERY_CREATOR.containsKey(a)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
 					"Invalid value of the class : " + a.getCanonicalName());
