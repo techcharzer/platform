@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -31,21 +33,26 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@AllArgsConstructor
 public class ChargerClient {
-
+	
+	@Autowired
+	@Qualifier(PlatformConstants.EXTERNAL_SLOW_CLIENT)
 	private RestTemplate template;
 
+	@Autowired
 	private UrlConfig urlConfig;
 
+	@Autowired
 	private SecurityConfigProps securityProps;
 
+	@Autowired
 	private ObjectMapper mapper;
+	
+	@Autowired
 	private PlatformCommonService platformCommonService;
 
 	public ChargerDTO getChargerByHardwareId(String hardwareId) {
