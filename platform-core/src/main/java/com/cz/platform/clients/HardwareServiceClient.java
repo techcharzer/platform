@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -54,7 +55,7 @@ public class HardwareServiceClient {
 	private PlatformCommonService platformCommonService;
 	private CustomRabbitMQTemplate rabbitMqTemplate;
 	private static final QueueConfiguration EXECUTE_COMMAND_QUEUE_CONFIG = new QueueConfiguration();
-	
+
 	@PostConstruct
 	private void fill() {
 		EXECUTE_COMMAND_QUEUE_CONFIG.setQueueName("execute_command");
@@ -164,13 +165,19 @@ public class HardwareServiceClient {
 
 	public void startCharging(StartChargingDTO startCommand) {
 		log.debug("start charging :{}, socketId: {}", startCommand);
-		CommandDTO commandDTO = new CommandDTO();
-		commandDTO.setCommand(CommandType.START_BOOKING);
-		commandDTO.setCommandData(startCommand);
-		commandDTO.setHardwareId(startCommand.getHardwareId());
-		commandDTO.setSocketId(startCommand.getSocketId());
-		commandDTO.setUserId(startCommand.getUserId());
-		executeCommand(commandDTO);
+		ChargerOnlineDTO online = getChargerOnline(startCommand.getHardwareId());
+		if (!ObjectUtils.isEmpty(online) && BooleanUtils.isTrue(online.getIsOnline())) {
+			CommandDTO commandDTO = new CommandDTO();
+			commandDTO.setCommand(CommandType.START_BOOKING);
+			commandDTO.setCommandData(startCommand);
+			commandDTO.setHardwareId(startCommand.getHardwareId());
+			commandDTO.setSocketId(startCommand.getSocketId());
+			commandDTO.setUserId(startCommand.getUserId());
+			executeCommand(commandDTO);
+		} else {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
+					"Charger is offline. Please restart, wait and retry start charging.");
+		}
 	}
 
 	private void executeCommand(CommandDTO command) {
