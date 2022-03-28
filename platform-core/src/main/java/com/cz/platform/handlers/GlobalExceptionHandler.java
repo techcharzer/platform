@@ -2,11 +2,14 @@ package com.cz.platform.handlers;
 
 import java.text.MessageFormat;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,17 +32,35 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
-	public ErrorField MethodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException e) {
+	public ErrorField MethodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException e,
+			HttpServletRequest request) {
+		logRequest(request);
 		String response = MessageFormat.format("parameter {0} is invalid", e.getName());
 		LOG.error("methodArgumentTypeMismatchException occured: ", e);
 		ErrorField field = new ErrorField(PlatformExceptionCodes.INVALID_DATA.getCode(), response);
 		return field;
 	}
 
+	private void logRequest(HttpServletRequest request) {
+		try {
+			String method = request.getMethod();
+			String path = request.getRequestURI();
+			String queryPrams = request.getQueryString();
+			if (ObjectUtils.isEmpty(queryPrams)) {
+				LOG.error("error occured in request: {} {}", method, path);
+			} else {
+				LOG.error("error occured in request: {} {}?{}", method, path, queryPrams);
+			}
+		} catch (Exception e) {
+			LOG.warn("error occured while logging request: {}", request);
+		}
+	}
+
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
-	public ErrorField exception(HttpRequestMethodNotSupportedException e) {
+	public ErrorField exception(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
+		logRequest(request);
 		String response = MessageFormat.format("Request method '{0}' not supported", e.getMethod());
 		LOG.error("HttpRequestMethodNotSupportedException occured: ", e);
 		ErrorField field = new ErrorField(PlatformExceptionCodes.INVALID_DATA.getCode(), response);
@@ -49,7 +70,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
-	public ErrorField httpReadableException(HttpMessageNotReadableException e) {
+	public ErrorField httpReadableException(HttpMessageNotReadableException e, HttpServletRequest request) {
+		logRequest(request);
 		LOG.error("HttpMessageNotReadableException occured: ", e);
 		ErrorField field = new ErrorField(PlatformExceptionCodes.INVALID_DATA.getCode(), e.getMessage());
 		return field;
@@ -58,7 +80,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(ValidationException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
-	public ErrorField validationException(ValidationException e) {
+	public ErrorField validationException(ValidationException e, HttpServletRequest request) {
+		logRequest(request);
 		switch (e.getLogType()) {
 		case ERROR:
 			LOG.error("ValidationException occured: {}", e.getError(), e);
@@ -75,7 +98,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(ApplicationException.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
-	public ErrorField c2cException(ApplicationException e) {
+	public ErrorField c2cException(ApplicationException e, HttpServletRequest request) {
+		logRequest(request);
 		LOG.error("ApplicationException occured: ", e);
 		return e.getError();
 	}
@@ -83,7 +107,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(AccessDeniedException.class)
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	@ResponseBody
-	public ErrorField accessDeniedException(AccessDeniedException e) {
+	public ErrorField accessDeniedException(AccessDeniedException e, HttpServletRequest request) {
+		logRequest(request);
 		LOG.error("AccessDeniedException occured: ", e);
 		ErrorField errorField = new ErrorField(PlatformExceptionCodes.ACCESS_DENIED.getCode(),
 				PlatformExceptionCodes.ACCESS_DENIED.getMessage());
@@ -93,7 +118,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(JsonParseException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
-	public ErrorField exception(JsonParseException e) {
+	public ErrorField exception(JsonParseException e, HttpServletRequest request) {
+		logRequest(request);
 		LOG.error("JsonParseException occured: ", e);
 		String message = MessageFormat.format("Invalid JSON. {0}", e.getMessage());
 		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message);
@@ -103,7 +129,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(InvalidFormatException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
-	public ErrorField exception(InvalidFormatException e) {
+	public ErrorField exception(InvalidFormatException e, HttpServletRequest request) {
+		logRequest(request);
 		LOG.error("InvalidFormatException occured: ", e);
 		String message = e.getMessage();
 		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message);
@@ -113,7 +140,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(RuntimeException.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
-	public ErrorField exception(RuntimeException e) {
+	public ErrorField exception(RuntimeException e, HttpServletRequest request) {
+		logRequest(request);
 		LOG.error("RuntimeException occured: ", e);
 		String message = "Some error occurred please try again later.";
 		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message);
@@ -123,7 +151,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
-	public ErrorField exception(Exception e) {
+	public ErrorField exception(Exception e, HttpServletRequest request) {
+		logRequest(request);
 		LOG.error("Exception occured: ", e);
 		String message = "Some error occurred please try again later.";
 		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message);
