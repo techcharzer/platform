@@ -34,25 +34,26 @@ public class GlobalExceptionHandler {
 	@ResponseBody
 	public ErrorField MethodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException e,
 			HttpServletRequest request) {
-		logRequest(request);
+		String requestLog = logRequest(request);
 		String response = MessageFormat.format("parameter {0} is invalid", e.getName());
-		LOG.error("methodArgumentTypeMismatchException occured: ", e);
+		LOG.error("methodArgumentTypeMismatchException occured: {}", requestLog, e);
 		ErrorField field = new ErrorField(PlatformExceptionCodes.INVALID_DATA.getCode(), response);
 		return field;
 	}
 
-	private void logRequest(HttpServletRequest request) {
+	private String logRequest(HttpServletRequest request) {
 		try {
 			String method = request.getMethod();
 			String path = request.getRequestURI();
 			String queryPrams = request.getQueryString();
 			if (ObjectUtils.isEmpty(queryPrams)) {
-				LOG.error("error occured in request: {} {}", method, path);
+				return MessageFormat.format("{} {}", method, path);
 			} else {
-				LOG.error("error occured in request: {} {}?{}", method, path, queryPrams);
+				return MessageFormat.format("{} {}?{}", method, path, queryPrams);
 			}
 		} catch (Exception e) {
 			LOG.warn("error occured while logging request: {}", request);
+			return "\nerror occured while logging request\n";
 		}
 	}
 
@@ -60,9 +61,9 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public ErrorField exception(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
-		logRequest(request);
+		String requestLog = logRequest(request);
 		String response = MessageFormat.format("Request method '{0}' not supported", e.getMethod());
-		LOG.error("HttpRequestMethodNotSupportedException occured: ", e);
+		LOG.error("HttpRequestMethodNotSupportedException occured: {}", requestLog, e);
 		ErrorField field = new ErrorField(PlatformExceptionCodes.INVALID_DATA.getCode(), response);
 		return field;
 	}
@@ -71,8 +72,8 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public ErrorField httpReadableException(HttpMessageNotReadableException e, HttpServletRequest request) {
-		logRequest(request);
-		LOG.error("HttpMessageNotReadableException occured: ", e);
+		String requestLog = logRequest(request);
+		LOG.error("HttpMessageNotReadableException occured: {}", requestLog, e);
 		ErrorField field = new ErrorField(PlatformExceptionCodes.INVALID_DATA.getCode(), e.getMessage());
 		return field;
 	}
@@ -81,7 +82,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public ErrorField validationException(ValidationException e, HttpServletRequest request) {
-		logRequest(request);
+		String requestLog = logRequest(request);
 		switch (e.getLogType()) {
 		case ERROR:
 			LOG.error("ValidationException occured: {}", e.getError(), e);
@@ -99,8 +100,8 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
 	public ErrorField c2cException(ApplicationException e, HttpServletRequest request) {
-		logRequest(request);
-		LOG.error("ApplicationException occured: ", e);
+		String requestLog = logRequest(request);
+		LOG.error("ApplicationException occured: {}", requestLog, e);
 		return e.getError();
 	}
 
@@ -108,8 +109,8 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	@ResponseBody
 	public ErrorField accessDeniedException(AccessDeniedException e, HttpServletRequest request) {
-		logRequest(request);
-		LOG.error("AccessDeniedException occured: ", e);
+		String requestLog = logRequest(request);
+		LOG.error("AccessDeniedException occured: {}", requestLog, e);
 		ErrorField errorField = new ErrorField(PlatformExceptionCodes.ACCESS_DENIED.getCode(),
 				PlatformExceptionCodes.ACCESS_DENIED.getMessage());
 		return errorField;
@@ -119,8 +120,8 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public ErrorField exception(JsonParseException e, HttpServletRequest request) {
-		logRequest(request);
-		LOG.error("JsonParseException occured: ", e);
+		String requestLog = logRequest(request);
+		LOG.error("JsonParseException occured: {}", requestLog, e);
 		String message = MessageFormat.format("Invalid JSON. {0}", e.getMessage());
 		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message);
 		return field;
@@ -130,8 +131,8 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public ErrorField exception(InvalidFormatException e, HttpServletRequest request) {
-		logRequest(request);
-		LOG.error("InvalidFormatException occured: ", e);
+		String requestLog = logRequest(request);
+		LOG.error("InvalidFormatException occured: {}", requestLog, e);
 		String message = e.getMessage();
 		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message);
 		return field;
@@ -141,8 +142,8 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
 	public ErrorField exception(RuntimeException e, HttpServletRequest request) {
-		logRequest(request);
-		LOG.error("RuntimeException occured: ", e);
+		String requestLog = logRequest(request);
+		LOG.error("RuntimeException occured: {}", requestLog, e);
 		String message = "Some error occurred please try again later.";
 		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message);
 		return field;
@@ -152,8 +153,8 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
 	public ErrorField exception(Exception e, HttpServletRequest request) {
-		logRequest(request);
-		LOG.error("Exception occured: ", e);
+		String requestLog = logRequest(request);
+		LOG.error("Exception occured: {}", requestLog, e);
 		String message = "Some error occurred please try again later.";
 		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message);
 		return field;
