@@ -47,9 +47,9 @@ public class GlobalExceptionHandler {
 			String path = request.getRequestURI();
 			String queryPrams = request.getQueryString();
 			if (ObjectUtils.isEmpty(queryPrams)) {
-				return MessageFormat.format("{} {}", method, path);
+				return MessageFormat.format("{0} {1}", method, path);
 			} else {
-				return MessageFormat.format("{} {}?{}", method, path, queryPrams);
+				return MessageFormat.format("{0} {1}?{2}", method, path, queryPrams);
 			}
 		} catch (Exception e) {
 			LOG.warn("error occured while logging request: {}", request, e);
