@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
 				return MessageFormat.format("{} {}?{}", method, path, queryPrams);
 			}
 		} catch (Exception e) {
-			LOG.warn("error occured while logging request: {}", request);
+			LOG.warn("error occured while logging request: {}", request, e);
 			return "\nerror occured while logging request\n";
 		}
 	}
