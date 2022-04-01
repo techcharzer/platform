@@ -9,6 +9,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
@@ -71,7 +72,7 @@ public class DynamicLinkService {
 			String url = MessageFormat.format("https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key={0}",
 					deeplinkConfig.getSecretKey());
 			log.debug("request : {}", entity.toString());
-			HttpEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 			log.debug("response from firebase : {}", response.getBody());
 			JsonNode node = mapper.readTree(response.getBody());
 			if (node.has("shortLink")) {
