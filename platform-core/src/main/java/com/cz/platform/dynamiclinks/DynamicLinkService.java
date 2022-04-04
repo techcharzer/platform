@@ -18,9 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.cz.platform.config.DynamicLinkConfig;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,8 +32,6 @@ public class DynamicLinkService {
 	private RestTemplate restTemplate;
 
 	private DynamicLinkConfig deeplinkConfig;
-
-	private ObjectMapper mapper;
 
 	public String getDeeplink(Map<String, String> mapOfRequestParamsInDeepLink) throws ApplicationException {
 		log.info("deep link parameters : {}", mapOfRequestParamsInDeepLink);
@@ -72,9 +68,9 @@ public class DynamicLinkService {
 			String url = MessageFormat.format("https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key={0}",
 					deeplinkConfig.getSecretKey());
 			log.debug("request : {}", entity.toString());
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+			ResponseEntity<JsonNode> response = restTemplate.exchange(url, HttpMethod.POST, entity, JsonNode.class);
 			log.debug("response from firebase : {}", response.getBody());
-			JsonNode node = mapper.readTree(response.getBody());
+			JsonNode node = response.getBody();
 			if (node.has("shortLink")) {
 				String deeplink = node.get("shortLink").asText();
 				log.info("deeplink created : {}", deeplink);
@@ -87,9 +83,6 @@ public class DynamicLinkService {
 			log.error("response : {}", e.getResponseBodyAsString(), e);
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
 					"Error occured while fetching the short deeplink", e);
-		} catch (JsonProcessingException e) {
-			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
-					"error occured while processing json.", e);
 		}
 	}
 
