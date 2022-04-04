@@ -10,9 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Properties;
 
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.PropertyPlaceholderHelper;
 
 import com.cz.platform.PlatformConstants;
 import com.cz.platform.dto.AddressDTOV2;
@@ -38,6 +42,9 @@ public final class CommonUtility {
 	private static final DateTimeFormatter IST_DATE_FOMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	private static final DateTimeFormatter IST_MONTH_FOMATTER = DateTimeFormatter.ofPattern("MMMM yy");
 
+	private static final String PLACEHOLDER_SUFFIX_CURLY = "}";
+	private static final String PLACEHOLDER_PREFIX_CURLY = "{";
+
 	static {
 		DAYS_MAPPING.put(0, "Today");
 		DAYS_MAPPING.put(1, "Yesterday");
@@ -59,6 +66,7 @@ public final class CommonUtility {
 
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MMMM yy", Locale.UK)
 			.withZone(PlatformConstants.CURRENT_ZONE_ID);
+	private static final String COLON = ":";
 
 	public static String getUrlSlug(String str) {
 		return ObjectUtils.isEmpty(str) ? str : replaceSpaceWithHyphen(str.toLowerCase());
@@ -278,6 +286,20 @@ public final class CommonUtility {
 			return null;
 		}
 		return instant.atZone(PlatformConstants.CURRENT_ZONE_ID).format(IST_MONTH_FOMATTER);
+	}
+
+	public static String replaceKeysWithValueProps(String message, Map<String, String> mapOfKeyValues) {
+		log.debug("props : {}", mapOfKeyValues);
+		Properties props = new Properties();
+		if (!ObjectUtils.isEmpty(mapOfKeyValues)) {
+			for (Entry<String, String> entry : mapOfKeyValues.entrySet()) {
+				props.put(entry.getKey(),
+						Objects.isNull(entry.getValue()) ? PlatformConstants.EMPTY_STRING : entry.getValue());
+			}
+		}
+		PropertyPlaceholderHelper propertyPlaceholderHelper = new PropertyPlaceholderHelper(PLACEHOLDER_PREFIX_CURLY,
+				PLACEHOLDER_SUFFIX_CURLY, COLON, false);
+		return propertyPlaceholderHelper.replacePlaceholders(message, props);
 	}
 
 }
