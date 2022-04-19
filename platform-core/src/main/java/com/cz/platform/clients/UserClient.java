@@ -292,11 +292,7 @@ public class UserClient {
 		}
 	}
 
-	public List<UserDetails> getAllCZOUser(MultiValueMap<String, String> queryParams, Pageable pageRequest) {
-		if (ObjectUtils.isEmpty(queryParams)) {
-			return null;
-		}
-		log.debug("fetchig userId :{}", queryParams);
+	public List<UserDetails> getAllCZOUser() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
