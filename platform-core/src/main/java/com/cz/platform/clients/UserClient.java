@@ -68,7 +68,7 @@ public class UserClient {
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		try {
 			String url = MessageFormat.format("{0}/user-service/secure/user/{1}", urlConfig.getBaseUrl(), userId);
-			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
+			log.debug("request: {}, headers {}", url, entity);
 			ResponseEntity<UserDetails> response = template.exchange(url, HttpMethod.GET, entity, UserDetails.class);
 
 			return response.getBody();
@@ -95,7 +95,7 @@ public class UserClient {
 		try {
 			String url = MessageFormat.format("{0}/user-service/secure/internal-server/firebase-token/user/{1}",
 					urlConfig.getBaseUrl(), userId);
-			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
+			log.debug("request: {}, headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
 			return response.getBody().get("token").asText();
 		} catch (HttpStatusCodeException exeption) {
@@ -171,7 +171,7 @@ public class UserClient {
 			queryParams.add("size", String.valueOf(pageRequest.getPageSize()));
 			builder.queryParams(queryParams);
 
-			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
+			log.debug("request: {}, headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
 					JsonNode.class);
 			List<UserDetails> list = mapper.convertValue(response.getBody().get("content"),
@@ -274,7 +274,7 @@ public class UserClient {
 			queryParams.add("size", String.valueOf(pageRequest.getPageSize()));
 			builder.queryParams(queryParams);
 
-			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
+			log.debug("request: {}, headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
 					JsonNode.class);
 			List<UserDetails> list = mapper.convertValue(response.getBody().get("content"),
@@ -303,7 +303,7 @@ public class UserClient {
 					urlConfig.getBaseUrl());
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
 
-			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
+			log.debug("request: {} headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
 					JsonNode.class);
 			return mapper.convertValue(response.getBody(), new TypeReference<List<UserDetails>>() {
@@ -371,7 +371,7 @@ public class UserClient {
 		try {
 			String url = MessageFormat.format("{0}/user-service/secure/user/{1}/groups", urlConfig.getBaseUrl(),
 					userId);
-			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
+			log.debug("request: {}, headers {}", url, entity);
 			ResponseEntity<GroupDTO[]> response = template.exchange(url, HttpMethod.GET, entity, GroupDTO[].class);
 			List<GroupDTO> list = Arrays.asList(response.getBody());
 			log.info("api response : {}", list);
@@ -399,7 +399,7 @@ public class UserClient {
 		try {
 			String url = MessageFormat.format("{0}/user-service/secure/group/admin/{1}", urlConfig.getBaseUrl(),
 					userId);
-			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
+			log.debug("request: {}, headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
 			log.info("api response : {}", response.getBody());
 			JsonNode data = response.getBody();
