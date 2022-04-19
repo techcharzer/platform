@@ -292,6 +292,33 @@ public class UserClient {
 		}
 	}
 
+	public List<UserDetails> getAllCZOUser(MultiValueMap<String, String> queryParams, Pageable pageRequest) {
+		if (ObjectUtils.isEmpty(queryParams)) {
+			return null;
+		}
+		log.debug("fetchig userId :{}", queryParams);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		try {
+			String url = MessageFormat.format("{0}/user-service/secure/internal-server/czo-user/all",
+					urlConfig.getBaseUrl());
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+
+			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
+			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
+					JsonNode.class);
+			return mapper.convertValue(response.getBody(), new TypeReference<List<UserDetails>>() {
+			});
+		} catch (HttpStatusCodeException exeption) {
+			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"User api not working");
+		}
+	}
+
 	public UserGetOrCreateResponse getOrCreateUser(String mobileNumber) {
 		return getOrCreateUser(mobileNumber, "CHARZER_APP");
 	}
