@@ -1,7 +1,6 @@
 package com.cz.platform.dto;
 
 import java.io.Serializable;
-import java.util.List;
 
 import lombok.Data;
 
@@ -15,7 +14,6 @@ public class Society implements GroupConfiguration, Serializable {
 	private String defaultImageUrl;
 	private String registrationDeeplink;
 	private Double serviceChargePercentage;
-	private List<SocietyBlock> blocks;
 
 	@Override
 	public String getName() {
