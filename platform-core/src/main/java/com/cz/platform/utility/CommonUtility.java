@@ -302,4 +302,9 @@ public final class CommonUtility {
 		return propertyPlaceholderHelper.replacePlaceholders(message, props);
 	}
 
+	public static String getLocation(GeoCoordinatesDTO coordinates) {
+		return MessageFormat.format("https://maps.google.com/maps?z=12&t=m&q=loc:{0}+{1}", coordinates.getLat(),
+				coordinates.getLon());
+	}
+
 }
