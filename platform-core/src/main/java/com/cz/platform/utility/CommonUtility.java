@@ -303,7 +303,7 @@ public final class CommonUtility {
 	}
 
 	public static String getLocation(GeoCoordinatesDTO coordinates) {
-		return MessageFormat.format("https://maps.google.com/maps?z=12&t=m&q=loc:{0}+{1}", coordinates.getLat(),
+		return MessageFormat.format("https://maps.google.com/maps?q={0},{1}", coordinates.getLat(),
 				coordinates.getLon());
 	}
 
