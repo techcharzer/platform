@@ -1,5 +1,6 @@
 package com.cz.platform.clients;
 
+import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +25,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -117,4 +119,24 @@ public class CityClient {
 		}
 		return false;
 	}
+
+	@Data
+	public static class CityDTO implements Serializable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -3105294727064442647L;
+		private String cityId;
+		private String cityName;
+		private String state;
+		private Integer sortParam;
+		private Boolean isActive;
+		private String urlSlug;
+		private Integer groupId;
+		private String imageUrl;
+		private Boolean isPopular;
+		private Boolean isOperational;
+		private Boolean isListedOnWeb;
+	}
+
 }
