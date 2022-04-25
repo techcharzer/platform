@@ -126,7 +126,7 @@ public class UserClient {
 		Page<UserDetails> page = getUserByFilter(filters, PageRequest.of(0, count));
 		Map<String, UserDetails> map = new HashMap<>();
 		for (UserDetails userDetails : page.getContent()) {
-			map.put(userDetails.getUserId(), userDetails);
+			map.put(userDetails.getMobileNumber(), userDetails);
 		}
 		return map;
 	}
