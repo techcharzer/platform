@@ -13,6 +13,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.cz.platform.PlatformConstants;
+import com.cz.platform.dto.SuccessDTO;
 import com.cz.platform.dto.order.OrderDTO;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
@@ -60,6 +61,28 @@ public class OrderClient {
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
 					"Order api not working");
+		}
+	}
+
+	public void closeOrder(String orderId) {
+		if (ObjectUtils.isEmpty(orderId)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
+		}
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("lms-service"));
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		try {
+			String url = MessageFormat.format("{0}/lms/secure/internal-call/order/{1}/close", urlConfig.getBaseUrl(),
+					orderId);
+			log.debug("request : {} body and headers {}", url, entity);
+			ResponseEntity<SuccessDTO> response = template.exchange(url, HttpMethod.PUT, entity, SuccessDTO.class);
+			log.info("response : {}", response.getBody());
+		} catch (HttpStatusCodeException exeption) {
+			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"Order close api not working");
 		}
 	}
 
