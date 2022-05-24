@@ -307,4 +307,13 @@ public final class CommonUtility {
 				coordinates.getLon());
 	}
 
+	public static String maskMobileNumber(String mobileNumber) {
+		if (ObjectUtils.isEmpty(mobileNumber)) {
+			return "";
+		} else {
+			String last4Digits = mobileNumber.substring(mobileNumber.length() - 4);
+			return MessageFormat.format("+91 xxxxxx{0}", last4Digits);
+		}
+	}
+
 }
