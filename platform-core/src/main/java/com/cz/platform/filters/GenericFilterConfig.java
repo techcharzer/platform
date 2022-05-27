@@ -17,7 +17,6 @@ import lombok.Setter;
 @Configuration
 @ConfigurationProperties(prefix = "app.config.filter")
 public class GenericFilterConfig {
-	private Set<String> allowedFilters;
 	private Set<String> excludedParams;
 	private Map<String, Set<String>> filterToBeServed = new HashMap<>();
 	private Boolean failFast = false;

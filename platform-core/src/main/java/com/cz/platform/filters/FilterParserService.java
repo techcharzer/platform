@@ -4,8 +4,11 @@ import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 import javax.annotation.PostConstruct;
@@ -31,6 +34,7 @@ public final class FilterParserService {
 	private GenericFilterConfig filterConfig;
 
 	private static final Map<FilterOperationsType, BiFunction<String, List<String>, AbstractFilter>> MAP_OF_FILTER_PARSING = new HashMap<>();
+	private static final Set<String> ALLOWED_FILTERS = new HashSet<>();
 
 	@PostConstruct
 	private void fillMap() {
@@ -39,6 +43,9 @@ public final class FilterParserService {
 		MAP_OF_FILTER_PARSING.put(FilterOperationsType.NEAR_TO, this::nearToFilterParsing);
 		MAP_OF_FILTER_PARSING.put(FilterOperationsType.DATE_RANGE, this::dateRangeFilterParsing);
 		MAP_OF_FILTER_PARSING.put(FilterOperationsType.CUSTOM_TYPE, this::customFilterParsing);
+		for (Entry<String, Set<String>> entry : filterConfig.getFilterToBeServed().entrySet()) {
+			ALLOWED_FILTERS.addAll(entry.getValue());
+		}
 	}
 
 	private AbstractFilter inFilterParsing(String field, List<String> value) {
@@ -148,7 +155,7 @@ public final class FilterParserService {
 		// exclude page and size and other params if they needs to be passed down
 		AbstractFilter filter = null;
 		if (!filterConfig.getExcludedParams().contains(field)) {
-			if (ObjectUtils.isEmpty(field) || !filterConfig.getAllowedFilters().contains(field)) {
+			if (ObjectUtils.isEmpty(field) || !ALLOWED_FILTERS.contains(field)) {
 				throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
 						MessageFormat.format("filter {0} type not allowed", field));
 			}
