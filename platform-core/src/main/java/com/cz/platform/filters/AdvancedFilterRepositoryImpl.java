@@ -1,9 +1,13 @@
 package com.cz.platform.filters;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -83,5 +87,25 @@ public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository
 						"Near To filter with does not work.");
 			}
 		}
+	}
+
+	@Override
+	public Optional<T> findByFilter(String key, String value, Class<T> clazz) {
+		List<AbstractFilter> filters = new ArrayList<>();
+		filters.add(new InFilter<>(key, value));
+		return findByFilter(filters, clazz);
+	}
+
+	@Override
+	public Optional<T> findByFilter(List<AbstractFilter> filters, Class<T> clazz) {
+		Page<T> data = filter(filters, PageRequest.of(0, 1), clazz);
+		if (BooleanUtils.isFalse(data.hasContent())) {
+			return Optional.empty();
+		}
+		if (data.getTotalElements() > 1) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
+					"Multiple values present for filters but expecting single value.");
+		}
+		return Optional.of(data.getContent().get(0));
 	}
 }
