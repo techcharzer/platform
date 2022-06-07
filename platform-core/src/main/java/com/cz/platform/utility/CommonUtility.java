@@ -103,6 +103,9 @@ public final class CommonUtility {
 			case KIRANA_CHARZER_BLE:
 				valCriteria = Criteria.where(pathOfConfiguration.concat(".macAddress")).is(chargerControlId);
 				break;
+			case FLEXTRON_BLE_OMNI:
+				valCriteria = Criteria.where(pathOfConfiguration.concat(".macAddress")).is(chargerControlId);
+				break;
 			case KIRANA_CHARZER_GSM:
 				valCriteria = Criteria.where(pathOfConfiguration.concat(".deviceId")).is(chargerControlId);
 				break;
