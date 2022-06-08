@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cz.platform.dto.SuccessDTO;
 import com.cz.platform.security.SecurityUtils;
 import com.cz.platform.security.UserDTO;
 
@@ -18,19 +17,17 @@ public class DashboardController {
 	@Autowired
 	private GenericDashBoardService filterService;
 
-	@GetMapping("/secure/dasboard/app/{key}")
-	public SuccessDTO getDashBoardCardDTOForAPP(@PathVariable("key") String key) {
+	@GetMapping("/secure/dashboard/app/{key}")
+	public DashboardCardDTO getDashBoardCardDTOForAPP(@PathVariable("key") String key) {
 		UserDTO user = SecurityUtils.getLoggedInUser();
-		filterService.getDashBoardCardDTO(key, user.getUserId());
-		return SuccessDTO.of();
+		return filterService.getDashBoardCardDTO(key, user.getUserId());
 	}
 	
-	@GetMapping("/secure/dasboard/czo/{key}")
+	@GetMapping("/secure/dashboard/czo/{key}")
 	@Secured("ROLE_EXECUTE_CRON")
-	public SuccessDTO getDashBoardCardDTOForCZO(@PathVariable("key") String key) {
+	public DashboardCardDTO getDashBoardCardDTOForCZO(@PathVariable("key") String key) {
 		UserDTO user = SecurityUtils.getLoggedInUser();
-		filterService.getDashBoardCardDTO(key, user.getUserId());
-		return SuccessDTO.of();
+		return filterService.getDashBoardCardDTO(key, user.getUserId());
 	}
 
 }

@@ -16,10 +16,10 @@ public class GenericDashBoardService {
 
 	@FunctionalInterface
 	public interface CustomDasboardCardFetcher {
-		DasboardCardDTO fetchData(String userId);
+		DashboardCardDTO fetchData(String userId);
 	}
 
-	public DasboardCardDTO getDashBoardCardDTO(String key, String userId) {
+	public DashboardCardDTO getDashBoardCardDTO(String key, String userId) {
 		if (!MAP_OF_DATA_FETCHERS.containsKey(key)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
 					"Invalid cron key for execution");
