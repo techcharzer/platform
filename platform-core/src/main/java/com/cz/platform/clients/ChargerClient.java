@@ -33,7 +33,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -155,9 +154,9 @@ public class ChargerClient {
 		}
 	}
 
-	public ZoneChargerDTO[] getZoneChargers(String zoneId) {
+	public ChargerDTO[] getZoneChargers(String zoneId) {
 		if (ObjectUtils.isEmpty(zoneId)) {
-			return new ZoneChargerDTO[0];
+			return new ChargerDTO[0];
 		}
 		log.debug("fetchig :{}", zoneId);
 		HttpHeaders headers = new HttpHeaders();
@@ -170,20 +169,13 @@ public class ChargerClient {
 					urlConfig.getBaseUrl(), zoneId);
 
 			log.debug("request : {} body and headers {}", url, entity);
-			ResponseEntity<ZoneChargerDTO[]> response = template.exchange(url, HttpMethod.GET, entity,
-					ZoneChargerDTO[].class);
+			ResponseEntity<ChargerDTO[]> response = template.exchange(url, HttpMethod.GET, entity, ChargerDTO[].class);
 			return response.getBody();
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
 					"Charger api not working");
 		}
-	}
-
-	@Data
-	public static class ZoneChargerDTO {
-		private String chargerId;
-		private String name;
 	}
 
 }
