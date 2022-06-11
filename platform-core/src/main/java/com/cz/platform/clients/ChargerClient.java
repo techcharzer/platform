@@ -33,12 +33,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 public class ChargerClient {
-	
+
 	@Autowired
 	@Qualifier(PlatformConstants.EXTERNAL_SLOW_CLIENT)
 	private RestTemplate template;
@@ -51,7 +52,7 @@ public class ChargerClient {
 
 	@Autowired
 	private ObjectMapper mapper;
-	
+
 	@Autowired
 	private PlatformCommonService platformCommonService;
 
@@ -152,6 +153,37 @@ public class ChargerClient {
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
 					"Charger api not working");
 		}
+	}
+
+	public ZoneChargerDTO[] getZoneChargers(String zoneId) {
+		if (ObjectUtils.isEmpty(zoneId)) {
+			return new ZoneChargerDTO[0];
+		}
+		log.debug("fetchig :{}", zoneId);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("charger-service"));
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		try {
+			String url = MessageFormat.format("{0}/charger-service/secure/internal-call/charger/zone/{1}",
+					urlConfig.getBaseUrl(), zoneId);
+
+			log.debug("request : {} body and headers {}", url, entity);
+			ResponseEntity<ZoneChargerDTO[]> response = template.exchange(url, HttpMethod.GET, entity,
+					ZoneChargerDTO[].class);
+			return response.getBody();
+		} catch (HttpStatusCodeException exeption) {
+			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"Charger api not working");
+		}
+	}
+
+	@Data
+	public static class ZoneChargerDTO {
+		private String chargerId;
+		private String name;
 	}
 
 }
