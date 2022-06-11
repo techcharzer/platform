@@ -1,5 +1,6 @@
 package com.cz.platform.filters;
 
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.query.Criteria;
 
 import com.cz.platform.dto.GeoCoordinatesDTO;
@@ -25,7 +26,9 @@ public class NearFilter extends AbstractFilter {
 
 	@Override
 	public Criteria getCriteria() {
-		throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid configuration");
+		GeoJsonPoint point = new GeoJsonPoint(this.getLocation().getLon(), this.getLocation().getLat());
+		return Criteria.where(this.field).near(point).maxDistance(this.getMaxDistance())
+				.minDistance(this.getMinDistance());
 	}
 
 }
