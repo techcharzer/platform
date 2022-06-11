@@ -4,8 +4,6 @@ import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.query.Criteria;
 
 import com.cz.platform.dto.GeoCoordinatesDTO;
-import com.cz.platform.exception.PlatformExceptionCodes;
-import com.cz.platform.exception.ValidationException;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 
 import lombok.Getter;
