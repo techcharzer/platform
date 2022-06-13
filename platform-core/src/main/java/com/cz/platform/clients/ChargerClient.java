@@ -1,6 +1,7 @@
 package com.cz.platform.clients;
 
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,12 +112,15 @@ public class ChargerClient {
 		}
 	}
 
-	public Map<String, ChargerDTO> getChargerById(Set<String> userIds) {
-		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
-		for (String mobileNumber : userIds) {
-			filters.add("id", mobileNumber);
+	public Map<String, ChargerDTO> getChargerById(Set<String> chargerIds) {
+		if (ObjectUtils.isEmpty(chargerIds)) {
+			return Collections.emptyMap();
 		}
-		List<ChargerDTO> page = getChargerByFilter(filters, PageRequest.of(0, userIds.size()));
+		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
+		for (String chargerId : chargerIds) {
+			filters.add("id", chargerId);
+		}
+		List<ChargerDTO> page = getChargerByFilter(filters, PageRequest.of(0, chargerIds.size()));
 		Map<String, ChargerDTO> map = new HashMap<>();
 		for (ChargerDTO obj : page) {
 			map.put(obj.getChargerId(), obj);
