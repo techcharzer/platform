@@ -19,4 +19,6 @@ public interface UserDTO {
 	public boolean hasCZOAccess();
 
 	public void validateCZOAccess();
+
+	public String getSource();
 }

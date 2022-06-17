@@ -19,6 +19,7 @@ class LoggedInUser implements UserDTO {
 	private String mobileNumber;
 	private List<RoleDTO> roles;
 	private UserType userType;
+	private String source;
 
 	@Override
 	public ZoneId getZoneId() {
