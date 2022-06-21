@@ -3,6 +3,7 @@ package com.cz.platform.security;
 import java.time.ZoneId;
 import java.util.List;
 
+import com.cz.platform.enums.OperatingSystem;
 import com.cz.platform.enums.UserType;
 
 public interface UserDTO {
@@ -21,4 +22,6 @@ public interface UserDTO {
 	public void validateCZOAccess();
 
 	public String getSource();
+
+	public OperatingSystem getOperatingSystem();
 }

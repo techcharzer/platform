@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.cz.platform.PlatformConstants;
+import com.cz.platform.enums.OperatingSystem;
 import com.cz.platform.enums.UserType;
 import com.cz.platform.exception.AuthenticationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
@@ -20,6 +21,7 @@ class LoggedInUser implements UserDTO {
 	private List<RoleDTO> roles;
 	private UserType userType;
 	private String source;
+	private OperatingSystem operatingSystem;
 
 	@Override
 	public ZoneId getZoneId() {
