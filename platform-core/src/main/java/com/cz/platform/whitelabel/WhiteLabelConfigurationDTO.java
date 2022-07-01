@@ -6,7 +6,7 @@ import java.util.Set;
 import lombok.Data;
 
 @Data
-public class WhiteLabelConfiguration {
+public class WhiteLabelConfigurationDTO {
 	private String appName;
 	private String packageName;
 	private WhiteLabelAppTypeEnum type;
