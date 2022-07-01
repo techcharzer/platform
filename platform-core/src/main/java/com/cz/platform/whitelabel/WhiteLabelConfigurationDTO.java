@@ -1,6 +1,7 @@
 package com.cz.platform.whitelabel;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import lombok.Data;
@@ -15,4 +16,5 @@ public class WhiteLabelConfigurationDTO {
 	private String ownerId;
 	private BannerConfig banner;
 	private Set<String> dhAppViewersId = new HashSet<>();
+	private List<LaunchedCity> launchedCities;
 }
