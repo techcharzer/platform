@@ -22,9 +22,9 @@ public class DashboardController {
 		UserDTO user = SecurityUtils.getLoggedInUser();
 		return filterService.getDashBoardCardDTO(key, user.getUserId());
 	}
-	
+
 	@GetMapping("/secure/dashboard/czo/{key}")
-	@Secured("ROLE_EXECUTE_CRON")
+	@Secured("ROLE_EXECUTE_DASHBOARD")
 	public DashboardCardDTO getDashBoardCardDTOForCZO(@PathVariable("key") String key) {
 		UserDTO user = SecurityUtils.getLoggedInUser();
 		return filterService.getDashBoardCardDTO(key, user.getUserId());

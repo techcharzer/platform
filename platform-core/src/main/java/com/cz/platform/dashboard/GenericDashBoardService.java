@@ -22,12 +22,12 @@ public class GenericDashBoardService {
 	public DashboardCardDTO getDashBoardCardDTO(String key, String userId) {
 		if (!MAP_OF_DATA_FETCHERS.containsKey(key)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
-					"Invalid cron key for execution");
+					"Invalid key for fetching dashboard");
 		}
 		try {
 			return MAP_OF_DATA_FETCHERS.get(key).fetchData(userId);
 		} catch (Exception e) {
-			log.error("error occured while executing the cron: {}", key, e);
+			log.error("error occured while fetching the dashboard: {}", key, e);
 			throw new ApplicationException(PlatformExceptionCodes.INVALID_DATA.getCode(), e.getMessage());
 		}
 	}
