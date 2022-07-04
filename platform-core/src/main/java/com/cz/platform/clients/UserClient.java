@@ -33,6 +33,7 @@ import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 import com.cz.platform.security.SecurityConfigProps;
 import com.cz.platform.utility.PlatformCommonService;
+import com.cz.platform.whitelabel.WhiteLabelAppTypeEnum;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -316,10 +317,10 @@ public class UserClient {
 	}
 
 	public UserGetOrCreateResponse getOrCreateUser(String mobileNumber) {
-		return getOrCreateUser(mobileNumber, "CHARZER_APP");
+		return getOrCreateUser(mobileNumber, WhiteLabelAppTypeEnum.CHARZER_APP);
 	}
 
-	public UserGetOrCreateResponse getOrCreateUser(String mobileNumber, String appSource) {
+	public UserGetOrCreateResponse getOrCreateUser(String mobileNumber, WhiteLabelAppTypeEnum appSource) {
 		if (ObjectUtils.isEmpty(mobileNumber)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
 		}
@@ -355,7 +356,7 @@ public class UserClient {
 	@Data
 	public static class GetOrCreateUserRequest {
 		private String mobile;
-		private String appSource;
+		private WhiteLabelAppTypeEnum appSource;
 	}
 
 	public List<GroupDTO> getUserGroups(String userId) {
