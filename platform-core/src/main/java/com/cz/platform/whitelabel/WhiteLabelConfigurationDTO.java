@@ -10,6 +10,8 @@ import lombok.Data;
 public class WhiteLabelConfigurationDTO {
 	private String appName;
 	private String packageName;
+	private String downloadLink;
+	private Long walletInitializationCredits;
 	private WhiteLabelAppTypeEnum type;
 	private ReferralConfig referralConfig;
 	private NotificationTemplate notificationTemplates;
