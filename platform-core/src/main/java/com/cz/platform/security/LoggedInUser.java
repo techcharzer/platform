@@ -10,6 +10,7 @@ import com.cz.platform.enums.OperatingSystem;
 import com.cz.platform.enums.UserType;
 import com.cz.platform.exception.AuthenticationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
+import com.cz.platform.whitelabel.WhiteLabelAppTypeEnum;
 
 import lombok.Data;
 
@@ -20,7 +21,7 @@ class LoggedInUser implements UserDTO {
 	private String mobileNumber;
 	private List<RoleDTO> roles;
 	private UserType userType;
-	private String source;
+	private WhiteLabelAppTypeEnum source;
 	private OperatingSystem operatingSystem;
 
 	@Override

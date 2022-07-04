@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.cz.platform.enums.OperatingSystem;
 import com.cz.platform.enums.UserType;
+import com.cz.platform.whitelabel.WhiteLabelAppTypeEnum;
 
 public interface UserDTO {
 	public String getUserId();
@@ -21,7 +22,7 @@ public interface UserDTO {
 
 	public void validateCZOAccess();
 
-	public String getSource();
+	public WhiteLabelAppTypeEnum getSource();
 
 	public OperatingSystem getOperatingSystem();
 }
