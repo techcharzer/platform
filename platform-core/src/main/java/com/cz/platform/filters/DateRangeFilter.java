@@ -61,7 +61,7 @@ public class DateRangeFilter extends AbstractFilter {
 		List<Range<Instant>> list = this.ranges;
 		List<Criteria> listOfCriterias = new ArrayList<>();
 		for (Range<Instant> val : list) {
-			listOfCriterias.add(Criteria.where(field).gte(val.getFrom()).lte(val.getTo()));
+			listOfCriterias.add(Criteria.where(field).gte(val.getFrom()).lt(val.getTo()));
 		}
 		Criteria[] array = listOfCriterias.toArray(new Criteria[listOfCriterias.size()]);
 		criteria.orOperator(array);
