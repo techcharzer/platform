@@ -101,28 +101,28 @@ public final class CommonUtility {
 			Criteria valCriteria = null;
 			switch (val) {
 			case KIRANA_CHARZER_BLE:
-				valCriteria = Criteria.where(pathOfConfiguration.concat(".macAddress")).is(chargerControlId);
+				valCriteria = Criteria.where(pathOfConfiguration.concat(".macAddress")).regex(chargerControlId, "i");
 				break;
 			case FLEXTRON_BLE_OMNI:
-				valCriteria = Criteria.where(pathOfConfiguration.concat(".macAddress")).is(chargerControlId);
+				valCriteria = Criteria.where(pathOfConfiguration.concat(".macAddress")).regex(chargerControlId, "i");
 				break;
 			case KIRANA_CHARZER_GSM:
-				valCriteria = Criteria.where(pathOfConfiguration.concat(".deviceId")).is(chargerControlId);
+				valCriteria = Criteria.where(pathOfConfiguration.concat(".deviceId")).regex(chargerControlId, "i");
 				break;
 			case KIRANA_CHARZER_FLEXTRON:
-				valCriteria = Criteria.where(pathOfConfiguration.concat(".ccuId")).is(chargerControlId);
+				valCriteria = Criteria.where(pathOfConfiguration.concat(".ccuId")).regex(chargerControlId, "i");
 				break;
 			case KIRANA_CHARZER_FLEXTRON_WIFI:
-				valCriteria = Criteria.where(pathOfConfiguration.concat(".ccuId")).is(chargerControlId);
+				valCriteria = Criteria.where(pathOfConfiguration.concat(".ccuId")).regex(chargerControlId, "i");
 				break;
 			case CHARGE_MOD_BHARAT_AC:
-				valCriteria = Criteria.where(pathOfConfiguration.concat(".imeiNumber")).is(chargerControlId);
+				valCriteria = Criteria.where(pathOfConfiguration.concat(".imeiNumber")).regex(chargerControlId, "i");
 				break;
 			case OCPP_16_JSON_CHARGER:
-				valCriteria = Criteria.where(pathOfConfiguration.concat(".chargerBoxId")).is(chargerControlId);
+				valCriteria = Criteria.where(pathOfConfiguration.concat(".chargerBoxId")).regex(chargerControlId, "i");
 				break;
 			case EV_POINT_CHARGER:
-				valCriteria = Criteria.where(pathOfConfiguration.concat(".deviceId")).is(chargerControlId);
+				valCriteria = Criteria.where(pathOfConfiguration.concat(".deviceId")).regex(chargerControlId, "i");
 				break;
 			case OTHER_NETWORK_CHARGER:
 				break;
