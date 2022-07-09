@@ -14,7 +14,7 @@ import com.cz.platform.notifications.GenericRabbitQueueConfiguration;
 import lombok.Data;
 
 @Service
-public class GenericAuditingService {
+public class AuditService {
 
 	@Autowired
 	private GenericRabbitQueueConfiguration rabbitQueueConfiguration;
@@ -25,28 +25,31 @@ public class GenericAuditingService {
 	@Value("${spring.application.name}")
 	private String applicationName;
 
-	public void updateValue(Class clazz, String id, UpdateRecord record, String createdBy, Instant time) {
+	public void updateValue(Class clazz, String id, UpdateRecord record, String createdBy, Instant time,
+			String reason) {
 		List<UpdateRecord> list = new ArrayList<>();
 		list.add(record);
-		updateValue(clazz, id, list, createdBy, time);
+		updateValue(clazz, id, list, createdBy, time, reason);
 	}
 
-	public void updateValue(Class clazz, String id, List<UpdateRecord> records, String createdBy, Instant time) {
+	public void updateValue(Class clazz, String id, List<UpdateRecord> records, String createdBy, Instant time,
+			String reason) {
 		UpdateDiffRequest request = new UpdateDiffRequest();
 		request.setCreatedAt(time);
 		request.setCreatedBy(createdBy);
 		request.setEntity(clazz.getSimpleName());
-		request.setId(id);
+		request.setEntityId(id);
+		request.setReason(reason);
 		request.setRecords(records);
 		template.convertAndSend(rabbitQueueConfiguration.getEntityAuditing(), request);
 	}
 
 	@Data
 	public static class UpdateDiffRequest {
-		private String id;
 		private String entity;
 		private String entityId;
 		private List<UpdateRecord> records;
+		private String reason;
 		private String createdBy;
 		private Instant createdAt;
 	}
