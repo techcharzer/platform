@@ -14,4 +14,5 @@ import lombok.Data;
 public class GenericRabbitQueueConfiguration {
 	private QueueConfiguration sendNotification;
 	private QueueConfiguration updateDailyTracker;
+	private QueueConfiguration entityAuditing;
 }
