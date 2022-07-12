@@ -39,7 +39,7 @@ public class GenericAuditService {
 
 		AuditRequest request = new AuditRequest();
 		request.setCurrSnapshot(snapshotData);
-		request.setData(metaData);
+		request.setMetaData(metaData);
 		template.convertAndSend(rabbitQueueConfiguration.getEntityAuditing(), request);
 	}
 
@@ -54,7 +54,7 @@ public class GenericAuditService {
 
 	@Data
 	public static class AuditRequest {
-		private AuditMetaData data;
+		private AuditMetaData metaData;
 		private JsonNode currSnapshot;
 	}
 
