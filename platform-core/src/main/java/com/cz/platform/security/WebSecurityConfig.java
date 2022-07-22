@@ -43,6 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		// Entry points
 		http.antMatcher("/secure/**").authorizeRequests().anyRequest().authenticated();
+		http.antMatcher("/actuator/**").authorizeRequests().anyRequest().authenticated();
 
 		// If a user try to access a resource without having enough permissions
 		http.exceptionHandling().accessDeniedPage("/login");
