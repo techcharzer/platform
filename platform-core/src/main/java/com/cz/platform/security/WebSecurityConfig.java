@@ -42,9 +42,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 		// Entry points
-		http.authorizeRequests(
-				(authorizeRequests) -> authorizeRequests.antMatchers("/actuator/**").hasRole("ACTUATOR_ENDPOINTS"))
-				.antMatcher("/secure/**").authorizeRequests().anyRequest().authenticated();
+		http.authorizeRequests().antMatchers("/secure/**").authenticated().antMatchers("/actuator/**")
+				.hasRole("ACTUATOR_ENDPOINTS").anyRequest().authenticated();
 
 		// If a user try to access a resource without having enough permissions
 		http.exceptionHandling().accessDeniedPage("/login");
