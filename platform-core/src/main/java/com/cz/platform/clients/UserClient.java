@@ -27,6 +27,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.cz.platform.PlatformConstants;
 import com.cz.platform.dto.GroupDTO;
+import com.cz.platform.dto.HostDetails;
 import com.cz.platform.dto.UserDetails;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
@@ -408,6 +409,33 @@ public class UserClient {
 				return data.get("groupId").asText();
 			}
 			return null;
+		} catch (HttpStatusCodeException exception) {
+			if (commonService.handle404Error(exception.getResponseBodyAsString())) {
+				return null;
+			}
+			log.error("error response from the server :{}", exception.getResponseBodyAsString());
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"User api not working");
+		}
+	}
+
+	public HostDetails getHostDetails(String mobileNumber) {
+		if (ObjectUtils.isEmpty(mobileNumber)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
+		}
+		log.debug("fetching: {}", mobileNumber);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		try {
+			String url = MessageFormat.format("{0}/user-service/secure/internal/host/mobileNumber/{1}",
+					urlConfig.getBaseUrl(), mobileNumber);
+			log.debug("request: {}, headers {}", url, entity);
+			ResponseEntity<HostDetails> response = template.exchange(url, HttpMethod.GET, entity, HostDetails.class);
+			log.info("api response : {}", response.getBody());
+			return response.getBody();
 		} catch (HttpStatusCodeException exception) {
 			if (commonService.handle404Error(exception.getResponseBodyAsString())) {
 				return null;
