@@ -446,4 +446,30 @@ public class UserClient {
 		}
 	}
 
+	public UserGetOrCreateResponse getOrCreatePremiseOwner(String mobileNumber) {
+		if (ObjectUtils.isEmpty(mobileNumber)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid mobileNumber");
+		}
+		log.debug("fetching or creating user with mobile :{}", mobileNumber);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
+		GetOrCreateUserRequest request = new GetOrCreateUserRequest();
+		request.setMobile(mobileNumber);
+		request.setAppSource(WhiteLabelAppTypeEnum.CHARZER_APP);
+		HttpEntity<GetOrCreateUserRequest> entity = new HttpEntity<>(request, headers);
+		try {
+			String url = MessageFormat.format("{0}/user-service/secure/internal-server/host", urlConfig.getBaseUrl());
+			log.debug("request for fetchig/creating user details : {} body and headers {}", url, entity);
+			ResponseEntity<UserGetOrCreateResponse> response = template.exchange(url, HttpMethod.POST, entity,
+					UserGetOrCreateResponse.class);
+			return response.getBody();
+		} catch (HttpStatusCodeException exeption) {
+			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"User api not working");
+		}
+	}
+
 }
