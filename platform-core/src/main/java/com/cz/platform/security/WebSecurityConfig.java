@@ -41,9 +41,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// No session will be created or used by spring security
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+		// need to add permit all for actuator request as well.
+//		http.authorizeRequests().antMatchers("/secure/**").authenticated().antMatchers("/actuator/**")
+//				.hasRole("ACTUATOR_ENDPOINTS").anyRequest().authenticated();
+
 		// Entry points
-		http.authorizeRequests().antMatchers("/secure/**").authenticated().antMatchers("/actuator/**")
-				.hasRole("ACTUATOR_ENDPOINTS").anyRequest().authenticated();
+		http.antMatcher("/secure/**").authorizeRequests().anyRequest().authenticated();
 
 		// If a user try to access a resource without having enough permissions
 		http.exceptionHandling().accessDeniedPage("/login");
