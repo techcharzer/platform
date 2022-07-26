@@ -90,9 +90,9 @@ public class AuthService {
 		HttpEntity<TokenRequest> entity = new HttpEntity<>(requets, headers);
 		try {
 			String url = MessageFormat.format("{0}/auth-service/validate-token/", urlConfig.getBaseUrl());
-			log.debug("url: {} token request : {} headers : {}", url, requets, headers);
+			log.trace("url: {} token request : {} headers : {}", url, requets, headers);
 			HttpEntity<JsonNode> response = template.exchange(url, HttpMethod.POST, entity, JsonNode.class);
-			log.debug("response from the server : {}", response.getBody());
+			log.trace("response from the server : {}", response.getBody());
 			return mapper.convertValue(response.getBody(), LoggedInUser.class);
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from  the server : {}", exeption.getResponseBodyAsString());
