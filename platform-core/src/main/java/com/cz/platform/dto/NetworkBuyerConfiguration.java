@@ -6,6 +6,6 @@ import lombok.Data;
 
 @Data
 public class NetworkBuyerConfiguration implements HostConfiguration {
-	private HostTypeEnum type = HostTypeEnum.NETWORK_BUYER;
+	private HostTypeEnum type = HostTypeEnum.NETWORK_BUYER_IP;
 	private Double profitSharePercentageOnBooking;
 }
