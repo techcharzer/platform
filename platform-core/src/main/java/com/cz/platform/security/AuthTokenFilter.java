@@ -48,6 +48,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 				SecurityContextHolder.setContext(secureContext);
 			} else {
 				String serverSideToken = httpServletRequest.getHeader(PlatformConstants.SSO_TOKEN_HEADER);
+				if (ObjectUtils.isEmpty(serverSideToken)) {
+					// fallback to request parameters for parsing the token. 
+					// added for only google schedule task
+					serverSideToken = httpServletRequest.getParameter(PlatformConstants.SSO_TOKEN_HEADER);
+				}
 				if (!ObjectUtils.isEmpty(serverSideToken)) {
 					Authentication auth = authService.getServerAuthentication(serverSideToken);
 					SecurityContextImpl secureContext = new SecurityContextImpl();
