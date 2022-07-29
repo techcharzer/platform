@@ -127,8 +127,8 @@ public class HardwareServiceClient {
 	public HardwareStatusInfo getHardwareCurrentStatusInfo(String hardwareId, String socketId) {
 		List<CurrentStatusInfoRequest> request = new ArrayList<>();
 		request.add(new CurrentStatusInfoRequest(hardwareId, socketId));
-		Map<String, HardwareStatusInfo> response = getHardwareCurrentStatusInfo(request);
-		return response.get(CommonUtility.getKey(hardwareId, socketId));
+		MultipleHardwareStatus response = getHardwareCurrentStatusInfo(request);
+		return response.get(hardwareId, socketId);
 	}
 
 	@Data
@@ -138,9 +138,9 @@ public class HardwareServiceClient {
 		private String socketId;
 	}
 
-	public Map<String, HardwareStatusInfo> getHardwareCurrentStatusInfo(List<CurrentStatusInfoRequest> hardwareIds) {
+	public MultipleHardwareStatus getHardwareCurrentStatusInfo(List<CurrentStatusInfoRequest> hardwareIds) {
 		if (ObjectUtils.isEmpty(hardwareIds)) {
-			return new HashMap<>();
+			return new MultipleHardwareStatus();
 		}
 		log.debug("fetchig userId :{}", hardwareIds);
 		HttpHeaders headers = new HttpHeaders();
@@ -154,8 +154,12 @@ public class HardwareServiceClient {
 			log.debug("request for fetchig details : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.POST, entity,
 					JsonNode.class);
-			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, HardwareStatusInfo>>() {
-			});
+			Map<String, HardwareStatusInfo> hardwareStatuses = mapper.convertValue(response.getBody(),
+					new TypeReference<Map<String, HardwareStatusInfo>>() {
+					});
+			MultipleHardwareStatus status = new MultipleHardwareStatus();
+			status.setHardwareStatuses(hardwareStatuses);
+			return status;
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
