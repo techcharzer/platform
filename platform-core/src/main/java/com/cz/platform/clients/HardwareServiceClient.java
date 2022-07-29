@@ -30,7 +30,6 @@ import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 import com.cz.platform.security.SecurityConfigProps;
-import com.cz.platform.utility.CommonUtility;
 import com.cz.platform.utility.PlatformCommonService;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
@@ -124,42 +123,40 @@ public class HardwareServiceClient {
 		}
 	}
 
-	public HardwareStatusInfo getHardwareCurrentStatusInfo(String hardwareId, String socketId) {
-		List<CurrentStatusInfoRequest> request = new ArrayList<>();
-		request.add(new CurrentStatusInfoRequest(hardwareId, socketId));
-		MultipleHardwareStatus response = getHardwareCurrentStatusInfo(request);
+	public MeterValue getMeterValues(String hardwareId, String socketId) {
+		List<MeterValueRequest> request = new ArrayList<>();
+		request.add(new MeterValueRequest(hardwareId, socketId));
+		MultipleMeterValue response = getMeterValues(request);
 		return response.get(hardwareId, socketId);
 	}
 
 	@Data
 	@AllArgsConstructor
-	public static class CurrentStatusInfoRequest {
+	public static class MeterValueRequest {
 		private String hardwareId;
 		private String socketId;
 	}
 
-	public MultipleHardwareStatus getHardwareCurrentStatusInfo(List<CurrentStatusInfoRequest> hardwareIds) {
+	public MultipleMeterValue getMeterValues(List<MeterValueRequest> hardwareIds) {
 		if (ObjectUtils.isEmpty(hardwareIds)) {
-			return new MultipleHardwareStatus();
+			return new MultipleMeterValue(null);
 		}
 		log.debug("fetchig userId :{}", hardwareIds);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("ccu-service"));
-		HttpEntity<List<CurrentStatusInfoRequest>> entity = new HttpEntity<>(hardwareIds, headers);
+		HttpEntity<List<MeterValueRequest>> entity = new HttpEntity<>(hardwareIds, headers);
 		try {
 			String url = MessageFormat.format("{0}/ccu/secure/hardware/status", urlConfig.getBaseUrl());
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
 			log.debug("request for fetchig details : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.POST, entity,
 					JsonNode.class);
-			Map<String, HardwareStatusInfo> hardwareStatuses = mapper.convertValue(response.getBody(),
-					new TypeReference<Map<String, HardwareStatusInfo>>() {
+			Map<String, MeterValue> meterValues = mapper.convertValue(response.getBody(),
+					new TypeReference<Map<String, MeterValue>>() {
 					});
-			MultipleHardwareStatus status = new MultipleHardwareStatus();
-			status.setHardwareStatuses(hardwareStatuses);
-			return status;
+			return new MultipleMeterValue(meterValues);
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),

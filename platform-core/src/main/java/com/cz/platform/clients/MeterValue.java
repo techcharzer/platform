@@ -6,7 +6,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import lombok.Data;
 
 @Data
-public class HardwareStatusInfo {
+public class MeterValue {
 	private String hardwareId;
 	private String socketId;
 	private ChargerOnlineDTO onlineDTO;
