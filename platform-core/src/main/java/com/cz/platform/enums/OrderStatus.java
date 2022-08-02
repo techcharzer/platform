@@ -1,5 +1,5 @@
 package com.cz.platform.enums;
 
 public enum OrderStatus {
-	OPEN, FORCE_CLOSE, CLOSED
+	OPEN, FORCE_CLOSE, CLOSED, ARCHIVED
 }
