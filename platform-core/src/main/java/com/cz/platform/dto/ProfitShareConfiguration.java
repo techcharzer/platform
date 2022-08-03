@@ -12,6 +12,6 @@ public class ProfitShareConfiguration implements Serializable {
 	private static final long serialVersionUID = -21090774840692732L;
 	private Double charzerShare;
 	private UserShare dealerShare;
-	private UserShare dealerShare1;
+	private UserShare secondaryDealerShare;
 	private UserShare premiseOwnerShare;
 }
