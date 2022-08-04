@@ -82,7 +82,6 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public ErrorField validationException(ValidationException e, HttpServletRequest request) {
-		String requestLog = logRequest(request);
 		switch (e.getLogType()) {
 		case ERROR:
 			LOG.error("ValidationException occured: {}", e.getError(), e);

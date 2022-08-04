@@ -17,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.cz.platform.PlatformConstants;
 import com.cz.platform.dto.GeoCoordinatesDTO;
-import com.cz.platform.dto.UserDetails;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.security.SecurityConfigProps;
