@@ -1,8 +1,14 @@
 package com.cz.platform.utility;
 
+import java.util.concurrent.TimeUnit;
+
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
 import com.cz.platform.PlatformConstants;
+import com.cz.platform.exception.PlatformExceptionCodes;
+import com.cz.platform.exception.ValidationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +20,7 @@ import lombok.AllArgsConstructor;
 public final class PlatformCommonService {
 
 	private ObjectMapper mapper;
+	private RedissonClient redissonClient;
 
 	public boolean handle404Error(String errorResponse) {
 		JsonNode node = null;
@@ -26,5 +33,26 @@ public final class PlatformCommonService {
 			return true;
 		}
 		return false;
+	}
+
+	public void takeLock(String key, long leaseTimeInSeconds) {
+		takeLock(key, leaseTimeInSeconds, "Request being processed, please wait...");
+	}
+
+	public void takeLock(String key, long leaseTimeInSeconds, String errorMessage) {
+		RLock lock = redissonClient.getLock(key);
+		if (lock.isLocked()) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), errorMessage);
+		}
+		lock.lock(leaseTimeInSeconds, TimeUnit.SECONDS);
+	}
+
+	public void releaseLock(String key) {
+		RLock lock = redissonClient.getLock(key);
+		releaseLock(lock);
+	}
+
+	public void releaseLock(RLock lock) {
+		lock.unlock();
 	}
 }
