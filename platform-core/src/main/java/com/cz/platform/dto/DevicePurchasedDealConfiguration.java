@@ -11,7 +11,6 @@ public class DevicePurchasedDealConfiguration implements DealConfigurationData, 
 	 * 
 	 */
 	private static final long serialVersionUID = -8571455224670904026L;
-	private String userId;
 	private Long electricityRate;
 	private String electricityBillImageUrl;
 }

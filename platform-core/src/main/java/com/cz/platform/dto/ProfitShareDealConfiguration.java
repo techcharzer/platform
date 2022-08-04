@@ -10,7 +10,6 @@ public class ProfitShareDealConfiguration implements DealConfigurationData, Seri
 	 * 
 	 */
 	private static final long serialVersionUID = -8917898772431810695L;
-	private String userId;
 	private Long electricityRate;
 	private String electricityBillImageUrl;
 }
