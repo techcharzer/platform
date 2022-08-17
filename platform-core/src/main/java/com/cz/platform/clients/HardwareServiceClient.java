@@ -182,6 +182,11 @@ public class HardwareServiceClient {
 	}
 
 	private void executeCommand(CommandDTO command) {
+		String key = MessageFormat.format("HARDWARE_EXECUTE_COMMAND_WAIT_{0}_{1}", command.getHardwareId(),
+				command.getSocketId());
+		// addded wait timme of 10 seconds for each hardware and socket combination to
+		// prevent confusion to the charger. TECH-T1172
+		platformCommonService.takeLock(key, 10);
 		rabbitMqTemplate.convertAndSend(EXECUTE_COMMAND_QUEUE_CONFIG, command);
 	}
 
