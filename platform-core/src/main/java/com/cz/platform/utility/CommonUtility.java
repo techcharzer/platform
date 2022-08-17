@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -27,6 +29,7 @@ import com.cz.platform.dto.HybridAddressDTO;
 import com.cz.platform.dto.Image;
 import com.cz.platform.dto.PostalAddress;
 import com.cz.platform.dto.Range;
+import com.cz.platform.dto.SaveTagRequest;
 import com.cz.platform.enums.ChargerType;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
@@ -316,6 +319,29 @@ public final class CommonUtility {
 		} else {
 			String last4Digits = mobileNumber.substring(mobileNumber.length() - 4);
 			return MessageFormat.format("+91 xxxxxx{0}", last4Digits);
+		}
+	}
+
+	public static void validateRequest(SaveTagRequest request) {
+		if (ObjectUtils.isEmpty(request)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid request");
+		}
+		if (ObjectUtils.isEmpty(request.getEntityId())) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid entityId");
+		}
+		if (!ObjectUtils.isEmpty(request.getTags())) {
+			for (String tag : request.getTags()) {
+				validateTag(tag);
+			}
+		}
+	}
+
+	public static void validateTag(String tag) {
+		Pattern p = Pattern.compile("[^a-z0-9_]", Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(tag);
+		if (!m.find()) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
+					"Only Alphanumeric and underscore are allowed.");
 		}
 	}
 
