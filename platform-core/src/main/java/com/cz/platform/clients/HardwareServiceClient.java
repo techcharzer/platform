@@ -197,7 +197,7 @@ public class HardwareServiceClient {
 		commandDTO.setCommandData(stopCharging);
 		commandDTO.setHardwareId(stopCharging.getHardwareId());
 		commandDTO.setSocketId(stopCharging.getSocketId());
-		commandDTO.setUserId(null);
+		commandDTO.setUserId(stopCharging.getUserId());
 		executeCommand(commandDTO);
 	}
 
