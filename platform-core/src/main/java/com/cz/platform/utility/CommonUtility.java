@@ -47,6 +47,8 @@ public final class CommonUtility {
 
 	private static final String PLACEHOLDER_SUFFIX_CURLY = "}";
 	private static final String PLACEHOLDER_PREFIX_CURLY = "{";
+	private static final Pattern ALPHANUMERIC_AND_UNDERSCORE_PATTERN = Pattern.compile("[A-Za-z0-9_]+",
+			Pattern.CASE_INSENSITIVE);
 
 	static {
 		DAYS_MAPPING.put(0, "Today");
@@ -337,12 +339,11 @@ public final class CommonUtility {
 	}
 
 	public static void validateTag(String tag) {
-		Pattern p = Pattern.compile("[^a-z0-9_]", Pattern.CASE_INSENSITIVE);
-		Matcher m = p.matcher(tag);
-		if (!m.find()) {
+		Matcher m = ALPHANUMERIC_AND_UNDERSCORE_PATTERN.matcher(tag);
+
+		if (!m.matches()) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
-					"Only Alphanumeric and underscore are allowed.");
+					"Only Alphanumeric and underscore are allowed. Invalid tag : " + tag);
 		}
 	}
-
 }
