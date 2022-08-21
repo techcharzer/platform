@@ -9,7 +9,7 @@ import lombok.Data;
 public class MeterValue {
 	private String hardwareId;
 	private String socketId;
-	private ChargerOnlineDTO onlineDTO;
+	private HardwareStatusDTO onlineDTO;
 	private Boolean relay;
 	private Long ecInmA;
 	private Long cmrInWH;

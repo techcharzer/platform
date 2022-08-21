@@ -5,7 +5,7 @@ import java.time.Instant;
 import lombok.Data;
 
 @Data
-public class ChargerOnlineDTO {
+public class HardwareStatusDTO {
 	private Boolean isOnline = false;
 	private Instant lastSeen;
 

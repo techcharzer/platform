@@ -62,14 +62,14 @@ public class HardwareServiceClient {
 		EXECUTE_COMMAND_QUEUE_CONFIG.setRoutingKey("execute_command");
 	}
 
-	public ChargerOnlineDTO getChargerOnline(String hardwareId) {
+	public HardwareStatusDTO getChargerOnline(String hardwareId) {
 		Set<String> hardwareIdSet = new HashSet<>();
 		hardwareIdSet.add(hardwareId);
-		Map<String, ChargerOnlineDTO> map = getChargerOnline(hardwareIdSet);
+		Map<String, HardwareStatusDTO> map = getChargerOnline(hardwareIdSet);
 		return map.get(hardwareId);
 	}
 
-	public Map<String, ChargerOnlineDTO> getChargerOnline(Set<String> hardwareIds) {
+	public Map<String, HardwareStatusDTO> getChargerOnline(Set<String> hardwareIds) {
 		if (ObjectUtils.isEmpty(hardwareIds)) {
 			return new HashMap<>();
 		}
@@ -88,7 +88,7 @@ public class HardwareServiceClient {
 			log.debug("request for fetchig details : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
 					JsonNode.class);
-			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, ChargerOnlineDTO>>() {
+			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, HardwareStatusDTO>>() {
 			});
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
@@ -166,7 +166,7 @@ public class HardwareServiceClient {
 
 	public void startCharging(StartChargingDTO startCommand) {
 		log.debug("start charging :{}, socketId: {}", startCommand);
-		ChargerOnlineDTO online = getChargerOnline(startCommand.getHardwareId());
+		HardwareStatusDTO online = getChargerOnline(startCommand.getHardwareId());
 		if (!ObjectUtils.isEmpty(online) && BooleanUtils.isTrue(online.getIsOnline())) {
 			CommandDTO commandDTO = new CommandDTO();
 			commandDTO.setCommand(CommandType.START_BOOKING);
@@ -186,7 +186,8 @@ public class HardwareServiceClient {
 				command.getSocketId());
 		// addded wait timme of 10 seconds for each hardware and socket combination to
 		// prevent confusion to the charger. TECH-T1172
-		platformCommonService.takeLock(key, 10);
+		platformCommonService.takeLock(key, 10,
+				"Your old request is being processed please wait for 10sec to proceed further.");
 		rabbitMqTemplate.convertAndSend(EXECUTE_COMMAND_QUEUE_CONFIG, command);
 	}
 
