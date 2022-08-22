@@ -12,6 +12,6 @@ public class NavigationData {
 	private Map<String, String> metaData = new HashMap<>();
 
 	public static enum OpenIn {
-		MOBILE_APP, BROWSER
+		MOBILE_APP, INTERNET_BROWSER
 	}
 }
