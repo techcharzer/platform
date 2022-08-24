@@ -16,7 +16,7 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class GlobalNotificationService {
+public class GenericNotificationService {
 
 	private CustomRabbitMQTemplate rabbitTemplate;
 
@@ -33,6 +33,23 @@ public class GlobalNotificationService {
 		notificationDTO.setChannel(Channel.SMS);
 		SMSNotificationTo smsNotificationTo = new SMSNotificationTo();
 		smsNotificationTo.setMobileNumber(mobile);
+		notificationDTO.setTo(smsNotificationTo);
+		notificationDTO.setTemplates(templates);
+		notificationDTO.setData(data);
+		sendNotification(notificationDTO);
+	}
+
+	public void sendWhatsapp(String mobile, Map<String, String> data, String templates) {
+		sendWhatsapp(mobile, data, Arrays.asList(templates));
+	}
+
+	public void sendWhatsapp(String mobile, Map<String, String> data, List<String> templates) {
+		NotificationDTO notificationDTO = new NotificationDTO();
+		notificationDTO.setId(UUID.randomUUID().toString());
+		notificationDTO.setType(NotificationType.GENERIC_NOTIFICATION);
+		notificationDTO.setChannel(Channel.WHATSAPP);
+		WhatsappNotificationTo smsNotificationTo = new WhatsappNotificationTo();
+		smsNotificationTo.setPhone(mobile);
 		notificationDTO.setTo(smsNotificationTo);
 		notificationDTO.setTemplates(templates);
 		notificationDTO.setData(data);
