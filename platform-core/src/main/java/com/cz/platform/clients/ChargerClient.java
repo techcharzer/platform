@@ -9,8 +9,6 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -184,9 +182,9 @@ public class ChargerClient {
 		}
 	}
 
-	public Page<ChargerDTO> getGroupChargers(String groupId, Pageable page) {
+	public ChargerDTO[] getGroupChargers(String groupId) {
 		if (ObjectUtils.isEmpty(groupId)) {
-			return Page.empty();
+			return new ChargerDTO[0];
 		}
 		log.debug("fetchig :{}", groupId);
 		HttpHeaders headers = new HttpHeaders();
@@ -195,21 +193,12 @@ public class ChargerClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("charger-service"));
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		try {
-			MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
 			String url = MessageFormat.format("{0}/charger-service/secure/internal-call/charger/group/{1}",
 					urlConfig.getBaseUrl(), groupId);
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-			queryParams.add("page", String.valueOf(page.getPageNumber()));
-			queryParams.add("size", String.valueOf(page.getPageSize()));
-			builder.queryParams(queryParams);
 
 			log.debug("request : {} body and headers {}", url, entity);
-			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
-					JsonNode.class);
-			List<ChargerDTO> chargers = mapper.convertValue(response.getBody().get("content"),
-					new TypeReference<List<ChargerDTO>>() {
-					});
-			return new PageImpl<>(chargers, page, response.getBody().get("totalElements").asLong());
+			ResponseEntity<ChargerDTO[]> response = template.exchange(url, HttpMethod.GET, entity, ChargerDTO[].class);
+			return response.getBody();
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
