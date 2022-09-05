@@ -44,6 +44,6 @@ public class RestTemplateConfig {
 
 	@Bean(PlatformConstants.EXTERNAL_SLOW_CLIENT)
 	public RestTemplate getExternalSlowRestTemplate() {
-		return getRestTemplate(7000);
+		return getRestTemplate(60000);
 	}
 }
