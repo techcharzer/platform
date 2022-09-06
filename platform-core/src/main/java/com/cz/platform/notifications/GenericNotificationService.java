@@ -11,6 +11,7 @@ import org.springframework.util.ObjectUtils;
 import com.cz.platform.clients.CustomRabbitMQTemplate;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
+import com.cz.platform.whitelabel.WhiteLabelAppTypeEnum;
 
 import lombok.AllArgsConstructor;
 
@@ -22,15 +23,18 @@ public class GenericNotificationService {
 
 	private GenericRabbitQueueConfiguration rabbitQueueConfiguration;
 
-	public void sendSMS(String mobile, Map<String, String> data, String templates) {
-		sendSMS(mobile, data, Arrays.asList(templates));
+	public void sendSMS(String mobile, Map<String, String> data, String templates,
+			WhiteLabelAppTypeEnum whiteLabelApp) {
+		sendSMS(mobile, data, Arrays.asList(templates), whiteLabelApp);
 	}
 
-	public void sendSMS(String mobile, Map<String, String> data, List<String> templates) {
+	public void sendSMS(String mobile, Map<String, String> data, List<String> templates,
+			WhiteLabelAppTypeEnum whiteLabelApp) {
 		NotificationDTO notificationDTO = new NotificationDTO();
 		notificationDTO.setId(UUID.randomUUID().toString());
 		notificationDTO.setType(NotificationType.GENERIC_NOTIFICATION);
 		notificationDTO.setChannel(Channel.SMS);
+		notificationDTO.setWhiteLabelApp(whiteLabelApp);
 		SMSNotificationTo smsNotificationTo = new SMSNotificationTo();
 		smsNotificationTo.setMobileNumber(mobile);
 		notificationDTO.setTo(smsNotificationTo);
@@ -39,15 +43,18 @@ public class GenericNotificationService {
 		sendNotification(notificationDTO);
 	}
 
-	public void sendWhatsapp(String mobile, Map<String, String> data, String templates) {
-		sendWhatsapp(mobile, data, Arrays.asList(templates));
+	public void sendWhatsapp(String mobile, Map<String, String> data, String templates,
+			WhiteLabelAppTypeEnum whiteLabelApp) {
+		sendWhatsapp(mobile, data, Arrays.asList(templates), whiteLabelApp);
 	}
 
-	public void sendWhatsapp(String mobile, Map<String, String> data, List<String> templates) {
+	public void sendWhatsapp(String mobile, Map<String, String> data, List<String> templates,
+			WhiteLabelAppTypeEnum whiteLabelApp) {
 		NotificationDTO notificationDTO = new NotificationDTO();
 		notificationDTO.setId(UUID.randomUUID().toString());
 		notificationDTO.setType(NotificationType.GENERIC_NOTIFICATION);
 		notificationDTO.setChannel(Channel.WHATSAPP);
+		notificationDTO.setWhiteLabelApp(whiteLabelApp);
 		WhatsappNotificationTo smsNotificationTo = new WhatsappNotificationTo();
 		smsNotificationTo.setPhone(mobile);
 		notificationDTO.setTo(smsNotificationTo);
