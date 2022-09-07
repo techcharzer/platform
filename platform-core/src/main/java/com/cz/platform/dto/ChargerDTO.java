@@ -28,6 +28,7 @@ public class ChargerDTO implements Serializable {
 	private List<Image> images;
 	private GlobalChargerHardwareInfo hardwareInfo;
 	private Map<String, Long> price;
+	private Boolean forceShowOnMap;
 	private ChargerUsageTypeConfiguration usageConfiguration;
 	private AddressDTO address;
 	private DealConfigurationDTO dealConfiguration;
