@@ -4,17 +4,19 @@ import java.text.MessageFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.util.ObjectUtils;
@@ -33,6 +35,7 @@ import com.cz.platform.dto.SaveTagRequest;
 import com.cz.platform.enums.ChargerType;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
+import com.cz.platform.filters.DateRangeFilter;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -345,5 +348,14 @@ public final class CommonUtility {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
 					"Only Alphanumeric and underscore are allowed. Invalid tag : " + tag);
 		}
+	}
+
+	public static DateRangeFilter getLastMonthFilter(String key) {
+		ZonedDateTime zd = Instant.now().atZone(PlatformConstants.CURRENT_ZONE_ID);
+		ZonedDateTime end = zd.withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
+		ZonedDateTime start = zd.minusMonths(1).withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
+		log.debug("start : {} end : {}, al start: {}, al end: {}", start.toEpochSecond(), end.toEpochSecond(),
+				start.toInstant().toEpochMilli(), end.toInstant().toEpochMilli());
+		return new DateRangeFilter(key, start.toInstant(), end.toInstant());
 	}
 }
