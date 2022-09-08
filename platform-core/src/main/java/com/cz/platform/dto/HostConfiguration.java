@@ -12,6 +12,4 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 		@Type(value = InvestmentPlatformHostConfiguration.class, name = "INVESTMENT_PLATFORM"), })
 public interface HostConfiguration {
 	HostTypeEnum getType();
-
-	Double getProfitSharePercentageOnBooking();
 }

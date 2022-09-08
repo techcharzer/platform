@@ -7,5 +7,5 @@ import lombok.Data;
 @Data
 public class NetworkBuyerWithWhiteLabelAppConfiguration implements HostConfiguration {
 	private HostTypeEnum type = HostTypeEnum.NETWORK_BUYER_WITH_WHITELABEL_APP_IP;
-	private Double profitSharePercentageOnBooking;
+	private Double charzerShare;
 }
