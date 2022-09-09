@@ -187,7 +187,7 @@ public class HardwareServiceClient {
 		// addded wait timme of 10 seconds for each hardware and socket combination to
 		// prevent confusion to the charger. TECH-T1172
 		platformCommonService.takeLock(key, 10,
-				"Your old request is being processed please wait for 10sec to proceed further.");
+				"Your old request is being processed please wait for 10 seconds and try again.");
 		rabbitMqTemplate.convertAndSend(EXECUTE_COMMAND_QUEUE_CONFIG, command);
 	}
 
