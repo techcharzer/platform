@@ -7,6 +7,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
 import com.cz.platform.PlatformConstants;
+import com.cz.platform.exception.LoggerType;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -36,13 +37,13 @@ public final class PlatformCommonService {
 	}
 
 	public void takeLock(String key, long leaseTimeInSeconds) {
-		takeLock(key, leaseTimeInSeconds, "Request being processed, please wait...");
+		takeLock(key, leaseTimeInSeconds, "Request being processed, please wait...", LoggerType.ERROR);
 	}
 
-	public void takeLock(String key, long leaseTimeInSeconds, String errorMessage) {
+	public void takeLock(String key, long leaseTimeInSeconds, String errorMessage, LoggerType loggerType) {
 		RLock lock = redissonClient.getLock(key);
 		if (lock.isLocked()) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), errorMessage);
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), errorMessage, loggerType);
 		}
 		lock.lock(leaseTimeInSeconds, TimeUnit.SECONDS);
 	}

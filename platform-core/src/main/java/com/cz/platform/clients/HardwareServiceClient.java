@@ -27,6 +27,7 @@ import com.cz.platform.PlatformConstants;
 import com.cz.platform.charger.configuration.GlobalChargerHardwareInfo;
 import com.cz.platform.config.QueueConfiguration;
 import com.cz.platform.exception.ApplicationException;
+import com.cz.platform.exception.LoggerType;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 import com.cz.platform.security.SecurityConfigProps;
@@ -187,7 +188,7 @@ public class HardwareServiceClient {
 		// addded wait timme of 10 seconds for each hardware and socket combination to
 		// prevent confusion to the charger. TECH-T1172
 		platformCommonService.takeLock(key, 10,
-				"Your old request is being processed please wait for 10 seconds and try again.");
+				"Your old request is being processed please wait for 10 seconds and try again.", LoggerType.DO_NOT_LOG);
 		rabbitMqTemplate.convertAndSend(EXECUTE_COMMAND_QUEUE_CONFIG, command);
 	}
 
