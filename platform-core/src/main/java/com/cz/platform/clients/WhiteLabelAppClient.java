@@ -32,7 +32,7 @@ public class WhiteLabelAppClient {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid whiteLabelApp");
 		}
 		log.debug("fetchig :{}", whiteLabelApp);
-		return config.getMapOfAppSourceAndWhiteLabelAppConfig().get(whiteLabelApp);
+		return config.getWhiteLabelConfiguration().get(whiteLabelApp);
 //		HttpHeaders headers = new HttpHeaders();
 //		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 //		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);

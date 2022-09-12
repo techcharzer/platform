@@ -17,6 +17,6 @@ import lombok.Data;
 @ConfigurationProperties(prefix = PlatformConstants.SECURITY_CONFIG_PREFIX)
 public class WhiteLabelAppConfig {
 
-	private Map<WhiteLabelAppTypeEnum, WhiteLabelConfigurationDTO> mapOfAppSourceAndWhiteLabelAppConfig = new HashMap<>();
+	private Map<WhiteLabelAppTypeEnum, WhiteLabelConfigurationDTO> whiteLabelConfiguration = new HashMap<>();
 
 }
