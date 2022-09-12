@@ -13,5 +13,6 @@ public class ProfitShareConfiguration implements Serializable {
 	private Double charzerShare;
 	private UserShare dealerShare;
 	private UserShare secondaryDealerShare;
+	private UserShare tertiaryDealerShare;
 	private UserShare premiseOwnerShare;
 }
