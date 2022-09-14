@@ -11,12 +11,12 @@ public class MeterValue {
 	private String socketId;
 	private HardwareStatusDTO onlineDTO;
 	private Boolean relay;
-	private Long ecInmA;
-	private Long cmrInWH;
+	private Long electricCurrentInMilliAmpere;
+	private Long currentMeterReadingInWattHour;
 
 	public Long getEcInmA() {
 		if (!ObjectUtils.isEmpty(onlineDTO) && BooleanUtils.isTrue(onlineDTO.getIsOnline())) {
-			return ecInmA;
+			return electricCurrentInMilliAmpere;
 		} else {
 			return 0L;
 		}
