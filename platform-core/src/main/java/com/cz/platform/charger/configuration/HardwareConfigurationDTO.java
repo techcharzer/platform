@@ -25,7 +25,12 @@ public class HardwareConfigurationDTO implements Serializable {
 			@Type(value = KiranaChargerGsmConfiguration.class, name = "KIRANA_CHARZER_GSM"),
 			@Type(value = ChargemodGsmConfiguration.class, name = "CHARGE_MOD_BHARAT_AC"),
 			@Type(value = EVPointChargerConfiguration.class, name = "EV_POINT_CHARGER"),
-			@Type(value = FlextronBleOmniConfiguration.class, name = "FLEXTRON_BLE_OMNI"), })
+			@Type(value = MekrOmniConfiguration.class, name = "MEKR_OMNI"),
+			@Type(value = MokoPlugOmniConfiguration.class, name = "MOKO_PLUG_OMNI"),
+			@Type(value = ABBOCPPChargerConfiguration.class, name = "ABB_OCPP"),
+			@Type(value = ExicomOCPPChargerConfiguration.class, name = "EXICOM_OCPP"),
+			@Type(value = FlextronOCPPChargerConfiguration.class, name = "FLEXTRON_OCPP"),
+			@Type(value = GoEgoOCPPChargerConfiguration.class, name = "GO_EGO_OCPP"), })
 	private HardwareConfigurationData configuration;
 
 	public ConnectivityType getConnectivityType() {

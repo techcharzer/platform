@@ -8,6 +8,7 @@ import lombok.Data;
 public class NetworkBuyerConfiguration implements HostConfiguration {
 	private HostTypeEnum type = HostTypeEnum.NETWORK_BUYER_IP;
 	private Double charzerShare;
+
 	@Override
 	public Double getProfitSharePercentageOnBooking() {
 		return null;

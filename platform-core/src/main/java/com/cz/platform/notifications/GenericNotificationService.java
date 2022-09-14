@@ -23,12 +23,12 @@ public class GenericNotificationService {
 
 	private GenericRabbitQueueConfiguration rabbitQueueConfiguration;
 
-	public void sendSMS(String mobile, Map<String, String> data, String templates,
+	public void sendSMS(int countryCode, String mobile, Map<String, String> data, String templates,
 			WhiteLabelAppTypeEnum whiteLabelApp) {
-		sendSMS(mobile, data, Arrays.asList(templates), whiteLabelApp);
+		sendSMS(countryCode, mobile, data, Arrays.asList(templates), whiteLabelApp);
 	}
 
-	public void sendSMS(String mobile, Map<String, String> data, List<String> templates,
+	public void sendSMS(int countryCode, String mobile, Map<String, String> data, List<String> templates,
 			WhiteLabelAppTypeEnum whiteLabelApp) {
 		NotificationDTO notificationDTO = new NotificationDTO();
 		notificationDTO.setId(UUID.randomUUID().toString());
@@ -37,18 +37,19 @@ public class GenericNotificationService {
 		notificationDTO.setWhiteLabelApp(whiteLabelApp);
 		SMSNotificationTo smsNotificationTo = new SMSNotificationTo();
 		smsNotificationTo.setMobileNumber(mobile);
+		smsNotificationTo.setCountryCode(countryCode);
 		notificationDTO.setTo(smsNotificationTo);
 		notificationDTO.setTemplates(templates);
 		notificationDTO.setData(data);
 		sendNotification(notificationDTO);
 	}
 
-	public void sendWhatsapp(String mobile, Map<String, String> data, String templates,
+	public void sendWhatsapp(int countryCode, String mobile, Map<String, String> data, String templates,
 			WhiteLabelAppTypeEnum whiteLabelApp) {
-		sendWhatsapp(mobile, data, Arrays.asList(templates), whiteLabelApp);
+		sendWhatsapp(countryCode, mobile, data, Arrays.asList(templates), whiteLabelApp);
 	}
 
-	public void sendWhatsapp(String mobile, Map<String, String> data, List<String> templates,
+	public void sendWhatsapp(int countryCode, String mobile, Map<String, String> data, List<String> templates,
 			WhiteLabelAppTypeEnum whiteLabelApp) {
 		NotificationDTO notificationDTO = new NotificationDTO();
 		notificationDTO.setId(UUID.randomUUID().toString());
@@ -57,6 +58,7 @@ public class GenericNotificationService {
 		notificationDTO.setWhiteLabelApp(whiteLabelApp);
 		WhatsappNotificationTo smsNotificationTo = new WhatsappNotificationTo();
 		smsNotificationTo.setPhone(mobile);
+		smsNotificationTo.setCountryCode(countryCode);
 		notificationDTO.setTo(smsNotificationTo);
 		notificationDTO.setTemplates(templates);
 		notificationDTO.setData(data);

@@ -10,13 +10,15 @@ import com.cz.platform.exception.ValidationException;
 import lombok.Data;
 
 @Data
-public class OCPP16ChargerConfiguration implements HardwareConfigurationData, Serializable {
+public class ABBOCPPChargerConfiguration implements HardwareConfigurationData, Serializable {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9180953709391315499L;
+	private static final long serialVersionUID = -9180456669788679L;
 	private String chargerBoxId;
+	private String password;
+	private OCPPVersion ocppVersion;
 
 	@Override
 	public String getChargerControlId() {
@@ -27,6 +29,12 @@ public class OCPP16ChargerConfiguration implements HardwareConfigurationData, Se
 	public void validate() {
 		if (ObjectUtils.isEmpty(chargerBoxId)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid chargerBoxId");
+		}
+		if (ObjectUtils.isEmpty(password)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid password");
+		}
+		if (ObjectUtils.isEmpty(ocppVersion)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid ocppVersion");
 		}
 	}
 }

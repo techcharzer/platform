@@ -7,7 +7,7 @@ import java.util.Map;
 import lombok.Data;
 
 @Data
-public class NavigationData implements Serializable{
+public class NavigationData implements Serializable {
 	/**
 	 * 
 	 */
