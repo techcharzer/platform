@@ -81,7 +81,7 @@ public class HardwareServiceClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("ccu-service"));
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		try {
-			String url = MessageFormat.format("{0}/ccu/secure/charger/online", urlConfig.getBaseUrl());
+			String url = MessageFormat.format("{0}/ccu/secure/internal-call/hardware/status", urlConfig.getBaseUrl());
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
 			for (String hardwareId : hardwareIds) {
 				builder.queryParam("id", hardwareId);
@@ -149,7 +149,7 @@ public class HardwareServiceClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("ccu-service"));
 		HttpEntity<List<MeterValueRequest>> entity = new HttpEntity<>(hardwareIds, headers);
 		try {
-			String url = MessageFormat.format("{0}/ccu/secure/hardware/status", urlConfig.getBaseUrl());
+			String url = MessageFormat.format("{0}/ccu/secure/internal-call/hardware/meter-value", urlConfig.getBaseUrl());
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
 			log.debug("request for fetchig details : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.POST, entity,
