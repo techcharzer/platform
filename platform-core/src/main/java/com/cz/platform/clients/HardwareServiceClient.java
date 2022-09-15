@@ -109,7 +109,7 @@ public class HardwareServiceClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("ccu-service"));
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		try {
-			String url = MessageFormat.format("{0}/ccu/secure/hardware/{1}", urlConfig.getBaseUrl(), hardwareId);
+			String url = MessageFormat.format("{0}/ccu/secure/internal-call/hardware/{1}", urlConfig.getBaseUrl(), hardwareId);
 			log.debug("request for fetchig details : {} body and headers {}", url, entity);
 			ResponseEntity<GlobalChargerHardwareInfo> response = template.exchange(url, HttpMethod.GET, entity,
 					GlobalChargerHardwareInfo.class);
