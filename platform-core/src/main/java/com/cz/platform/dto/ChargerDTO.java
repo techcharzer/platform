@@ -1,6 +1,7 @@
 package com.cz.platform.dto;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ public class ChargerDTO implements Serializable {
 	private ChargerUsageTypeConfiguration usageConfiguration;
 	private AddressDTO address;
 	private DealConfigurationDTO dealConfiguration;
+	private Instant listingTime;
 
 	public static final String[] INCLUDED_FIELDS = new String[] { "id", "name", "uniqueIdentifier",
 			"openCloseTimeInSeconds", "sockets", "chargerType", "supportedVehicle", "address", "images", "deeplink",
