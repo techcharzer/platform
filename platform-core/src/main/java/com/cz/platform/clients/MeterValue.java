@@ -14,12 +14,22 @@ public class MeterValue {
 	private Long electricCurrentInMilliAmpere;
 	private Long currentMeterReadingInWattHour;
 
-	public Long getEcInmA() {
+	public Long getElectricCurrentInMilliAmpere() {
 		if (!ObjectUtils.isEmpty(onlineDTO) && BooleanUtils.isTrue(onlineDTO.getIsOnline())) {
 			return electricCurrentInMilliAmpere;
 		} else {
 			return 0L;
 		}
+	}
+
+	@Deprecated
+	public Long getEcInmA() {
+		return getElectricCurrentInMilliAmpere();
+	}
+
+	@Deprecated
+	public Long getCmrInWH() {
+		return currentMeterReadingInWattHour;
 	}
 
 }
