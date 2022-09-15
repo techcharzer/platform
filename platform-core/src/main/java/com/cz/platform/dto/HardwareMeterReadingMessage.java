@@ -4,11 +4,9 @@ import lombok.Data;
 
 @Data
 public class HardwareMeterReadingMessage {
-	private String bookingId;
 	private String hardwareId;
-	private Long cmrInWH;
 	private String socketId;
-	private Long lastNPingSameCount;
-	private Long ecInmA;
-	private ChargerDTO chargerDTO;
+	private Long currentMeterReadingInWattHour;
+	private Long electricCurrentInMilliAmpere;
+	private Boolean relay;
 }
