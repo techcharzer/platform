@@ -23,6 +23,11 @@ public class GenericNotificationService {
 
 	private GenericRabbitQueueConfiguration rabbitQueueConfiguration;
 
+	public void sendSMS(String mobile, Map<String, String> data, String templates,
+			WhiteLabelAppTypeEnum whiteLabelApp) {
+		sendSMS(91, mobile, data, templates, whiteLabelApp);
+	}
+
 	public void sendSMS(int countryCode, String mobile, Map<String, String> data, String templates,
 			WhiteLabelAppTypeEnum whiteLabelApp) {
 		sendSMS(countryCode, mobile, data, Arrays.asList(templates), whiteLabelApp);
@@ -42,6 +47,11 @@ public class GenericNotificationService {
 		notificationDTO.setTemplates(templates);
 		notificationDTO.setData(data);
 		sendNotification(notificationDTO);
+	}
+
+	public void sendWhatsapp(String mobile, Map<String, String> data, String templates,
+			WhiteLabelAppTypeEnum whiteLabelApp) {
+		sendWhatsapp(91, mobile, data, Arrays.asList(templates), whiteLabelApp);
 	}
 
 	public void sendWhatsapp(int countryCode, String mobile, Map<String, String> data, String templates,
