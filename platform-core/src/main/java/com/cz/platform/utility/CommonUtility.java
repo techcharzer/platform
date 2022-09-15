@@ -126,10 +126,6 @@ public final class CommonUtility {
 				valCriteria = Criteria.where(pathOfConfiguration.concat(".imeiNumber")).regex(chargerControlId, "i");
 				break;
 			case OCPP_16_JSON_CHARGER:
-			case ABB_OCPP:
-			case FLEXTRON_OCPP:
-			case EXICOM_OCPP:
-			case GO_EGO_OCPP:
 				valCriteria = Criteria.where(pathOfConfiguration.concat(".chargerBoxId")).regex(chargerControlId, "i");
 				break;
 			case OTHER_NETWORK_CHARGER:
