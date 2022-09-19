@@ -36,24 +36,30 @@ public final class PlatformCommonService {
 		return false;
 	}
 
-	public void takeLock(String key, long leaseTimeInSeconds) {
-		takeLock(key, leaseTimeInSeconds, "Request being processed, please wait...", LoggerType.ERROR);
+	public RLock takeLock(String key, long leaseTimeInSeconds) {
+		return takeLock(key, leaseTimeInSeconds, "Request being processed, please wait...", LoggerType.ERROR);
 	}
 
-	public void takeLock(String key, long leaseTimeInSeconds, String errorMessage, LoggerType loggerType) {
+	public RLock takeLock(String key, long leaseTimeInSeconds, String errorMessage, LoggerType loggerType) {
 		RLock lock = redissonClient.getLock(key);
 		if (lock.isLocked()) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), errorMessage, loggerType);
 		}
 		lock.lock(leaseTimeInSeconds, TimeUnit.SECONDS);
+		return lock;
 	}
 
-	public void releaseLock(String key) {
+	public void unlock(String key) {
 		RLock lock = redissonClient.getLock(key);
-		releaseLock(lock);
+		lock.unlock();
 	}
 
-	public void releaseLock(RLock lock) {
+	public void unlock(RLock lock) {
 		lock.unlock();
+	}
+
+	public void forceUnlock(String key) {
+		RLock lock = redissonClient.getLock(key);
+		lock.forceUnlock();
 	}
 }
