@@ -1,9 +1,14 @@
 package com.cz.platform.config;
 
+import java.net.URI;
+
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -24,7 +29,7 @@ public class RestTemplateConfig {
 	}
 
 	public RestTemplate getRestTemplate(int timeout) {
-		HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+		HttpComponentsClientHttpRequestFactory httpRequestFactory = new CustomHttpComponentsClientHttpRequestFactory();
 		httpRequestFactory.setConnectionRequestTimeout(timeout);
 		httpRequestFactory.setConnectTimeout(timeout);
 		httpRequestFactory.setReadTimeout(timeout);
@@ -45,5 +50,27 @@ public class RestTemplateConfig {
 	@Bean(PlatformConstants.EXTERNAL_SLOW_CLIENT)
 	public RestTemplate getExternalSlowRestTemplate() {
 		return getRestTemplate(60000);
+	}
+
+	private static final class CustomHttpComponentsClientHttpRequestFactory
+			extends HttpComponentsClientHttpRequestFactory {
+		@Override
+		protected HttpUriRequest createHttpUriRequest(HttpMethod httpMethod, URI uri) {
+			if (HttpMethod.GET.equals(httpMethod)) {
+				return new HttpEntityEnclosingGetRequestBase(uri);
+			}
+			return super.createHttpUriRequest(httpMethod, uri);
+		}
+	}
+
+	private static final class HttpEntityEnclosingGetRequestBase extends HttpEntityEnclosingRequestBase {
+		public HttpEntityEnclosingGetRequestBase(final URI uri) {
+			super.setURI(uri);
+		}
+
+		@Override
+		public String getMethod() {
+			return HttpMethod.GET.name();
+		}
 	}
 }
