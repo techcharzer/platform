@@ -3,6 +3,7 @@ package com.cz.platform.clients;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -69,20 +70,29 @@ public class BookingClient {
 		}
 	}
 
-	public Map<String, UtilizedBookingStatistics> getUtilizedBookingStatistics(Set<String> bookingId) {
-		if (ObjectUtils.isEmpty(bookingId)) {
+	public UtilizedBookingStatistics getUtilizedBookingStatistics(String chargerId) {
+		if (ObjectUtils.isEmpty(chargerId)) {
 			return null;
 		}
-		log.debug("fetchig boookingDetails :{}", bookingId);
+		Set<String> chargerIds = new HashSet<String>();
+		chargerIds.add(chargerId);
+		Map<String, UtilizedBookingStatistics> bookingStatistics = getUtilizedBookingStatistics(chargerIds);
+		return bookingStatistics.get(chargerId);
+	}
+
+	public Map<String, UtilizedBookingStatistics> getUtilizedBookingStatistics(Set<String> chargerIds) {
+		if (ObjectUtils.isEmpty(chargerIds)) {
+			return null;
+		}
+		log.debug("fetchig boookingDetails :{}", chargerIds);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("booking-service"));
-		HttpEntity<Set<String>> entity = new HttpEntity<>(bookingId, headers);
+		HttpEntity<Set<String>> entity = new HttpEntity<>(chargerIds, headers);
 		try {
-			String url = MessageFormat.format(
-					"{0}/booking-service/secure/internal-call/booking/statistics/by/charger",
-					urlConfig.getBaseUrl(), bookingId);
+			String url = MessageFormat.format("{0}/booking-service/secure/internal-call/booking/statistics/by/charger",
+					urlConfig.getBaseUrl(), chargerIds);
 			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
 			log.info("response body : {}", response.getBody());
