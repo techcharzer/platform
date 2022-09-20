@@ -70,6 +70,32 @@ public class BookingClient {
 		}
 	}
 
+	public BookingCount getBookingCount(String userId) {
+		log.info("request: {}", userId);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("booking-service"));
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		try {
+			String url = MessageFormat.format("{0}/booking-service/secure/internal-call/booking/userId/{1}",
+					urlConfig.getBaseUrl(), userId);
+			log.debug("request : {} body and headers {}", url, entity);
+			ResponseEntity<BookingCount> response = template.exchange(url, HttpMethod.GET, entity, BookingCount.class);
+			log.info("api response : {}", response.getBody());
+			return response.getBody();
+		} catch (HttpStatusCodeException exeption) {
+			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"Booking api call failed");
+		}
+	}
+
+	@Data
+	public static class BookingCount {
+		private Long count;
+	}
+
 	public UtilizedBookingStatistics getUtilizedBookingStatistics(String chargerId) {
 		if (ObjectUtils.isEmpty(chargerId)) {
 			return null;
