@@ -4,8 +4,10 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.domain.Page;
@@ -191,9 +193,22 @@ public class UserClient {
 		}
 	}
 
+	public Optional<UserDetails> getCZOUserByMobileNumber(String mobileNumber) {
+		if (ObjectUtils.isEmpty(mobileNumber)) {
+			return Optional.empty();
+		}
+		Set<String> set = new HashSet<>();
+		set.add(mobileNumber);
+		Map<String, UserDetails> details = getCZOUserById(set);
+		if (details.containsKey(mobileNumber)) {
+			return Optional.of(details.get(mobileNumber));
+		}
+		return Optional.empty();
+	}
+
 	public Map<String, UserDetails> getCZOUserByMobileNumber(Set<String> mobileNumber) {
 		if (ObjectUtils.isEmpty(mobileNumber)) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
+			return Collections.emptyMap();
 		}
 		log.debug("fetching czo user with mobile :{}", mobileNumber);
 		HttpHeaders headers = new HttpHeaders();
@@ -210,7 +225,7 @@ public class UserClient {
 			});
 		} catch (HttpStatusCodeException exeption) {
 			if (commonService.handle404Error(exeption.getResponseBodyAsString())) {
-				return null;
+				return Collections.emptyMap();
 			}
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
