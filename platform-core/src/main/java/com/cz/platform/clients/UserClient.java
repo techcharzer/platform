@@ -191,7 +191,7 @@ public class UserClient {
 		}
 	}
 
-	public UserDetails getCZOUserByMobileNumber(String mobileNumber) {
+	public Map<String, UserDetails> getCZOUserByMobileNumber(Set<String> mobileNumber) {
 		if (ObjectUtils.isEmpty(mobileNumber)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
 		}
@@ -200,13 +200,14 @@ public class UserClient {
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
-		HttpEntity<GetOrCreateUserRequest> entity = new HttpEntity<>(null, headers);
+		HttpEntity<Set<String>> entity = new HttpEntity<>(mobileNumber, headers);
 		try {
-			String url = MessageFormat.format("{0}/user-service/secure/internal-server/czo-user/mobileNumber/{1}",
-					urlConfig.getBaseUrl(), mobileNumber);
+			String url = MessageFormat.format("{0}/user-service/secure/internal-server/czo-user/mobileNumber",
+					urlConfig.getBaseUrl());
 			log.debug("request for fetchig/creating user details : {} body and headers {}", url, entity);
-			ResponseEntity<UserDetails> response = template.exchange(url, HttpMethod.GET, entity, UserDetails.class);
-			return response.getBody();
+			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
+			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, UserDetails>>() {
+			});
 		} catch (HttpStatusCodeException exeption) {
 			if (commonService.handle404Error(exeption.getResponseBodyAsString())) {
 				return null;
