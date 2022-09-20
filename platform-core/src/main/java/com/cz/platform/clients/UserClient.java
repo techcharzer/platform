@@ -197,9 +197,9 @@ public class UserClient {
 		if (ObjectUtils.isEmpty(mobileNumber)) {
 			return Optional.empty();
 		}
-		Set<String> set = new HashSet<>();
-		set.add(mobileNumber);
-		Map<String, UserDetails> details = getCZOUserById(set);
+		Set<String> mobileSet = new HashSet<>();
+		mobileSet.add(mobileNumber);
+		Map<String, UserDetails> details = getCZOUserByMobileNumber(mobileSet);
 		if (details.containsKey(mobileNumber)) {
 			return Optional.of(details.get(mobileNumber));
 		}
