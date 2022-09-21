@@ -56,34 +56,6 @@ public class ChargerClient {
 	@Autowired
 	private PlatformCommonService platformCommonService;
 
-	public ChargerDTO getChargerByHardwareId(String hardwareId) {
-		log.debug("fetchig :{}", hardwareId);
-		if (ObjectUtils.isEmpty(hardwareId)) {
-			return null;
-		}
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("charger-service"));
-		HttpEntity<String> entity = new HttpEntity<>(null, headers);
-		try {
-			String url = MessageFormat.format("{0}/charger-service/secure/internal-call/v2/charger/hardware/{1}",
-					urlConfig.getBaseUrl(), hardwareId);
-
-			log.debug("request : {} body and headers {}", url, entity);
-			ResponseEntity<ChargerDTO> response = template.exchange(url, HttpMethod.GET, entity, ChargerDTO.class);
-			log.debug("response : {}", response);
-			return response.getBody();
-		} catch (HttpStatusCodeException exeption) {
-			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
-			if (platformCommonService.handle404Error(exeption.getResponseBodyAsString())) {
-				return null;
-			}
-			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
-					"Charger api not working");
-		}
-	}
-
 	public ChargerDTO getChargerById(String chargerId) {
 		log.debug("fetchig :{}", chargerId);
 		if (ObjectUtils.isEmpty(chargerId)) {
