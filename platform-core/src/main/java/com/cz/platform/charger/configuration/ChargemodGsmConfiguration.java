@@ -17,6 +17,7 @@ public class ChargemodGsmConfiguration implements HardwareConfigurationData, Ser
 	 */
 	private static final long serialVersionUID = 1839211805479707179L;
 	private String imeiNumber;
+	private String chargemodStationId;
 
 	@Override
 	public String getChargerControlId() {
@@ -27,6 +28,9 @@ public class ChargemodGsmConfiguration implements HardwareConfigurationData, Ser
 	public void validate() {
 		if (ObjectUtils.isEmpty(imeiNumber)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid imeiNumber");
+		}
+		if (ObjectUtils.isEmpty(chargemodStationId)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid chargemodStationId");
 		}
 	}
 }
