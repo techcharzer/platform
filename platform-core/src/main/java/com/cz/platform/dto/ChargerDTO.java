@@ -32,6 +32,7 @@ public class ChargerDTO implements Serializable {
 	private Boolean forceShowOnMap;
 	private ChargerUsageTypeConfiguration usageConfiguration;
 	private AddressDTO address;
+	private String operationalZoneId;
 	private DealConfigurationDTO dealConfiguration;
 	private Instant listingTime;
 
