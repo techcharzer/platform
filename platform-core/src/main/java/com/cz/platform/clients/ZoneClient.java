@@ -2,6 +2,7 @@ package com.cz.platform.clients;
 
 import java.text.MessageFormat;
 import java.time.Instant;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -42,10 +43,10 @@ public class ZoneClient {
 	@Autowired
 	private PlatformCommonService platformCommonService;
 
-	public ZoneDTO getZoneById(String zoneId) {
+	public Optional<RiskZoneDTO> getRiskZoneById(String zoneId) {
 		log.debug("fetchig :{}", zoneId);
 		if (ObjectUtils.isEmpty(zoneId)) {
-			return null;
+			return Optional.empty();
 		}
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
@@ -53,16 +54,44 @@ public class ZoneClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("lms-service"));
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		try {
-			String url = MessageFormat.format("{0}/lms/secure/internal-call/zone/{1}", urlConfig.getBaseUrl(), zoneId);
-
+			String url = MessageFormat.format("{0}/lms/secure/internal-call/risk-zone/{1}", urlConfig.getBaseUrl(),
+					zoneId);
 			log.debug("request : {} body and headers {}", url, entity);
-			ResponseEntity<ZoneDTO> response = template.exchange(url, HttpMethod.GET, entity, ZoneDTO.class);
+			ResponseEntity<RiskZoneDTO> response = template.exchange(url, HttpMethod.GET, entity, RiskZoneDTO.class);
 			log.debug("response : {}", response);
-			return response.getBody();
+			return Optional.of(response.getBody());
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
 			if (platformCommonService.handle404Error(exeption.getResponseBodyAsString())) {
-				return null;
+				return Optional.empty();
+			}
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"Zone api not working");
+		}
+	}
+
+	public Optional<OperationalZoneDTO> getOperationalZoneById(String zoneId) {
+		log.debug("fetchig :{}", zoneId);
+		if (ObjectUtils.isEmpty(zoneId)) {
+			return Optional.empty();
+		}
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("lms-service"));
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		try {
+			String url = MessageFormat.format("{0}/lms/secure/internal-call/operational-zone/{1}",
+					urlConfig.getBaseUrl(), zoneId);
+			log.debug("request : {} body and headers {}", url, entity);
+			ResponseEntity<OperationalZoneDTO> response = template.exchange(url, HttpMethod.GET, entity,
+					OperationalZoneDTO.class);
+			log.debug("response : {}", response);
+			return Optional.of(response.getBody());
+		} catch (HttpStatusCodeException exeption) {
+			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
+			if (platformCommonService.handle404Error(exeption.getResponseBodyAsString())) {
+				return Optional.empty();
 			}
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
 					"Zone api not working");
@@ -70,7 +99,18 @@ public class ZoneClient {
 	}
 
 	@Data
-	public static class ZoneDTO {
+	public static class OperationalZoneDTO {
+		private String id;
+		private String name;
+		private GeoCoordinatesDTO coordinates;
+		private String cityId;
+		private String owner;
+		private Boolean isActive;
+		private Instant createdAt;
+	}
+
+	@Data
+	public static class RiskZoneDTO {
 		private String id;
 		private String name;
 		private SecurityRiskEnum securityRisk;
