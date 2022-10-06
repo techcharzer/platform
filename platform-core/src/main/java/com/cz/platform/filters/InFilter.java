@@ -39,15 +39,7 @@ public class InFilter<T> extends AbstractFilter {
 
 	@Override
 	public Criteria getCriteria() {
-		Criteria criteria = new Criteria();
-		List<T> list = (List<T>) this.value;
-		int i = 0;
-		Criteria[] criterias = new Criteria[this.value.size()];
-		for (T val : list) {
-			criterias[i++] = Criteria.where(field).is(val);
-		}
-		criteria.orOperator(criterias);
-		return criteria;
+		return Criteria.where(field).in(this.value);
 	}
 
 }
