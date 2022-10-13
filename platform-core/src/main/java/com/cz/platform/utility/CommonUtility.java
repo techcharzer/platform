@@ -354,4 +354,11 @@ public final class CommonUtility {
 				start.toInstant().toEpochMilli(), end.toInstant().toEpochMilli());
 		return new DateRangeFilter(key, start.toInstant(), end.toInstant());
 	}
+
+	public static DateRangeFilter getMonthFilter(String key, int month, int year) {
+		ZonedDateTime zd = Instant.now().atZone(PlatformConstants.CURRENT_ZONE_ID);
+		ZonedDateTime start = zd.withMonth(month).withYear(year).withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
+		ZonedDateTime end = start.plusMonths(1);
+		return new DateRangeFilter(key, start.toInstant(), end.toInstant());
+	}
 }
