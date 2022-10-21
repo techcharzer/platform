@@ -314,12 +314,12 @@ public final class CommonUtility {
 				coordinates.getLon());
 	}
 
-	public static String maskMobileNumber(String mobileNumber) {
-		if (ObjectUtils.isEmpty(mobileNumber)) {
+	public static String maskStringToLast4Characters(String string) {
+		if (ObjectUtils.isEmpty(string)) {
 			return "";
 		} else {
-			String last4Digits = mobileNumber.substring(mobileNumber.length() - 4);
-			return MessageFormat.format("+91 xxxxxx{0}", last4Digits);
+			String last4Digits = string.substring(string.length() - 4);
+			return MessageFormat.format("xxxxxx{0}", last4Digits);
 		}
 	}
 
