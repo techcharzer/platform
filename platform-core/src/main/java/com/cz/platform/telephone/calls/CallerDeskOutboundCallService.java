@@ -64,7 +64,7 @@ public class CallerDeskOutboundCallService implements OutboundCallService {
 			queryParams.add("authcode", config.getAuthkey());
 			queryParams.add("call_from_did", "1");
 			builder.queryParams(queryParams);
-			log.debug("request: {}", url);
+			log.debug("request: {}", builder.toUriString());
 			ResponseEntity<String> response = template.exchange(builder.toUriString(), HttpMethod.GET, null,
 					String.class);
 			log.info("response from callerDesk: {}", response);
