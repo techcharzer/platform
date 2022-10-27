@@ -102,6 +102,11 @@ public final class CommonUtility {
 
 	public static Criteria chargerControlIdCriteria(String chargerTypeKeyPath, String pathOfConfiguration,
 			String chargerControlId) {
+		return chargerControlIdCriteria(chargerTypeKeyPath, pathOfConfiguration, chargerControlId, true);
+	}
+
+	public static Criteria chargerControlIdCriteria(String chargerTypeKeyPath, String pathOfConfiguration,
+			String chargerControlId, boolean regexEnabled) {
 		Criteria criteria = new Criteria();
 		List<Criteria> list = new ArrayList<>();
 		for (ChargerType val : ChargerType.values()) {
@@ -110,23 +115,46 @@ public final class CommonUtility {
 			switch (val) {
 			case KIRANA_CHARZER_BLE:
 			case FLEXTRON_BLE_OMNI:
-				valCriteria = Criteria.where(pathOfConfiguration.concat(".macAddress")).regex(chargerControlId, "i");
+				if (regexEnabled) {
+					valCriteria = Criteria.where(pathOfConfiguration.concat(".macAddress")).regex(chargerControlId,
+							"i");
+				} else {
+					valCriteria = Criteria.where(pathOfConfiguration.concat(".macAddress")).is(chargerControlId);
+				}
 				break;
 			case KIRANA_CHARZER_FLEXTRON:
 			case KIRANA_CHARZER_FLEXTRON_WIFI:
-				valCriteria = Criteria.where(pathOfConfiguration.concat(".ccuId")).regex(chargerControlId, "i");
+				if (regexEnabled) {
+					valCriteria = Criteria.where(pathOfConfiguration.concat(".ccuId")).regex(chargerControlId, "i");
+				} else {
+					valCriteria = Criteria.where(pathOfConfiguration.concat(".ccuId")).is(chargerControlId);
+				}
 				break;
 			case KIRANA_CHARZER_GSM:
 			case EV_POINT_CHARGER:
-				valCriteria = Criteria.where(pathOfConfiguration.concat(".deviceId")).regex(chargerControlId, "i");
+				if (regexEnabled) {
+					valCriteria = Criteria.where(pathOfConfiguration.concat(".deviceId")).regex(chargerControlId, "i");
+				} else {
+					valCriteria = Criteria.where(pathOfConfiguration.concat(".deviceId")).is(chargerControlId);
+				}
 				break;
 			case CHARGE_MOD_BHARAT_AC:
 			case MEKR_OMNI:
 			case MOKO_PLUG_OMNI:
-				valCriteria = Criteria.where(pathOfConfiguration.concat(".imeiNumber")).regex(chargerControlId, "i");
+				if (regexEnabled) {
+					valCriteria = Criteria.where(pathOfConfiguration.concat(".imeiNumber")).regex(chargerControlId,
+							"i");
+				} else {
+					valCriteria = Criteria.where(pathOfConfiguration.concat(".imeiNumber")).is(chargerControlId);
+				}
 				break;
 			case OCPP_16_JSON_CHARGER:
-				valCriteria = Criteria.where(pathOfConfiguration.concat(".chargerBoxId")).regex(chargerControlId, "i");
+				if (regexEnabled) {
+					valCriteria = Criteria.where(pathOfConfiguration.concat(".chargerBoxId")).regex(chargerControlId,
+							"i");
+				} else {
+					valCriteria = Criteria.where(pathOfConfiguration.concat(".chargerBoxId")).is(chargerControlId);
+				}
 				break;
 			case OTHER_NETWORK_CHARGER:
 				break;
