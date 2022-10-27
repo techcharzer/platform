@@ -108,4 +108,18 @@ public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository
 		}
 		return Optional.of(data.getContent().get(0));
 	}
+
+	@Override
+	public <R> List<R> findDistinct(List<AbstractFilter> filters, String field, Class<T> clazz,
+			Class<R> clazzResponse) {
+		GenericFilterToQueryCreator queryMapper = factory.getService(clazz);
+		Criteria criterias = queryMapper.getFilter(filters);
+		Query query = new Query();
+		if (!ObjectUtils.isEmpty(criterias)) {
+			query.addCriteria(criterias);
+		}
+		log.debug("query: {} class : {}", query, clazz);
+		validateFilters(filters);
+		return mongoTemplate.findDistinct(query, field, clazz, clazzResponse);
+	}
 }

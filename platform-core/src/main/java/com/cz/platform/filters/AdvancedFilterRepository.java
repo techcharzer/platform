@@ -20,4 +20,6 @@ public interface AdvancedFilterRepository<T> {
 
 	Optional<T> findByFilter(String key, String value, Class<T> clazz);
 
+	<R> List<R> findDistinct(List<AbstractFilter> filters, String field, Class<T> clazz, Class<R> clazzResponse);
+
 }
