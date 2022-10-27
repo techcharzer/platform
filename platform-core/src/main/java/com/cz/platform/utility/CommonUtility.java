@@ -378,7 +378,7 @@ public final class CommonUtility {
 		ZonedDateTime zd = Instant.now().atZone(PlatformConstants.CURRENT_ZONE_ID);
 		ZonedDateTime end = zd.withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
 		ZonedDateTime start = zd.minusMonths(1).withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
-		log.debug("start : {} end : {}, al start: {}, al end: {}", start.toEpochSecond(), end.toEpochSecond(),
+		log.debug("start: {} end: {}, al start: {}, al end: {}", start.toEpochSecond(), end.toEpochSecond(),
 				start.toInstant().toEpochMilli(), end.toInstant().toEpochMilli());
 		return new DateRangeFilter(key, start.toInstant(), end.toInstant());
 	}
