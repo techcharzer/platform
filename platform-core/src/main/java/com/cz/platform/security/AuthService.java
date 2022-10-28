@@ -26,6 +26,7 @@ import com.cz.platform.enums.UserType;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.AuthenticationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
+import com.cz.platform.utility.CommonUtility;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -79,7 +80,7 @@ public class AuthService {
 
 	public Authentication getClientAuthentication(String token) throws ApplicationException {
 		UserDTO user = validateClientToken(token);
-		Set<Permission> permissions = Utility.getPermissions(user.getRoles());
+		Set<Permission> permissions = CommonUtility.getPermissions(user.getRoles());
 		return new UsernamePasswordAuthenticationToken(user, "", permissions);
 	}
 
@@ -112,7 +113,7 @@ public class AuthService {
 
 	public Authentication getServerAuthentication(String token) throws ApplicationException {
 		UserDTO user = validateServerToken(token);
-		Set<Permission> permissions = Utility.getPermissions(user.getRoles());
+		Set<Permission> permissions = CommonUtility.getPermissions(user.getRoles());
 		return new UsernamePasswordAuthenticationToken(user, "", permissions);
 	}
 

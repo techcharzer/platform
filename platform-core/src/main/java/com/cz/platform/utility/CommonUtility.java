@@ -9,12 +9,14 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,9 +35,12 @@ import com.cz.platform.dto.PostalAddress;
 import com.cz.platform.dto.Range;
 import com.cz.platform.dto.SaveTagRequest;
 import com.cz.platform.enums.ChargerType;
+import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 import com.cz.platform.filters.DateRangeFilter;
+import com.cz.platform.security.Permission;
+import com.cz.platform.security.RoleDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -388,5 +393,30 @@ public final class CommonUtility {
 		ZonedDateTime start = zd.withMonth(month).withYear(year).withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
 		ZonedDateTime end = start.plusMonths(1);
 		return new DateRangeFilter(key, start.toInstant(), end.toInstant());
+	}
+
+	public static Set<Permission> getPermissions(List<RoleDTO> roles) {
+		Set<Permission> permissions = new HashSet<>();
+		if (!ObjectUtils.isEmpty(roles)) {
+			for (RoleDTO role : roles) {
+				if (!ObjectUtils.isEmpty(role.getPermissions())) {
+					for (String permission : role.getPermissions()) {
+						permissions.add(new Permission(permission));
+					}
+				}
+			}
+		}
+		return permissions;
+	}
+
+	public static void sleep(long milliSeconds) {
+		if (milliSeconds > 0) {
+			try {
+				Thread.sleep(milliSeconds);
+			} catch (InterruptedException e) {
+				throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+						"sleep method interrupted");
+			}
+		}
 	}
 }

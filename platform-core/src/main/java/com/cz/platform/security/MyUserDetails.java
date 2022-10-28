@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.cz.platform.utility.CommonUtility;
+
 @Service
 public class MyUserDetails implements UserDetailsService {
 
@@ -19,7 +21,7 @@ public class MyUserDetails implements UserDetailsService {
 		user.setRoles(roles);
 		user.setUserId(id);
 
-		Set<Permission> permissions = Utility.getPermissions(user.getRoles());
+		Set<Permission> permissions = CommonUtility.getPermissions(user.getRoles());
 
 		return org.springframework.security.core.userdetails.User//
 				.withUsername(id)//
