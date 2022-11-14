@@ -82,10 +82,12 @@
 		<logger level="INFO" name="org.springframework"
 			additivity="false">
 			<appender-ref ref="CONSOLE" />
+			<appender-ref ref="FILE" />
 		</logger>
 		<logger level="DEBUG" name="com.cz" additivity="false">
 			<appender-ref ref="CONSOLE" />
 			<appender-ref ref="Sentry" />
+			<appender-ref ref="FILE" />
 		</logger>
 	</springProfile>
 </configuration>
