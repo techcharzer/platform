@@ -42,6 +42,10 @@ public final class FilterParserService {
 		MAP_OF_FILTER_PARSING.put(FilterOperationsType.NEAR_TO, this::nearToFilterParsing);
 		MAP_OF_FILTER_PARSING.put(FilterOperationsType.DATE_RANGE, this::dateRangeFilterParsing);
 		MAP_OF_FILTER_PARSING.put(FilterOperationsType.CUSTOM_TYPE, this::customFilterParsing);
+		MAP_OF_FILTER_PARSING.put(FilterOperationsType.GREATER_THAN, this::gtFilterParsing);
+		MAP_OF_FILTER_PARSING.put(FilterOperationsType.LESS_THAN, this::ltFilterParsing);
+		MAP_OF_FILTER_PARSING.put(FilterOperationsType.GREATER_THAN_EQUAL, this::gteFilterParsing);
+		MAP_OF_FILTER_PARSING.put(FilterOperationsType.LESS_THAN_EQUAL, this::lteFilterParsing);
 	}
 
 	private AbstractFilter inFilterParsing(String field, List<String> value) {
@@ -51,6 +55,39 @@ public final class FilterParserService {
 					"Invalid filter parameters. requestparam or requestparam value is empty.");
 		}
 		return filter;
+	}
+
+	private AbstractFilter gtFilterParsing(String field, List<String> value) {
+		return numericComparisonFilterParsing(field, value, FilterOperationsType.GREATER_THAN);
+	}
+
+	private AbstractFilter gteFilterParsing(String field, List<String> value) {
+		return numericComparisonFilterParsing(field, value, FilterOperationsType.GREATER_THAN_EQUAL);
+	}
+
+	private AbstractFilter ltFilterParsing(String field, List<String> value) {
+		return numericComparisonFilterParsing(field, value, FilterOperationsType.LESS_THAN);
+	}
+
+	private AbstractFilter lteFilterParsing(String field, List<String> value) {
+		return numericComparisonFilterParsing(field, value, FilterOperationsType.LESS_THAN_EQUAL);
+	}
+
+	private AbstractFilter numericComparisonFilterParsing(String field, List<String> value,
+			FilterOperationsType opType) {
+		if (ObjectUtils.isEmpty(value)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
+					"Invalid filter parameters. requestparam or requestparam value is empty.");
+		}
+		if (value.size() != 1) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
+					"Invalid filter parameters. Only 1 gt/gte/lt/lte value is allowed");
+		}
+		if (ObjectUtils.isEmpty(opType)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid opType");
+		}
+		Double val = Double.parseDouble(value.get(0));
+		return new NumericComparisonFilter<Double>(field, val, FilterOperationsType.GREATER_THAN_EQUAL);
 	}
 
 	private AbstractFilter rangeFilterParsing(String field, List<String> value) {
