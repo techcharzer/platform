@@ -1,6 +1,7 @@
 package com.cz.platform.utility;
 
 import java.text.MessageFormat;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -15,6 +16,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -419,4 +421,30 @@ public final class CommonUtility {
 			}
 		}
 	}
+
+	public static boolean isChargerClosed(Range<Instant> bookingDuration, Range<Integer> openCloseTimeInSeconds) {
+		Optional<Range<Instant>> openCloseTimeToday = getTodayOpenTimings(openCloseTimeInSeconds);
+		if (openCloseTimeToday.isPresent()) {
+			log.info("charger open timings : {}, bookingDuration: {}", openCloseTimeToday.get(), bookingDuration);
+			Range<Instant> openTimings = openCloseTimeToday.get();
+			return bookingDuration.getFrom().isBefore(openTimings.getFrom())
+					|| bookingDuration.getTo().isAfter(openTimings.getTo());
+		} else {
+			return false;
+		}
+	}
+	
+	public static Optional<Range<Instant>> getTodayOpenTimings(Range<Integer> openCloseTimeInSeconds) {
+		ZonedDateTime now = ZonedDateTime.now(PlatformConstants.CURRENT_ZONE_ID);
+		Instant todayStart = now.truncatedTo(ChronoUnit.DAYS).toInstant();
+		Instant start = todayStart.plus(openCloseTimeInSeconds.getFrom(), ChronoUnit.SECONDS);
+		Instant end = todayStart.plus(openCloseTimeInSeconds.getTo(), ChronoUnit.SECONDS);
+		Duration duration = Duration.between(start, end);
+		if (duration.toMinutes() > 1430) {
+			return Optional.empty();
+		} else {
+			return Optional.of(new Range<Instant>(start, end));
+		}
+	}
+
 }
