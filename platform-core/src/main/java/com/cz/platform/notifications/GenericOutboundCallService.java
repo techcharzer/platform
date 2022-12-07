@@ -24,7 +24,7 @@ public class GenericOutboundCallService {
 		outBoundRequest.setAgentNumber(customerAgentNumber);
 		outBoundRequest.setCustomerNumber(customerNumber);
 		SourceData data = new SourceData();
-		data.setAppName(applicationContext.getDisplayName());
+		data.setAppName(applicationContext.getId());
 		data.setType(source);
 		data.setId(sourceId);
 		outBoundRequest.setSource(data);
