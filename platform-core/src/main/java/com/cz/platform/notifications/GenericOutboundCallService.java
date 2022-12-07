@@ -18,11 +18,16 @@ public class GenericOutboundCallService {
 
 	private GenericRabbitQueueConfiguration rabbitQueueConfiguration;
 
-	public void initiateOutboundCall(String customerAgentNumber, String customerNumber) {
+	public void initiateOutboundCall(String customerAgentNumber, String customerNumber, ISourceType source,
+			String sourceId) {
 		OutBoundCallRequest outBoundRequest = new OutBoundCallRequest();
 		outBoundRequest.setAgentNumber(customerAgentNumber);
 		outBoundRequest.setCustomerNumber(customerNumber);
-		outBoundRequest.setSourceApp(applicationContext.getDisplayName());
+		SourceData data = new SourceData();
+		data.setAppName(applicationContext.getDisplayName());
+		data.setType(source);
+		data.setId(sourceId);
+		outBoundRequest.setSource(data);
 		rabbitTemplate.convertAndSend(rabbitQueueConfiguration.getInitiateOutboundCall(), outBoundRequest);
 	}
 
@@ -30,7 +35,18 @@ public class GenericOutboundCallService {
 	public static class OutBoundCallRequest {
 		private String agentNumber;
 		private String customerNumber;
-		private String sourceApp;
+		private SourceData source;
+	}
+
+	@Data
+	public static class SourceData {
+		private ISourceType type;
+		private String id;
+		private String appName;
+	}
+
+	public static interface ISourceType {
+		String getTypeName();
 	}
 
 }
