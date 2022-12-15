@@ -9,9 +9,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.redisson.api.RMapCache;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.cz.platform.config.OTPConfig;
@@ -29,10 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 public class OTPService {
 
 	@Autowired
-	@Qualifier("redisOtpKey")
-	private RedisTemplate<String, OTPEntity> redisTemplate;
-
-	@Autowired
 	private GenericNotificationService globalNotificationService;
 
 	@Autowired
@@ -41,11 +37,11 @@ public class OTPService {
 	@Autowired
 	private PlatformCommonService platformCommonService;
 
-	private static final String OTP_BASE_KEY = "otpRequestIds:{0}";
+	@Autowired
+	private RedissonClient redissonClient;
 
+	private static final String OTP_BASE_KEY = "otpRequestIds";
 	private static final Random random = new Random();
-
-	public static final String REDIS_TEMPLATE_AUTH_KEY = "redisAuthKeyHash";
 
 	public OTPSentResponseDTO sendOTP(OTPRequest request) {
 		log.debug("send otp request : {}", request);
@@ -56,20 +52,23 @@ public class OTPService {
 		String otpRedisLockKey = MessageFormat.format("OTP_SEND_MESSAGE_{0}", mobileNumber);
 		platformCommonService.takeLock(otpRedisLockKey, 5, "Please wait for 5 seconds to try again.", LoggerType.ERROR);
 
-		boolean useRandomOTP = config.getUseRandomOtp();
-		if (!ObjectUtils.isEmpty(config.getDefaultMobileNumberSet())
-				&& config.getDefaultMobileNumberSet().contains(mobileNumber)) {
-			useRandomOTP = false;
-		}
+		RMapCache<String, String> mapCache = redissonClient.getMapCache("SOTT");
+		String sameOtpKey = MessageFormat.format("SOTT_{0}", request.getMobileNumber(), request.getVerificationFor());
+		String oldOtp = mapCache.get(sameOtpKey);
+		if (!ObjectUtils.isEmpty(oldOtp)) {
+			otpStr = oldOtp;
+		} else {
+			boolean useRandomOTP = config.getUseRandomOtp();
+			if (!ObjectUtils.isEmpty(config.getDefaultMobileNumberSet())
+					&& config.getDefaultMobileNumberSet().contains(mobileNumber)) {
+				useRandomOTP = false;
+			}
 
-		if (useRandomOTP) {
-			int otp = random.nextInt(8999) + 1000;
-			otpStr = String.format("%04d", otp);
+			if (useRandomOTP) {
+				int otp = random.nextInt(8999) + 1000;
+				otpStr = String.format("%04d", otp);
+			}
 		}
-
-		// generate unique key
-		String uniqueKey = UUID.randomUUID().toString();
-		String key = MessageFormat.format(OTP_BASE_KEY, uniqueKey);
 
 		// save in redis
 		OTPEntity entity = new OTPEntity();
@@ -81,15 +80,18 @@ public class OTPService {
 			appSource = WhiteLabelAppTypeEnum.CHARZER_APP;
 		}
 		entity.setAppSource(appSource);
-		redisTemplate.opsForValue().set(key, entity, 5, TimeUnit.MINUTES);
 
-		log.debug("useRandomOTP: {} otprequestId : {}, otpEntity {}", useRandomOTP, uniqueKey, entity);
+		// generate unique key
+		String uniqueKey = UUID.randomUUID().toString();
+		RMapCache<String, OTPEntity> keyToEntityMap = redissonClient.getMapCache(OTP_BASE_KEY);
+		keyToEntityMap.fastPut(uniqueKey, entity, 5, TimeUnit.MINUTES);
+		mapCache.fastPut(sameOtpKey, otpStr, 5, TimeUnit.MINUTES);
+
+		log.debug("otprequestId : {}, otpEntity {}", uniqueKey, entity);
 		// send message only if random otp is being sent
-		if (useRandomOTP) {
-			Map<String, String> data = new HashMap<>();
-			data.put("otp", otpStr);
-			globalNotificationService.sendSMS(mobileNumber, data, "OTP_TEMPLATE", request.getAppSource());
-		}
+		Map<String, String> data = new HashMap<>();
+		data.put("otp", otpStr);
+		globalNotificationService.sendSMS(mobileNumber, data, "OTP_TEMPLATE", request.getAppSource());
 		OTPSentResponseDTO otpResponseDTO = new OTPSentResponseDTO();
 		otpResponseDTO.setOtpRequestId(uniqueKey);
 		return otpResponseDTO;
@@ -119,8 +121,8 @@ public class OTPService {
 	public void verifyOtp(VerifyOTPRequest verifyRequest) {
 		log.debug("verify otp request : {}", verifyRequest);
 		validateRequest(verifyRequest);
-		String key = MessageFormat.format(OTP_BASE_KEY, verifyRequest.getOtpRequestId());
-		OTPEntity otpEntity = redisTemplate.opsForValue().get(key);
+		RMapCache<String, OTPEntity> keyToEntityMap = redissonClient.getMapCache(OTP_BASE_KEY);
+		OTPEntity otpEntity = keyToEntityMap.get(verifyRequest.getOtpRequestId());
 		if (ObjectUtils.isEmpty(otpEntity)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid OTP");
 		}
