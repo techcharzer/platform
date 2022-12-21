@@ -85,7 +85,7 @@ public class ChargerClient {
 	}
 
 	public ChargerDTO getChargerByHardwareId(String hardwareId) {
-		log.debug("fetchig :{}", hardwareId);
+		log.debug("fetchig charger via hardwareId :{}", hardwareId);
 		if (ObjectUtils.isEmpty(hardwareId)) {
 			return null;
 		}
