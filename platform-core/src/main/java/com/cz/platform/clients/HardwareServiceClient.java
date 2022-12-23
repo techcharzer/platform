@@ -74,7 +74,7 @@ public class HardwareServiceClient {
 		if (ObjectUtils.isEmpty(hardwareIds)) {
 			return new HashMap<>();
 		}
-		log.debug("fetchig userId :{}", hardwareIds);
+		log.debug("fetchig hardware status :{}", hardwareIds);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
@@ -102,7 +102,7 @@ public class HardwareServiceClient {
 		if (ObjectUtils.isEmpty(hardwareId)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid hardwareId");
 		}
-		log.debug("fetchig userId :{}", hardwareId);
+		log.debug("fetchig hardwareInfo :{}", hardwareId);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
@@ -142,7 +142,7 @@ public class HardwareServiceClient {
 		if (ObjectUtils.isEmpty(hardwareIds)) {
 			return new MultipleMeterValue(null);
 		}
-		log.debug("fetchig userId :{}", hardwareIds);
+		log.debug("fetchig meter values :{}", hardwareIds);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);

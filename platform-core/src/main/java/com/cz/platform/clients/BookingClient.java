@@ -56,7 +56,7 @@ public class BookingClient {
 		try {
 			String url = MessageFormat.format("{0}/booking-service/secure/internal-call/booking/{1}",
 					urlConfig.getBaseUrl(), bookingId);
-			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
+			log.debug("request : {} body and headers {}", url, entity);
 			ResponseEntity<BookingInfo> response = template.exchange(url, HttpMethod.GET, entity, BookingInfo.class);
 			log.info("response body : {}", response.getBody());
 			return response.getBody();
@@ -119,7 +119,7 @@ public class BookingClient {
 		try {
 			String url = MessageFormat.format("{0}/booking-service/secure/internal-call/booking/statistics/by/charger",
 					urlConfig.getBaseUrl(), chargerIds);
-			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
+			log.debug("request : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
 			log.info("response body : {}", response.getBody());
 			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, UtilizedBookingStatistics>>() {
