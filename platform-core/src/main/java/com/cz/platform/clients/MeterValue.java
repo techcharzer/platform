@@ -11,6 +11,7 @@ public class MeterValue {
 	private String socketId;
 	private HardwareStatusDTO onlineDTO;
 	private Boolean relay;
+	private Double stateOfCharge;
 	private Long electricCurrentInMilliAmpere;
 	private Long currentMeterReadingInWattHour;
 
