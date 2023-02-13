@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.util.ObjectUtils;
 
@@ -33,7 +34,7 @@ public class ChargerDTO implements Serializable {
 	private ChargerUsageTypeConfiguration usageConfiguration;
 	private AddressDTO address;
 	private String operationalZoneId;
-	private List<String> viewerIds;
+	private Set<String> viewerIds;
 	private DealConfigurationDTO dealConfiguration;
 	private Instant listingTime;
 
