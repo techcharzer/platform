@@ -112,6 +112,13 @@ public class UserClient {
 		}
 	}
 
+	public UserDetails getUserByMobileNumber(String mobileNumber) {
+		Set<String> mobileNumberSet = new HashSet<>();
+		mobileNumberSet.add(mobileNumber);
+		Map<String, UserDetails> map = getUserByMobileNumber(mobileNumberSet);
+		return map.get(mobileNumber);
+	}
+
 	public Map<String, UserDetails> getUserByMobileNumber(Set<String> mobileNumbers) {
 		if (ObjectUtils.isEmpty(mobileNumbers)) {
 			return Collections.emptyMap();
