@@ -142,6 +142,7 @@ public class BookingClient {
 		private ElectricityInfo electricityInfo;
 		private BookingStatus bookingStatus;
 		private String bookedBy;
+		private Instant createdAt;
 
 		public Instant getStartTime() {
 			if (bookingStatus.equals(BookingStatus.COMPLETED)) {
