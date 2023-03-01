@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
 			}
 			Optional<String> userIdOptional = logUserId();
 			if (userIdOptional.isPresent()) {
-				builder.append("for user {}").append(userIdOptional.get());
+				builder.append("for userId ").append(userIdOptional.get());
 			}
 			return builder.toString();
 		} catch (Exception e) {
