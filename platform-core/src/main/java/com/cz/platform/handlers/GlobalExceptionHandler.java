@@ -1,6 +1,7 @@
 package com.cz.platform.handlers;
 
 import java.text.MessageFormat;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,9 +21,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.cz.platform.exception.ApplicationException;
+import com.cz.platform.exception.AuthenticationException;
 import com.cz.platform.exception.ErrorField;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
+import com.cz.platform.security.UserDTO;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
@@ -46,15 +51,35 @@ public class GlobalExceptionHandler {
 			String method = request.getMethod();
 			String path = request.getRequestURI();
 			String queryPrams = request.getQueryString();
-			if (ObjectUtils.isEmpty(queryPrams)) {
-				return MessageFormat.format("{0} {1}", method, path);
-			} else {
-				return MessageFormat.format("{0} {1}?{2}", method, path, queryPrams);
+			StringBuilder builder = new StringBuilder();
+			builder.append(method).append(" ").append(path).append(" ");
+			if (!ObjectUtils.isEmpty(queryPrams)) {
+				builder.append("?").append(queryPrams);
 			}
+			Optional<String> userIdOptional = logUserId();
+			if (userIdOptional.isPresent()) {
+				builder.append("for user {}").append(userIdOptional.get());
+			}
+			return builder.toString();
 		} catch (Exception e) {
 			LOG.warn("error occured while logging request: {}", request, e);
 			return "\nerror occured while logging request\n";
 		}
+	}
+
+	private Optional<String> logUserId() {
+		SecurityContext context = SecurityContextHolder.getContext();
+		if (ObjectUtils.isEmpty(context)) {
+			return Optional.empty();
+		}
+		if (ObjectUtils.isEmpty(context.getAuthentication())) {
+			return Optional.empty();
+		}
+		if (ObjectUtils.isEmpty(context.getAuthentication().getPrincipal())) {
+			return Optional.empty();
+		}
+		UserDTO user = (UserDTO) context.getAuthentication().getPrincipal();
+		return Optional.of(user.getUserId());
 	}
 
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
