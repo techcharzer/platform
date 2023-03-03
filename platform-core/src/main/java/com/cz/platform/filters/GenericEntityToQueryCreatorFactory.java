@@ -4,16 +4,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.stereotype.Component;
 
-import com.cz.platform.exception.PlatformExceptionCodes;
-import com.cz.platform.exception.ValidationException;
-
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class GenericEntityToQueryCreatorFactory {
+@Component
+@AllArgsConstructor
+public class GenericEntityToQueryCreatorFactory {
 
 	protected final Map<Class, GenericFilterToQueryCreator> MAP_CLASS_TO_FILTER_QUERY_CREATOR = new HashMap<>();
+	private GenericFilterToQueryCreator defaultQueryCreator;
 
 	public GenericFilterToQueryCreator getService(Class a) {
 		if (ObjectUtils.isEmpty(a)) {
@@ -21,8 +23,7 @@ public abstract class GenericEntityToQueryCreatorFactory {
 		}
 		log.debug("class name : {}", a.getCanonicalName());
 		if (!MAP_CLASS_TO_FILTER_QUERY_CREATOR.containsKey(a)) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
-					"Invalid value of the class : " + a.getCanonicalName());
+			return defaultQueryCreator;
 		}
 		return MAP_CLASS_TO_FILTER_QUERY_CREATOR.get(a);
 	}

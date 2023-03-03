@@ -7,12 +7,14 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class GenericFilterToQueryCreator {
+@Component
+public class GenericFilterToQueryCreator {
 
 	protected final Map<String, Function<AbstractFilter, Criteria>> MAP_OF_FILTER_TO_QUERY_MAPPER = new HashMap<>();
 
