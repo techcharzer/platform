@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import lombok.AllArgsConstructor;
@@ -11,10 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@AllArgsConstructor
 public class GenericEntityToQueryCreatorFactory {
 
 	protected final Map<Class, GenericFilterToQueryCreator> MAP_CLASS_TO_FILTER_QUERY_CREATOR = new HashMap<>();
+	
+	@Autowired
 	private GenericFilterToQueryCreator defaultQueryCreator;
 
 	public GenericFilterToQueryCreator getService(Class a) {
