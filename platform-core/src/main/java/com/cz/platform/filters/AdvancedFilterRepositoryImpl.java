@@ -30,10 +30,16 @@ public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository
 
 	private GenericEntityToQueryCreatorFactory factory;
 
+	private DefaultGenericFilterToQueryMapper defaultFilterToQueryMapper;
+
 	@Override
 	public Page<T> filter(List<AbstractFilter> filters, Pageable page, String[] includedFields, Class<T> clazz) {
 		GenericFilterToQueryCreator queryMapper = factory.getService(clazz);
+		if (ObjectUtils.isEmpty(queryMapper)) {
+			queryMapper = defaultFilterToQueryMapper;
+		}
 		Criteria criterias = queryMapper.getFilter(filters);
+
 		Query query = new Query();
 		if (!ObjectUtils.isEmpty(criterias)) {
 			query.addCriteria(criterias);

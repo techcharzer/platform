@@ -5,9 +5,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
 
-import com.cz.platform.exception.PlatformExceptionCodes;
-import com.cz.platform.exception.ValidationException;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -20,10 +17,6 @@ public abstract class GenericEntityToQueryCreatorFactory {
 			return null;
 		}
 		log.debug("class name : {}", a.getCanonicalName());
-		if (!MAP_CLASS_TO_FILTER_QUERY_CREATOR.containsKey(a)) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
-					"Invalid value of the class : " + a.getCanonicalName());
-		}
 		return MAP_CLASS_TO_FILTER_QUERY_CREATOR.get(a);
 	}
 

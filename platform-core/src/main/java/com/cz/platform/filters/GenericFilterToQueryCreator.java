@@ -38,4 +38,6 @@ public abstract class GenericFilterToQueryCreator {
 		return criteria;
 	}
 
+	protected abstract void fillMap();
+
 }
