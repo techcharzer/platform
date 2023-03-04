@@ -41,4 +41,5 @@ public class PlatformConstants {
 	public static final String UNIQUE_ID_INFO = "unique_id_info";
 	public static final String COMPANY_NAME = "CHARZER";
 	public static final String EMPTY_STRING = "";
+	public static final String CHARZER_APP_CHARGE_POINT_OPERATOR = "CHARZER_APP";
 }

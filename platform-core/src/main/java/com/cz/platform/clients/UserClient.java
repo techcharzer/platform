@@ -36,7 +36,6 @@ import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 import com.cz.platform.security.SecurityConfigProps;
 import com.cz.platform.utility.PlatformCommonService;
-import com.cz.platform.whitelabel.WhiteLabelAppTypeEnum;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -340,11 +339,7 @@ public class UserClient {
 		}
 	}
 
-	public UserGetOrCreateResponse getOrCreateUser(String mobileNumber) {
-		return getOrCreateUser(mobileNumber, WhiteLabelAppTypeEnum.CHARZER_APP);
-	}
-
-	public UserGetOrCreateResponse getOrCreateUser(String mobileNumber, WhiteLabelAppTypeEnum appSource) {
+	public UserGetOrCreateResponse getOrCreateUser(String mobileNumber, String chargePointOperatorId) {
 		if (ObjectUtils.isEmpty(mobileNumber)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
 		}
@@ -355,7 +350,7 @@ public class UserClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
 		GetOrCreateUserRequest request = new GetOrCreateUserRequest();
 		request.setMobile(mobileNumber);
-		request.setAppSource(appSource);
+		request.setChargePointOperatorId(chargePointOperatorId);
 		HttpEntity<GetOrCreateUserRequest> entity = new HttpEntity<>(request, headers);
 		try {
 			String url = MessageFormat.format("{0}/user-service/secure/user", urlConfig.getBaseUrl());
@@ -380,7 +375,7 @@ public class UserClient {
 	@Data
 	public static class GetOrCreateUserRequest {
 		private String mobile;
-		private WhiteLabelAppTypeEnum appSource;
+		private String chargePointOperatorId;
 	}
 
 	public List<GroupDTO> getUserGroups(String userId) {
@@ -469,7 +464,7 @@ public class UserClient {
 		}
 	}
 
-	public UserGetOrCreateResponse getOrCreatePremiseOwner(String mobileNumber) {
+	public UserGetOrCreateResponse getOrCreatePremiseOwner(String mobileNumber, String chargePointOperatorId) {
 		if (ObjectUtils.isEmpty(mobileNumber)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid mobileNumber");
 		}
@@ -480,7 +475,7 @@ public class UserClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
 		GetOrCreateUserRequest request = new GetOrCreateUserRequest();
 		request.setMobile(mobileNumber);
-		request.setAppSource(WhiteLabelAppTypeEnum.CHARZER_APP);
+		request.setChargePointOperatorId(chargePointOperatorId);
 		HttpEntity<GetOrCreateUserRequest> entity = new HttpEntity<>(request, headers);
 		try {
 			String url = MessageFormat.format("{0}/user-service/secure/internal-server/host", urlConfig.getBaseUrl());

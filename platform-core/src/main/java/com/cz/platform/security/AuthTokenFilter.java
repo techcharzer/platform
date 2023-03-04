@@ -1,6 +1,7 @@
 package com.cz.platform.security;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -42,7 +43,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		try {
 			String clientToken = resolveAuthToken(httpServletRequest);
 			if (!ObjectUtils.isEmpty(clientToken)) {
-				Authentication auth = authService.getClientAuthentication(clientToken);
+				Optional<String> chargePointOperatorId = resolveChargePointOperatorId(httpServletRequest);
+				Authentication auth = authService.getClientAuthentication(clientToken, chargePointOperatorId);
+
 				SecurityContextImpl secureContext = new SecurityContextImpl();
 				secureContext.setAuthentication(auth);
 				SecurityContextHolder.setContext(secureContext);
@@ -88,6 +91,10 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 			return bearerToken.substring(7);
 		}
 		return null;
+	}
+
+	public Optional<String> resolveChargePointOperatorId(HttpServletRequest req) {
+		return Optional.of(req.getHeader("cpoId"));
 	}
 
 }

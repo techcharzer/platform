@@ -3,7 +3,6 @@ package com.cz.platform.notifications;
 import java.util.List;
 import java.util.Map;
 
-import com.cz.platform.whitelabel.WhiteLabelAppTypeEnum;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -15,7 +14,7 @@ public class NotificationDTO {
 
 	private String id;
 	private Channel channel;
-	private WhiteLabelAppTypeEnum whiteLabelApp;
+	private String chargePointOperatorId;
 	private NotificationType type;
 	@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXTERNAL_PROPERTY, property = "channel")
 	@JsonSubTypes({ @Type(value = WhatsappNotificationTo.class, name = "WHATSAPP"),

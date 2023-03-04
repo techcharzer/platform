@@ -11,7 +11,6 @@ import org.springframework.util.ObjectUtils;
 import com.cz.platform.clients.CustomRabbitMQTemplate;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
-import com.cz.platform.whitelabel.WhiteLabelAppTypeEnum;
 
 import lombok.AllArgsConstructor;
 
@@ -24,22 +23,22 @@ public class GenericNotificationService {
 	private GenericRabbitQueueConfiguration rabbitQueueConfiguration;
 
 	public void sendSMS(String mobile, Map<String, String> data, String templates,
-			WhiteLabelAppTypeEnum whiteLabelApp) {
-		sendSMS(91, mobile, data, templates, whiteLabelApp);
+			String chargePointOperatorId) {
+		sendSMS(91, mobile, data, templates, chargePointOperatorId);
 	}
 
 	public void sendSMS(int countryCode, String mobile, Map<String, String> data, String templates,
-			WhiteLabelAppTypeEnum whiteLabelApp) {
-		sendSMS(countryCode, mobile, data, Arrays.asList(templates), whiteLabelApp);
+			String chargePointOperatorId) {
+		sendSMS(countryCode, mobile, data, Arrays.asList(templates), chargePointOperatorId);
 	}
 
 	public void sendSMS(int countryCode, String mobile, Map<String, String> data, List<String> templates,
-			WhiteLabelAppTypeEnum whiteLabelApp) {
+			String chargePointOperatorId) {
 		NotificationDTO notificationDTO = new NotificationDTO();
 		notificationDTO.setId(UUID.randomUUID().toString());
 		notificationDTO.setType(NotificationType.GENERIC_NOTIFICATION);
 		notificationDTO.setChannel(Channel.SMS);
-		notificationDTO.setWhiteLabelApp(whiteLabelApp);
+		notificationDTO.setChargePointOperatorId(chargePointOperatorId);
 		SMSNotificationTo smsNotificationTo = new SMSNotificationTo();
 		smsNotificationTo.setMobileNumber(mobile);
 		smsNotificationTo.setCountryCode(countryCode);
@@ -50,22 +49,22 @@ public class GenericNotificationService {
 	}
 
 	public void sendWhatsapp(String mobile, Map<String, String> data, String templates,
-			WhiteLabelAppTypeEnum whiteLabelApp) {
-		sendWhatsapp(91, mobile, data, Arrays.asList(templates), whiteLabelApp);
+			String chargePointOperatorId) {
+		sendWhatsapp(91, mobile, data, Arrays.asList(templates), chargePointOperatorId);
 	}
 
 	public void sendWhatsapp(int countryCode, String mobile, Map<String, String> data, String templates,
-			WhiteLabelAppTypeEnum whiteLabelApp) {
-		sendWhatsapp(countryCode, mobile, data, Arrays.asList(templates), whiteLabelApp);
+			String chargePointOperatorId) {
+		sendWhatsapp(countryCode, mobile, data, Arrays.asList(templates), chargePointOperatorId);
 	}
 
 	public void sendWhatsapp(int countryCode, String mobile, Map<String, String> data, List<String> templates,
-			WhiteLabelAppTypeEnum whiteLabelApp) {
+			String chargePointOperatorId) {
 		NotificationDTO notificationDTO = new NotificationDTO();
 		notificationDTO.setId(UUID.randomUUID().toString());
 		notificationDTO.setType(NotificationType.GENERIC_NOTIFICATION);
 		notificationDTO.setChannel(Channel.WHATSAPP);
-		notificationDTO.setWhiteLabelApp(whiteLabelApp);
+		notificationDTO.setChargePointOperatorId(chargePointOperatorId);
 		WhatsappNotificationTo smsNotificationTo = new WhatsappNotificationTo();
 		smsNotificationTo.setPhone(mobile);
 		smsNotificationTo.setCountryCode(countryCode);

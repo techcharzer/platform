@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -78,13 +80,17 @@ public class AuthService {
 				.compact();
 	}
 
-	public Authentication getClientAuthentication(String token) throws ApplicationException {
-		UserDTO user = validateClientToken(token);
+	public Authentication getClientAuthentication(String token, Optional<String> chargePointOperatorId)
+			throws ApplicationException {
+		LoggedInUser user = validateClientToken(token);
+		if (ObjectUtils.isEmpty(user.getChargePointOperatorId()) && chargePointOperatorId.isPresent()) {
+			user.setChargePointOperatorId(chargePointOperatorId.get());
+		}
 		Set<Permission> permissions = CommonUtility.getPermissions(user.getRoles());
 		return new UsernamePasswordAuthenticationToken(user, "", permissions);
 	}
 
-	private UserDTO validateClientToken(String token) throws ApplicationException {
+	private LoggedInUser validateClientToken(String token) throws ApplicationException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		TokenRequest requets = new TokenRequest(token);
