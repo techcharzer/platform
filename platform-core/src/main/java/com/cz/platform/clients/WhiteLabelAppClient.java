@@ -21,7 +21,6 @@ import com.cz.platform.exception.ValidationException;
 import com.cz.platform.security.SecurityConfigProps;
 import com.cz.platform.utility.PlatformCommonService;
 
-import io.lettuce.core.GeoCoordinates;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -79,7 +78,6 @@ public class WhiteLabelAppClient {
 		private List<PaymentGateway> paymentGateways;
 		private int walletInitializationCredits;
 		private ActiveInactiveStatus status;
-		private GeoCoordinates defaultHomePageCoordinates;
 	}
 
 	@Data
