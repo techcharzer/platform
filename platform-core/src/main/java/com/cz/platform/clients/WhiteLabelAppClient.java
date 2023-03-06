@@ -67,14 +67,13 @@ public class WhiteLabelAppClient {
 
 	@Data
 	public static class WhiteLabelApplicationConfigurationDTO {
-
 		private String id;
 		private String chargePointOperatorId;
 		private String appName;
 		private String packageName;
 		private String downloadLink;
 		private ReferralConfig referralConfig;
-		private int walletInitializationCredits;
+		private Long walletInitializationCredits;
 		private ActiveInactiveStatus status;
 	}
 
@@ -86,9 +85,9 @@ public class WhiteLabelAppClient {
 
 	@Data
 	public static class ReferralConfig {
-		public int referrerCreditUnits;
-		public int refereeCreditUnits;
-		public int firstBookingReferrerCreditUnits;
+		public Long referrerCreditUnits;
+		public Long refereeCreditUnits;
+		public Long firstBookingReferrerCreditUnits;
 		public String referralMessageTemplate;
 	}
 
