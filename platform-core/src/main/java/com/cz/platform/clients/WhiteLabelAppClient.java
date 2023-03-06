@@ -75,7 +75,6 @@ public class WhiteLabelAppClient {
 		private String packageName;
 		private String downloadLink;
 		private ReferralConfig referralConfig;
-		private List<PaymentGateway> paymentGateways;
 		private int walletInitializationCredits;
 		private ActiveInactiveStatus status;
 	}
