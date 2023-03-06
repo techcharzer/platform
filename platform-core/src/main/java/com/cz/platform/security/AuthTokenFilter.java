@@ -94,7 +94,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 	}
 
 	public Optional<String> resolveChargePointOperatorId(HttpServletRequest req) {
-		return Optional.of(req.getHeader("cpoId"));
+		String cpoId = req.getHeader("cpoId");
+		if (ObjectUtils.isEmpty(cpoId)) {
+			return Optional.empty();
+		}
+		return Optional.of(cpoId);
 	}
 
 }
