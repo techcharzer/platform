@@ -1,7 +1,6 @@
 package com.cz.platform.clients;
 
 import java.text.MessageFormat;
-import java.util.List;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -77,27 +76,6 @@ public class WhiteLabelAppClient {
 		private ReferralConfig referralConfig;
 		private int walletInitializationCredits;
 		private ActiveInactiveStatus status;
-	}
-
-	@Data
-	public static class PaymentGateway {
-		private String name;
-		private PaymentGatewayType type;
-		private PaymentGatewayConfig config;
-	}
-
-	public static enum PaymentGatewayType {
-		RAZORPAY
-	}
-
-	public static interface PaymentGatewayConfig {
-
-	}
-
-	@Data
-	public static class RazorpayClientProps implements PaymentGatewayConfig {
-		private String key;
-		private String secret;
 	}
 
 	@Data

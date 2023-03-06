@@ -96,14 +96,14 @@ public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository
 	}
 
 	@Override
-	public Optional<T> findByFilter(String key, String value, Class<T> clazz) {
+	public Optional<T> filterOne(String key, String value, Class<T> clazz) {
 		List<AbstractFilter> filters = new ArrayList<>();
 		filters.add(new InFilter<>(key, value));
-		return findByFilter(filters, clazz);
+		return filterOne(filters, clazz);
 	}
 
 	@Override
-	public Optional<T> findByFilter(List<AbstractFilter> filters, Class<T> clazz) {
+	public Optional<T> filterOne(List<AbstractFilter> filters, Class<T> clazz) {
 		Page<T> data = filter(filters, PageRequest.of(0, 1), clazz);
 		if (BooleanUtils.isFalse(data.hasContent())) {
 			return Optional.empty();

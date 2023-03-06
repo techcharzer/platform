@@ -16,9 +16,9 @@ public interface AdvancedFilterRepository<T> {
 
 	List<T> filter(List<AbstractFilter> filters, Class<T> clazz);
 
-	Optional<T> findByFilter(List<AbstractFilter> filters, Class<T> clazz);
+	Optional<T> filterOne(List<AbstractFilter> filters, Class<T> clazz);
 
-	Optional<T> findByFilter(String key, String value, Class<T> clazz);
+	Optional<T> filterOne(String key, String value, Class<T> clazz);
 
 	<R> List<R> findDistinct(List<AbstractFilter> filters, String field, Class<T> clazz, Class<R> clazzResponse);
 
