@@ -70,7 +70,8 @@ public class UserClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		try {
-			String url = MessageFormat.format("{0}/user-service/secure/user/{1}", urlConfig.getBaseUrl(), userId);
+			String url = MessageFormat.format("{0}/user-service/secure/internal-server/user/{1}",
+					urlConfig.getBaseUrl(), userId);
 			log.debug("request: {}, headers {}", url, entity);
 			ResponseEntity<UserDetails> response = template.exchange(url, HttpMethod.GET, entity, UserDetails.class);
 
@@ -429,8 +430,8 @@ public class UserClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		try {
-			String url = MessageFormat.format("{0}/user-service/secure/user/{1}/groups", urlConfig.getBaseUrl(),
-					userId);
+			String url = MessageFormat.format("{0}/user-service/secure/internal-server/user/{1}/groups",
+					urlConfig.getBaseUrl(), userId);
 			log.debug("request: {}, headers {}", url, entity);
 			ResponseEntity<GroupDTO[]> response = template.exchange(url, HttpMethod.GET, entity, GroupDTO[].class);
 			List<GroupDTO> list = Arrays.asList(response.getBody());
@@ -441,37 +442,6 @@ public class UserClient {
 				return null;
 			}
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
-			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
-					"User api not working");
-		}
-	}
-
-	public String getAdminProtectedChargerNetworkMapping(String userId) {
-		if (ObjectUtils.isEmpty(userId)) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
-		}
-		log.debug("fetchig userId :{}", userId);
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
-		HttpEntity<String> entity = new HttpEntity<>(null, headers);
-		try {
-			String url = MessageFormat.format("{0}/user-service/secure/group/admin/{1}", urlConfig.getBaseUrl(),
-					userId);
-			log.debug("request: {}, headers {}", url, entity);
-			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
-			log.info("api response : {}", response.getBody());
-			JsonNode data = response.getBody();
-			if (data.has("groupId")) {
-				return data.get("groupId").asText();
-			}
-			return null;
-		} catch (HttpStatusCodeException exception) {
-			if (commonService.handle404Error(exception.getResponseBodyAsString())) {
-				return null;
-			}
-			log.error("error response from the server :{}", exception.getResponseBodyAsString());
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
 					"User api not working");
 		}
