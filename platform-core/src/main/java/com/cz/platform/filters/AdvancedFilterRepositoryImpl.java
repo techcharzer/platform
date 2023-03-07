@@ -34,10 +34,7 @@ public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository
 
 	@Override
 	public Page<T> filter(List<AbstractFilter> filters, Pageable page, String[] includedFields, Class<T> clazz) {
-		GenericFilterToQueryCreator queryMapper = factory.getService(clazz);
-		if (ObjectUtils.isEmpty(queryMapper)) {
-			queryMapper = defaultFilterToQueryMapper;
-		}
+		GenericFilterToQueryCreator queryMapper = getQueryMapper(clazz);
 		Criteria criterias = queryMapper.getFilter(filters);
 
 		Query query = new Query();
@@ -70,7 +67,7 @@ public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository
 
 	@Override
 	public List<T> filter(List<AbstractFilter> filters, String[] includedFields, Class<T> clazz) {
-		GenericFilterToQueryCreator queryMapper = factory.getService(clazz);
+		GenericFilterToQueryCreator queryMapper = getQueryMapper(clazz);
 		Criteria criterias = queryMapper.getFilter(filters);
 		Query query = new Query();
 		if (!ObjectUtils.isEmpty(criterias)) {
@@ -118,7 +115,7 @@ public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository
 	@Override
 	public <R> List<R> findDistinct(List<AbstractFilter> filters, String field, Class<T> clazz,
 			Class<R> clazzResponse) {
-		GenericFilterToQueryCreator queryMapper = factory.getService(clazz);
+		GenericFilterToQueryCreator queryMapper = getQueryMapper(clazz);
 		Criteria criterias = queryMapper.getFilter(filters);
 		Query query = new Query();
 		if (!ObjectUtils.isEmpty(criterias)) {
@@ -127,5 +124,13 @@ public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository
 		log.debug("query: {} class : {}", query, clazz);
 		validateFilters(filters);
 		return mongoTemplate.findDistinct(query, field, clazz, clazzResponse);
+	}
+	
+	private GenericFilterToQueryCreator getQueryMapper(Class<T> clazz) {
+		GenericFilterToQueryCreator queryMapper = factory.getService(clazz);
+		if (ObjectUtils.isEmpty(queryMapper)) {
+			queryMapper = defaultFilterToQueryMapper;
+		}
+		return queryMapper;
 	}
 }
