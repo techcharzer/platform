@@ -22,7 +22,7 @@ public class GroupDTO implements Serializable {
 	@JsonSubTypes({ @Type(value = Society.class, name = "SOCIETY"), @Type(value = Fleet.class, name = "FLEET"),
 			@Type(value = Hub.class, name = "HUB"), @Type(value = CorporateOffice.class, name = "CORPORATE_OFFICE") })
 	private GroupConfiguration details;
-
+	private String chargePointOperatorId;
 	private Boolean isActive;
 	private String createdBy;
 	private Instant createdAt;
