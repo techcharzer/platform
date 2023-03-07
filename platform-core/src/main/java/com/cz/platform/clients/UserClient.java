@@ -212,6 +212,46 @@ public class UserClient {
 		return Optional.empty();
 	}
 
+	public Optional<UserDetails> getCMSUserByMobileNumber(String mobileNumber) {
+		if (ObjectUtils.isEmpty(mobileNumber)) {
+			return Optional.empty();
+		}
+		Set<String> mobileSet = new HashSet<>();
+		mobileSet.add(mobileNumber);
+		Map<String, UserDetails> details = getCMSUserByMobileNumber(mobileSet);
+		if (details.containsKey(mobileNumber)) {
+			return Optional.of(details.get(mobileNumber));
+		}
+		return Optional.empty();
+	}
+
+	public Map<String, UserDetails> getCMSUserByMobileNumber(Set<String> mobileNumber) {
+		if (ObjectUtils.isEmpty(mobileNumber)) {
+			return Collections.emptyMap();
+		}
+		log.debug("fetching user with mobile :{}", mobileNumber);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
+		HttpEntity<Set<String>> entity = new HttpEntity<>(mobileNumber, headers);
+		try {
+			String url = MessageFormat.format("{0}/user-service/secure/internal-server/cms-user/mobileNumber",
+					urlConfig.getBaseUrl());
+			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
+			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
+			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, UserDetails>>() {
+			});
+		} catch (HttpStatusCodeException exeption) {
+			if (commonService.handle404Error(exeption.getResponseBodyAsString())) {
+				return Collections.emptyMap();
+			}
+			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"User api not working");
+		}
+	}
+
 	public Map<String, UserDetails> getCZOUserByMobileNumber(Set<String> mobileNumber) {
 		if (ObjectUtils.isEmpty(mobileNumber)) {
 			return Collections.emptyMap();
@@ -353,7 +393,7 @@ public class UserClient {
 		request.setChargePointOperatorId(chargePointOperatorId);
 		HttpEntity<GetOrCreateUserRequest> entity = new HttpEntity<>(request, headers);
 		try {
-			String url = MessageFormat.format("{0}/user-service/secure/user", urlConfig.getBaseUrl());
+			String url = MessageFormat.format("{0}/user-service/secure/internal-server/user", urlConfig.getBaseUrl());
 			log.debug("request for fetchig/creating user details : {} body and headers {}", url, entity);
 			ResponseEntity<UserGetOrCreateResponse> response = template.exchange(url, HttpMethod.POST, entity,
 					UserGetOrCreateResponse.class);
