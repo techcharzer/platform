@@ -368,4 +368,28 @@ public class UserClient {
 		}
 	}
 
+	public UserDetails[] getAllChargePointOperatorUsers(String chargePointOperatorId) {
+		if (ObjectUtils.isEmpty(chargePointOperatorId)) {
+			return new UserDetails[0];
+		}
+		log.debug("fetching all cms users :{}", chargePointOperatorId);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		try {
+			String url = MessageFormat.format("{0}/user-service/secure/internal-server/cms/{1}/user",
+					chargePointOperatorId, urlConfig.getBaseUrl());
+			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
+			ResponseEntity<UserDetails[]> response = template.exchange(url, HttpMethod.GET, entity,
+					UserDetails[].class);
+			return response.getBody();
+		} catch (HttpStatusCodeException exeption) {
+			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"User api not working");
+		}
+	}
+
 }
