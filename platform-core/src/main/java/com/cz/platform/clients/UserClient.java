@@ -3,25 +3,17 @@ package com.cz.platform.clients;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
@@ -50,14 +42,10 @@ import lombok.extern.slf4j.Slf4j;
 public class UserClient {
 
 	private RestTemplate template;
-
 	private UrlConfig urlConfig;
-
 	private SecurityConfigProps securityProps;
-
-	private ObjectMapper mapper;
-
 	private PlatformCommonService commonService;
+	private ObjectMapper mapper;
 
 	public UserDetails getUserById(String userId) {
 		if (ObjectUtils.isEmpty(userId)) {
@@ -65,7 +53,7 @@ public class UserClient {
 		}
 		Set<String> mobileSet = new HashSet<>();
 		mobileSet.add(userId);
-		Map<String, UserDetails> details = getUserByUserId(mobileSet);
+		Map<String, UserDetails> details = getUserById(mobileSet);
 		if (details.containsKey(userId)) {
 			return details.get(userId);
 		}
@@ -109,108 +97,42 @@ public class UserClient {
 		if (ObjectUtils.isEmpty(mobileNumbers)) {
 			return Collections.emptyMap();
 		}
-		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
-		int count = 1;
-		for (String mobileNumber : mobileNumbers) {
-			if (!ObjectUtils.isEmpty(mobileNumber)) {
-				filters.add("mobileNumber", mobileNumber);
-				++count;
-			}
-		}
-		if (ObjectUtils.isEmpty(filters)) {
-			return Collections.emptyMap();
-		}
-		Page<UserDetails> page = getUserByFilter(filters, PageRequest.of(0, count));
-		Map<String, UserDetails> map = new HashMap<>();
-		for (UserDetails userDetails : page.getContent()) {
-			map.put(userDetails.getMobileNumber(), userDetails);
-		}
-		return map;
-	}
-
-	public Map<String, UserDetails> getUserByUserId(Set<String> userIds) {
-		if (ObjectUtils.isEmpty(userIds)) {
-			return Collections.emptyMap();
-		}
-		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
-		int count = 1;
-		for (String userId : userIds) {
-			if (!ObjectUtils.isEmpty(userId)) {
-				filters.add("userId", userId);
-				++count;
-			}
-		}
-		if (ObjectUtils.isEmpty(filters)) {
-			return Collections.emptyMap();
-		}
-		Page<UserDetails> page = getUserByFilter(filters, PageRequest.of(0, count));
-		Map<String, UserDetails> map = new HashMap<>();
-		for (UserDetails userDetails : page.getContent()) {
-			map.put(userDetails.getUserId(), userDetails);
-		}
-		return map;
-	}
-
-	public Page<UserDetails> getUserByFilter(MultiValueMap<String, String> queryParams, Pageable pageRequest) {
-		if (ObjectUtils.isEmpty(queryParams)) {
-			return null;
-		}
-		log.debug("fetchig userId :{}", queryParams);
+		log.debug("fetching user with mobileNumbers :{}", mobileNumbers);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
-		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		HttpEntity<Set<String>> entity = new HttpEntity<>(mobileNumbers, headers);
 		try {
-			String url = MessageFormat.format("{0}/user-service/secure/internal-server/user", urlConfig.getBaseUrl());
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-			queryParams.add("page", String.valueOf(pageRequest.getPageNumber()));
-			queryParams.add("size", String.valueOf(pageRequest.getPageSize()));
-			builder.queryParams(queryParams);
-
-			log.debug("request: {}, headers {}", url, entity);
-			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
-					JsonNode.class);
-			List<UserDetails> list = mapper.convertValue(response.getBody().get("content"),
-					new TypeReference<List<UserDetails>>() {
-					});
-			int pageNumber = response.getBody().get("pageable").get("pageNumber").asInt();
-			int pageSize = response.getBody().get("pageable").get("pageSize").asInt();
-			Pageable page = PageRequest.of(pageNumber, pageSize);
-			long totalElements = response.getBody().get("totalElements").asLong();
-			return new PageImpl<>(list, page, totalElements);
+			String url = MessageFormat.format("{0}/user-service/secure/internal-server/user/mobileNumber",
+					urlConfig.getBaseUrl());
+			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
+			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
+			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, UserDetails>>() {
+			});
 		} catch (HttpStatusCodeException exeption) {
+			if (commonService.handle404Error(exeption.getResponseBodyAsString())) {
+				return Collections.emptyMap();
+			}
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
 					"User api not working");
+
 		}
 	}
 
-	public Optional<UserDetails> getCMSUserByMobileNumber(String mobileNumber) {
-		if (ObjectUtils.isEmpty(mobileNumber)) {
-			return Optional.empty();
-		}
-		Set<String> mobileSet = new HashSet<>();
-		mobileSet.add(mobileNumber);
-		Map<String, UserDetails> details = getCMSUserByMobileNumber(mobileSet);
-		if (details.containsKey(mobileNumber)) {
-			return Optional.of(details.get(mobileNumber));
-		}
-		return Optional.empty();
-	}
-
-	public Map<String, UserDetails> getCMSUserByMobileNumber(Set<String> mobileNumber) {
-		if (ObjectUtils.isEmpty(mobileNumber)) {
+	public Map<String, UserDetails> getUserById(Set<String> userIds) {
+		if (ObjectUtils.isEmpty(userIds)) {
 			return Collections.emptyMap();
 		}
-		log.debug("fetching user with mobile :{}", mobileNumber);
+		log.debug("fetching user with userIds :{}", userIds);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
-		HttpEntity<Set<String>> entity = new HttpEntity<>(mobileNumber, headers);
+		HttpEntity<Set<String>> entity = new HttpEntity<>(userIds, headers);
 		try {
-			String url = MessageFormat.format("{0}/user-service/secure/internal-server/cms-user/mobileNumber",
+			String url = MessageFormat.format("{0}/user-service/secure/internal-server/user/id",
 					urlConfig.getBaseUrl());
 			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
@@ -224,6 +146,7 @@ public class UserClient {
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
 					"User api not working");
 		}
+
 	}
 
 	public UserDetails[] getAllCZOUser() {
