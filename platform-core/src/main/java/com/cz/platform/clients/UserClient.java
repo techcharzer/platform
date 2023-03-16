@@ -303,7 +303,7 @@ public class UserClient {
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		try {
 			String url = MessageFormat.format("{0}/user-service/secure/internal-server/chargePointOperator/{1}/user",
-					chargePointOperatorId, urlConfig.getBaseUrl());
+					urlConfig.getBaseUrl(), chargePointOperatorId);
 			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
 			ResponseEntity<UserDetails[]> response = template.exchange(url, HttpMethod.GET, entity,
 					UserDetails[].class);
