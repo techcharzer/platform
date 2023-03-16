@@ -379,7 +379,7 @@ public class UserClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		try {
-			String url = MessageFormat.format("{0}/user-service/secure/internal-server/cms/{1}/user",
+			String url = MessageFormat.format("{0}/user-service/secure/internal-server/chargePointOperator/{1}/user",
 					chargePointOperatorId, urlConfig.getBaseUrl());
 			log.debug("request for fetchig user details : {} body and headers {}", url, entity);
 			ResponseEntity<UserDetails[]> response = template.exchange(url, HttpMethod.GET, entity,
