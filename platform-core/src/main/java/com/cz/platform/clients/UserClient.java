@@ -186,19 +186,6 @@ public class UserClient {
 		}
 	}
 
-	public Optional<UserDetails> getCZOUserByMobileNumber(String mobileNumber) {
-		if (ObjectUtils.isEmpty(mobileNumber)) {
-			return Optional.empty();
-		}
-		Set<String> mobileSet = new HashSet<>();
-		mobileSet.add(mobileNumber);
-		Map<String, UserDetails> details = getCZOUserByMobileNumber(mobileSet);
-		if (details.containsKey(mobileNumber)) {
-			return Optional.of(details.get(mobileNumber));
-		}
-		return Optional.empty();
-	}
-
 	public Optional<UserDetails> getCMSUserByMobileNumber(String mobileNumber) {
 		if (ObjectUtils.isEmpty(mobileNumber)) {
 			return Optional.empty();
@@ -239,111 +226,7 @@ public class UserClient {
 		}
 	}
 
-	public Map<String, UserDetails> getCZOUserByMobileNumber(Set<String> mobileNumber) {
-		if (ObjectUtils.isEmpty(mobileNumber)) {
-			return Collections.emptyMap();
-		}
-		log.debug("fetching czo user with mobile :{}", mobileNumber);
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
-		HttpEntity<Set<String>> entity = new HttpEntity<>(mobileNumber, headers);
-		try {
-			String url = MessageFormat.format("{0}/user-service/secure/internal-server/czo-user/mobileNumber",
-					urlConfig.getBaseUrl());
-			log.debug("request for fetchig/creating user details : {} body and headers {}", url, entity);
-			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
-			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, UserDetails>>() {
-			});
-		} catch (HttpStatusCodeException exeption) {
-			if (commonService.handle404Error(exeption.getResponseBodyAsString())) {
-				return Collections.emptyMap();
-			}
-			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
-			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
-					"User api not working");
-		}
-	}
-
-	public UserDetails getCZOUserById(String userId) {
-		if (ObjectUtils.isEmpty(userId)) {
-			return null;
-		}
-		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
-		int count = 1;
-		if (!ObjectUtils.isEmpty(userId)) {
-			filters.add("czoUserId", userId);
-			++count;
-		}
-		Page<UserDetails> page = getCZOUserByFilter(filters, PageRequest.of(0, count));
-		Map<String, UserDetails> map = new HashMap<>();
-		for (UserDetails userDetails : page.getContent()) {
-			map.put(userDetails.getUserId(), userDetails);
-		}
-		return map.get(userId);
-	}
-
-	public Map<String, UserDetails> getCZOUserById(Set<String> userIds) {
-		if (ObjectUtils.isEmpty(userIds)) {
-			return Collections.emptyMap();
-		}
-		MultiValueMap<String, String> filters = new LinkedMultiValueMap<>();
-		int count = 1;
-		for (String userId : userIds) {
-			if (!ObjectUtils.isEmpty(userId)) {
-				filters.add("czoUserId", userId);
-				++count;
-			}
-		}
-		if (ObjectUtils.isEmpty(filters)) {
-			return Collections.emptyMap();
-		}
-		Page<UserDetails> page = getCZOUserByFilter(filters, PageRequest.of(0, count));
-		Map<String, UserDetails> map = new HashMap<>();
-		for (UserDetails userDetails : page.getContent()) {
-			map.put(userDetails.getUserId(), userDetails);
-		}
-		return map;
-	}
-
-	public Page<UserDetails> getCZOUserByFilter(MultiValueMap<String, String> queryParams, Pageable pageRequest) {
-		if (ObjectUtils.isEmpty(queryParams)) {
-			return null;
-		}
-		log.debug("fetchig userId :{}", queryParams);
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
-		HttpEntity<String> entity = new HttpEntity<>(null, headers);
-		try {
-			String url = MessageFormat.format("{0}/user-service/secure/internal-server/czo-user",
-					urlConfig.getBaseUrl());
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-			queryParams.add("page", String.valueOf(pageRequest.getPageNumber()));
-			queryParams.add("size", String.valueOf(pageRequest.getPageSize()));
-			builder.queryParams(queryParams);
-
-			log.debug("request: {}, headers {}", url, entity);
-			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
-					JsonNode.class);
-			List<UserDetails> list = mapper.convertValue(response.getBody().get("content"),
-					new TypeReference<List<UserDetails>>() {
-					});
-			int pageNumber = response.getBody().get("pageable").get("pageNumber").asInt();
-			int pageSize = response.getBody().get("pageable").get("pageSize").asInt();
-			Pageable page = PageRequest.of(pageNumber, pageSize);
-			long totalElements = response.getBody().get("totalElements").asLong();
-			return new PageImpl<>(list, page, totalElements);
-		} catch (HttpStatusCodeException exeption) {
-			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
-			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
-					"User api not working");
-		}
-	}
-
-	public List<UserDetails> getAllCZOUser() {
+	public UserDetails[] getAllCZOUser() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
@@ -355,10 +238,9 @@ public class UserClient {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
 
 			log.debug("request: {} headers {}", url, entity);
-			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
-					JsonNode.class);
-			return mapper.convertValue(response.getBody(), new TypeReference<List<UserDetails>>() {
-			});
+			ResponseEntity<UserDetails[]> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
+					UserDetails[].class);
+			return response.getBody();
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
