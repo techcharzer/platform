@@ -42,7 +42,8 @@ public class ChargerDTO implements Serializable {
 
 	public static final String[] INCLUDED_FIELDS = new String[] { "id", "name", "uniqueIdentifier",
 			"openCloseTimeInSeconds", "sockets", "chargerType", "supportedVehicle", "address", "images", "deeplink",
-			"configuration", "status", "dealConfiguration", "deeplink", "usageType", "protectedNetworkId" };
+			"configuration", "status", "dealConfiguration", "deeplink", "usageType", "protectedNetworkId",
+			"primaryChargePointOperatorId", "secondaryChargePointOperatorId" };
 
 	public List<SocketDTO> getSockets() {
 		List<SocketDTO> sockets = new ArrayList<>();
