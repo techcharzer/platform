@@ -14,8 +14,14 @@ public class GlobalChargerHardwareInfo implements Serializable {
 	 */
 	private static final long serialVersionUID = -8410282833774514608L;
 	private String hardwareId;
+	private HardwareInventoryStatus status;
 	private HardwareConfigurationDTO hardwareConfiguration;
 	private String deeplink;
 	private Boolean isActive;
 	private List<HardwareSocket> sockets;
+
+	public enum HardwareInventoryStatus {
+		RECEIVED, ASSEMBLED, TESTED, INSTALLED, DAMAGED
+	}
+
 }
