@@ -13,5 +13,5 @@ public class ProtectedChargerUsageConfiguration implements ChargerUsageTypeConfi
 	 */
 	private static final long serialVersionUID = -7386376707955406940L;
 	private ChargerUsageType usageType = ChargerUsageType.PROTECTED;
-	private GroupDTO group;
+	private String groupId;
 }
