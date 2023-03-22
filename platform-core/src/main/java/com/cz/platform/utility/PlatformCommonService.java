@@ -1,5 +1,9 @@
 package com.cz.platform.utility;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.redisson.api.RLock;
@@ -7,6 +11,9 @@ import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
 import com.cz.platform.PlatformConstants;
+import com.cz.platform.clients.UserClient;
+import com.cz.platform.clients.UserClient.UserGetOrCreateResponse;
+import com.cz.platform.dto.UserDetails;
 import com.cz.platform.exception.LoggerType;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
@@ -22,6 +29,7 @@ public final class PlatformCommonService {
 
 	private ObjectMapper mapper;
 	private RedissonClient redissonClient;
+	private UserClient userClient;
 
 	public boolean handle404Error(String errorResponse) {
 		JsonNode node = null;
@@ -61,5 +69,25 @@ public final class PlatformCommonService {
 	public void forceUnlock(String key) {
 		RLock lock = redissonClient.getLock(key);
 		lock.forceUnlock();
+	}
+
+	public Map<String, String> getCZOuserIdToUserId() {
+		Set<String> mobileNumbers = new HashSet<>();
+		UserDetails[] czoUsers = userClient.getAllCZOUser();
+		for (UserDetails czoUser : czoUsers) {
+			mobileNumbers.add(czoUser.getMobileNumber());
+		}
+		Map<String, UserDetails> users = userClient.getUserByMobileNumber(mobileNumbers);
+		Map<String, String> response = new HashMap<>();
+		for (UserDetails czoUser : czoUsers) {
+			if (users.containsKey(czoUser.getMobileNumber())) {
+				response.put(czoUser.getUserId(), users.get(czoUser.getMobileNumber()).getUserId());
+			} else {
+				UserGetOrCreateResponse createResponse = userClient.getOrCreateUser(czoUser.getMobileNumber(),
+						PlatformConstants.CHARZER_APP_CHARGE_POINT_OPERATOR);
+				response.put(czoUser.getUserId(), createResponse.getUserId());
+			}
+		}
+		return response;
 	}
 }

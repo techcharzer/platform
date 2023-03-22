@@ -15,5 +15,4 @@ public class UserDetails implements Serializable {
 	private String mobileNumber;
 	private String name;
 	private String email;
-	private List<String> chargePointOperators;
 }
