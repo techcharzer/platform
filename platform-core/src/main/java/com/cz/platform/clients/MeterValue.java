@@ -14,6 +14,7 @@ public class MeterValue {
 	private Double stateOfCharge;
 	private Long electricCurrentInMilliAmpere;
 	private Long currentMeterReadingInWattHour;
+	private String connectorStatus;
 
 	public Long getElectricCurrentInMilliAmpere() {
 		if (!ObjectUtils.isEmpty(onlineDTO) && BooleanUtils.isTrue(onlineDTO.getIsOnline())) {
@@ -22,15 +23,4 @@ public class MeterValue {
 			return 0L;
 		}
 	}
-
-	@Deprecated
-	public Long getEcInmA() {
-		return getElectricCurrentInMilliAmpere();
-	}
-
-	@Deprecated
-	public Long getCmrInWH() {
-		return currentMeterReadingInWattHour;
-	}
-
 }
