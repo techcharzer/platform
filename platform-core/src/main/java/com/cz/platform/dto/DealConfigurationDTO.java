@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 
 @Data
+@Deprecated
 public class DealConfigurationDTO implements Serializable {
 	/**
 	 * 
@@ -22,5 +23,4 @@ public class DealConfigurationDTO implements Serializable {
 			@Type(value = DevicePurchasedDealConfiguration.class, name = "HARDWARE_PURCHASED"), })
 	private DealConfigurationData configurationData;
 	private ProfitShareConfiguration profitShareConfiguration;
-	private ProfitShareConfiguration secondaryProfitShareConfiguration;
 }

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import lombok.Data;
 
 @Data
+@Deprecated
 public class UserShare implements Serializable {
 	/**
 	 * 
