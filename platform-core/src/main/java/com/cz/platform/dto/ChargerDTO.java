@@ -34,6 +34,7 @@ public class ChargerDTO implements Serializable {
 	@Getter(value = AccessLevel.NONE)
 	private Map<String, Long> price;
 	private Boolean forceShowOnMap;
+	private ElectricityRateInfo electricityRateInfo;
 	private ChargerUsageTypeConfiguration usageConfiguration;
 	private AddressDTO address;
 	private String operationalZoneId;
@@ -60,6 +61,12 @@ public class ChargerDTO implements Serializable {
 
 	public Image getDefaultImage() {
 		return CommonUtility.getDefaultImage(images);
+	}
+
+	@Data
+	public static class ElectricityRateInfo {
+		private Long electricityRate;
+		private String reimburseToUserId;
 	}
 
 }
