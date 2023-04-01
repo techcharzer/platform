@@ -14,7 +14,9 @@ import com.cz.platform.enums.ChargerStatus;
 import com.cz.platform.enums.VehicleType;
 import com.cz.platform.utility.CommonUtility;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 public class ChargerDTO implements Serializable {
@@ -29,12 +31,14 @@ public class ChargerDTO implements Serializable {
 	private List<VehicleType> supportedVehicle;
 	private List<Image> images;
 	private GlobalChargerHardwareInfo hardwareInfo;
+	@Getter(value = AccessLevel.NONE)
 	private Map<String, Long> price;
 	private Boolean forceShowOnMap;
 	private ChargerUsageTypeConfiguration usageConfiguration;
 	private AddressDTO address;
 	private String operationalZoneId;
 	private Set<String> viewerIds;
+	@Deprecated
 	private DealConfigurationDTO dealConfiguration;
 	private Instant listingTime;
 	private String primaryChargePointOperatorId;
