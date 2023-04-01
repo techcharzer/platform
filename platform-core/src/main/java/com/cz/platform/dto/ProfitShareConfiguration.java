@@ -10,6 +10,7 @@ public class ProfitShareConfiguration implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -21090774840692732L;
+	private String chargePointOperatorId;
 	private Double charzerShare;
 	private UserShare dealerShare;
 	private UserShare secondaryDealerShare;

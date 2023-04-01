@@ -5,6 +5,7 @@ import java.io.Serializable;
 import lombok.Data;
 
 @Data
+@Deprecated
 public class DevicePurchasedDealConfiguration implements DealConfigurationData, Serializable {
 	/**
 	 * 

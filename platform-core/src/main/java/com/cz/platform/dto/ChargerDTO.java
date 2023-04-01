@@ -30,7 +30,6 @@ public class ChargerDTO implements Serializable {
 	private Range<Integer> openCloseTimeInSeconds;
 	private List<VehicleType> supportedVehicle;
 	private List<Image> images;
-	private ElectricityRateInfo electricityRateInfo;
 	private GlobalChargerHardwareInfo hardwareInfo;
 	@Getter(value = AccessLevel.NONE)
 	private Map<String, Long> price;
@@ -39,7 +38,6 @@ public class ChargerDTO implements Serializable {
 	private AddressDTO address;
 	private String operationalZoneId;
 	private Set<String> viewerIds;
-	@Deprecated
 	private DealConfigurationDTO dealConfiguration;
 	private Instant listingTime;
 	private String primaryChargePointOperatorId;
@@ -63,16 +61,6 @@ public class ChargerDTO implements Serializable {
 
 	public Image getDefaultImage() {
 		return CommonUtility.getDefaultImage(images);
-	}
-
-	@Data
-	public static class ElectricityRateInfo implements Serializable {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 3155066132243512297L;
-		private Long electricityRate;
-		private String reimburseToUserId;
 	}
 
 }
