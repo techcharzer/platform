@@ -34,7 +34,7 @@ public class ChargerDTO implements Serializable {
 	private Instant listingTime;
 	private String primaryChargePointOperatorId;
 	private String secondaryChargePointOperatorId;
-
+	private List<SocketDTO> sockets;
 
 	public Image getDefaultImage() {
 		return CommonUtility.getDefaultImage(images);
