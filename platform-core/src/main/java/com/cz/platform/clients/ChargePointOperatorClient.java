@@ -77,7 +77,7 @@ public class ChargePointOperatorClient {
 		}
 	}
 
-	public ChargePointOperatorDTO[] getChargePointOperators() {
+	public ChargePointOperatorListDTO[] getChargePointOperators() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
@@ -87,8 +87,8 @@ public class ChargePointOperatorClient {
 			String url = MessageFormat.format("{0}/user-service/secure/internal-server/chargePointOperator",
 					urlConfig.getBaseUrl());
 			log.debug("request: {}, headers {}", url, entity);
-			ResponseEntity<ChargePointOperatorDTO[]> response = template.exchange(url, HttpMethod.GET, entity,
-					ChargePointOperatorDTO[].class);
+			ResponseEntity<ChargePointOperatorListDTO[]> response = template.exchange(url, HttpMethod.GET, entity,
+					ChargePointOperatorListDTO[].class);
 			log.info("api response : {}", response);
 			return response.getBody();
 		} catch (HttpStatusCodeException exception) {
@@ -99,7 +99,7 @@ public class ChargePointOperatorClient {
 	}
 
 	@Data
-	public static class ChargePointOperatorDTO implements Serializable {
+	public static class ChargePointOperatorListDTO implements Serializable {
 		/**
 		 * 
 		 */
@@ -107,6 +107,23 @@ public class ChargePointOperatorClient {
 		private String id;
 		private String companyName;
 		private Double charzerProfitShareOnBooking;
+	}
+
+	@Data
+	public static class BankDetails {
+		private String razorpayAccountId;
+	}
+
+	@Data
+	public static class ChargePointOperatorDTO implements Serializable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 5267346682393403L;
+		private String id;
+		private String companyName;
+		private Double charzerProfitShareOnBooking;
+		private BankDetails bankDetails;
 	}
 
 }
