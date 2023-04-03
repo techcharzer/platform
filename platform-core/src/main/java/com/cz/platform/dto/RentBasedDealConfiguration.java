@@ -5,7 +5,6 @@ import java.io.Serializable;
 import lombok.Data;
 
 @Data
-@Deprecated
 public class RentBasedDealConfiguration implements DealConfigurationData, Serializable {
 	/**
 	 * 
@@ -14,4 +13,5 @@ public class RentBasedDealConfiguration implements DealConfigurationData, Serial
 	private Integer rentAmount;
 	private Long electricityRate;
 	private String electricityBillImageUrl;
+	private String electricityReimbursementToUserId;
 }

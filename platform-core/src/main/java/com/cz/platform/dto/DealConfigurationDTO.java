@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 
 @Data
-@Deprecated
 public class DealConfigurationDTO implements Serializable {
 	/**
 	 * 
