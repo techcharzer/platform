@@ -106,7 +106,7 @@ public class ChargePointOperatorClient {
 		private static final long serialVersionUID = 6106129986682393403L;
 		private String id;
 		private String companyName;
-		private Double charzerShare;
+		private Double charzerProfitShareOnBooking;
 	}
 
 }
