@@ -72,6 +72,9 @@ public class WhiteLabelAppClient {
 		private String appName;
 		private String packageName;
 		private String downloadLink;
+		private String deepLinkDomainPrefixUrl;
+		private String iosAppleStoreId;
+		private String iosBunldeId;
 		private ReferralConfig referralConfig;
 		private Long walletInitializationCredits;
 		private ActiveInactiveStatus status;

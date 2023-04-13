@@ -15,6 +15,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.cz.platform.clients.WhiteLabelAppClient.WhiteLabelApplicationConfigurationDTO;
 import com.cz.platform.config.DynamicLinkConfig;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
@@ -33,7 +34,8 @@ public class DynamicLinkService {
 
 	private DynamicLinkConfig deeplinkConfig;
 
-	public String getDeeplink(Map<String, String> mapOfRequestParamsInDeepLink) throws ApplicationException {
+	public String getDeeplink(Map<String, String> mapOfRequestParamsInDeepLink,
+			WhiteLabelApplicationConfigurationDTO whitelabelAppConfiguration) throws ApplicationException {
 		log.info("deep link parameters : {}", mapOfRequestParamsInDeepLink);
 
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(deeplinkConfig.getDeeplinkBaseUrl());
@@ -44,16 +46,16 @@ public class DynamicLinkService {
 		String deeplinkLongUrl = builder.toUriString();
 		DynamicLinkRequest dynamicLinkRequest = new DynamicLinkRequest();
 		DeeplinkRequest request = new DeeplinkRequest();
-		request.setDomainUriPrefix(deeplinkConfig.getDomainPrefixUrl());
+		request.setDomainUriPrefix(whitelabelAppConfiguration.getDeepLinkDomainPrefixUrl());
 		request.setLink(deeplinkLongUrl);
 
 		AndroidInfo androidInfo = new AndroidInfo();
-		androidInfo.setAndroidPackageName(deeplinkConfig.getAndroidPackageName());
+		androidInfo.setAndroidPackageName(whitelabelAppConfiguration.getPackageName());
 		request.setAndroidInfo(androidInfo);
 
 		IosInfo iosInfo = new IosInfo();
-		iosInfo.setIosAppStoreId(deeplinkConfig.getIosAppStoreId());
-		iosInfo.setIosBundleId(deeplinkConfig.getIosBundleId());
+		iosInfo.setIosAppStoreId(whitelabelAppConfiguration.getIosAppleStoreId());
+		iosInfo.setIosBundleId(whitelabelAppConfiguration.getIosBunldeId());
 		request.setIosInfo(iosInfo);
 
 		dynamicLinkRequest.setDynamicLinkInfo(request);
@@ -110,11 +112,12 @@ public class DynamicLinkService {
 		private String iosAppStoreId;
 	}
 
-	public String getDeeplink(String page, String id) throws ApplicationException {
+	public String getDeeplink(String page, String id, WhiteLabelApplicationConfigurationDTO whitelabelAppConfiguration)
+			throws ApplicationException {
 		Map<String, String> map = new HashMap<>();
 		map.put("page", page);
 		map.put("id", id);
-		return getDeeplink(map);
+		return getDeeplink(map, whitelabelAppConfiguration);
 	}
 
 }
