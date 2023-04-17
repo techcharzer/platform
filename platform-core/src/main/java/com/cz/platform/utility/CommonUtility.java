@@ -425,7 +425,7 @@ public final class CommonUtility {
 	public static boolean isChargerClosed(Range<Instant> bookingDuration, Range<Integer> openCloseTimeInSeconds) {
 		Optional<Range<Instant>> openCloseTimeToday = getTodayOpenTimings(openCloseTimeInSeconds);
 		if (openCloseTimeToday.isPresent()) {
-			log.info("charger open timings : {}, bookingDuration: {}", openCloseTimeToday.get(), bookingDuration);
+			log.debug("charger open timings : {}, bookingDuration: {}", openCloseTimeToday.get(), bookingDuration);
 			Range<Instant> openTimings = openCloseTimeToday.get();
 			return bookingDuration.getFrom().isBefore(openTimings.getFrom())
 					|| bookingDuration.getTo().isAfter(openTimings.getTo());
