@@ -155,19 +155,21 @@ public final class FilterParserService {
 	public List<AbstractFilter> parseQueryParams(MultiValueMap<String, String> map) {
 		log.debug("query params : {}", map);
 		List<AbstractFilter> filters = new ArrayList<AbstractFilter>();
-		try {
-			for (String key : map.keySet()) {
+
+		for (String key : map.keySet()) {
+			try {
 				AbstractFilter filter = getFilter(key, map.get(key));
 				if (!ObjectUtils.isEmpty(filter)) {
 					filters.add(filter);
 				}
-			}
-		} catch (Exception e) {
-			log.debug("fail fast enabled : {}", filterConfig.getFailFast());
-			if (filterConfig.getFailFast()) {
-				throw e;
+			} catch (Exception e) {
+				log.debug("parsing failed for {} fail fast enabled : {}", key, filterConfig.getFailFast());
+				if (filterConfig.getFailFast()) {
+					throw e;
+				}
 			}
 		}
+		log.debug("filters parsed: {}", filters);
 		return filters;
 	}
 
