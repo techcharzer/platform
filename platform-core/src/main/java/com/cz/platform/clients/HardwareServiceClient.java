@@ -79,16 +79,12 @@ public class HardwareServiceClient {
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("ccu-service"));
-		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		HttpEntity<Set<String>> entity = new HttpEntity<>(hardwareIds, headers);
 		try {
-			String url = MessageFormat.format("{0}/ccu/secure/internal-call/hardware/status", urlConfig.getBaseUrl());
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-			for (String hardwareId : hardwareIds) {
-				builder.queryParam("id", hardwareId);
-			}
+			String url = MessageFormat.format("{0}/ccu/secure/internal-call/hardware/status/v2",
+					urlConfig.getBaseUrl());
 			log.debug("request for fetchig details : {} body and headers {}", url, entity);
-			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
-					JsonNode.class);
+			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
 			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, HardwareStatusDTO>>() {
 			});
 		} catch (HttpStatusCodeException exeption) {
@@ -109,7 +105,8 @@ public class HardwareServiceClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("ccu-service"));
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		try {
-			String url = MessageFormat.format("{0}/ccu/secure/internal-call/hardware/{1}", urlConfig.getBaseUrl(), hardwareId);
+			String url = MessageFormat.format("{0}/ccu/secure/internal-call/hardware/{1}", urlConfig.getBaseUrl(),
+					hardwareId);
 			log.debug("request for fetchig details : {} body and headers {}", url, entity);
 			ResponseEntity<GlobalChargerHardwareInfo> response = template.exchange(url, HttpMethod.GET, entity,
 					GlobalChargerHardwareInfo.class);
@@ -149,10 +146,11 @@ public class HardwareServiceClient {
 		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("ccu-service"));
 		HttpEntity<List<MeterValueRequest>> entity = new HttpEntity<>(hardwareIds, headers);
 		try {
-			String url = MessageFormat.format("{0}/ccu/secure/internal-call/hardware/meter-value", urlConfig.getBaseUrl());
+			String url = MessageFormat.format("{0}/ccu/secure/internal-call/hardware/meter-value",
+					urlConfig.getBaseUrl());
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
 			log.debug("request for fetchig details : {} body and headers {}", url, entity);
-			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.POST, entity,
+			ResponseEntity<JsonNode> response = template.exchange(builder.toUriString(), HttpMethod.GET, entity,
 					JsonNode.class);
 			Map<String, MeterValue> meterValues = mapper.convertValue(response.getBody(),
 					new TypeReference<Map<String, MeterValue>>() {
