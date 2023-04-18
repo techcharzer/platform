@@ -17,6 +17,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.cz.platform.clients.WhiteLabelAppClient.WhiteLabelApplicationConfigurationDTO;
+import com.cz.platform.clients.WhiteLabelAppClient.WhiteLabelApplicationConfigurationDTO.AndroidConfiguration;
+import com.cz.platform.clients.WhiteLabelAppClient.WhiteLabelApplicationConfigurationDTO.IosConfiguration;
 import com.cz.platform.config.DynamicLinkConfig;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
@@ -50,14 +52,16 @@ public class DynamicLinkService {
 		request.setDomainUriPrefix(whitelabelAppConfiguration.getDeepLinkDomainPrefixUrl());
 		request.setLink(deeplinkLongUrl);
 
+		AndroidConfiguration androidConfig = whitelabelAppConfiguration.getAndroidConfiguration();
 		AndroidInfo androidInfo = new AndroidInfo();
-		androidInfo.setAndroidPackageName(whitelabelAppConfiguration.getPackageName());
+		androidInfo.setAndroidPackageName(androidConfig.getPackageName());
 		request.setAndroidInfo(androidInfo);
 
-		if (BooleanUtils.isTrue(whitelabelAppConfiguration.getIsIosAppLive())) {
+		IosConfiguration iosConfiguration = whitelabelAppConfiguration.getIosConfiguration();
+		if (BooleanUtils.isTrue(iosConfiguration.getIsIosAppLive())) {
 			IosInfo iosInfo = new IosInfo();
-			iosInfo.setIosAppStoreId(whitelabelAppConfiguration.getIosAppleStoreId());
-			iosInfo.setIosBundleId(whitelabelAppConfiguration.getIosBunldeId());
+			iosInfo.setIosAppStoreId(iosConfiguration.getIosAppleStoreId());
+			iosInfo.setIosBundleId(iosConfiguration.getIosBundleId());
 			request.setIosInfo(iosInfo);
 		} else {
 			request.setIosInfo(null);

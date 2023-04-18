@@ -1,5 +1,6 @@
 package com.cz.platform.clients;
 
+import java.io.Serializable;
 import java.text.MessageFormat;
 
 import org.springframework.http.HttpEntity;
@@ -70,41 +71,37 @@ public class WhiteLabelAppClient {
 		private String id;
 		private String chargePointOperatorId;
 		private String appName;
-		private String packageName;
 		private String downloadLink;
 		private String deepLinkDomainPrefixUrl;
-		private String iosAppleStoreId;
-		private String iosBunldeId;
-		private Boolean isIosAppLive;
+		private AndroidConfiguration androidConfiguration;
+		private IosConfiguration iosConfiguration;
 		private ReferralConfig referralConfig;
-		private Long walletInitializationCredits;
+		private int walletInitializationCredits;
 		private ActiveInactiveStatus status;
-	}
 
-	@Data
-	public static class NotificationConfig {
-		public WhatsappInteraktConfig whatsappInteraktConfig;
-		public SmsMessage91Config smsMessage91Config;
-	}
+		@Data
+		public static class ReferralConfig implements Serializable {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1047464315179245425L;
+			public int referrerCreditUnits;
+			public int refereeCreditUnits;
+			public int firstBookingReferrerCreditUnits;
+			public String referralMessageTemplate;
+		}
 
-	@Data
-	public static class ReferralConfig {
-		public Long referrerCreditUnits;
-		public Long refereeCreditUnits;
-		public Long firstBookingReferrerCreditUnits;
-		public String referralMessageTemplate;
-	}
+		@Data
+		public static class AndroidConfiguration {
+			private String packageName;
+		}
 
-	@Data
-	public static class SmsMessage91Config {
-		public String authkey;
-		public String senderId;
-		public int route;
-	}
+		@Data
+		public static class IosConfiguration {
+			private Boolean isIosAppLive = false;
+			private String iosAppleStoreId;
+			private String iosBundleId;
+		}
 
-	@Data
-	public static class WhatsappInteraktConfig {
-		public String authkey;
 	}
-
 }
