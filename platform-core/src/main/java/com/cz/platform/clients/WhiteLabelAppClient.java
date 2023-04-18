@@ -76,7 +76,7 @@ public class WhiteLabelAppClient {
 		private AndroidConfiguration androidConfiguration;
 		private IosConfiguration iosConfiguration;
 		private ReferralConfig referralConfig;
-		private int walletInitializationCredits;
+		private Long walletInitializationCredits;
 		private ActiveInactiveStatus status;
 
 		@Data
