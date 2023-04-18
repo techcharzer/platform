@@ -75,6 +75,7 @@ public class WhiteLabelAppClient {
 		private String deepLinkDomainPrefixUrl;
 		private String iosAppleStoreId;
 		private String iosBunldeId;
+		private Boolean isIosAppLive;
 		private ReferralConfig referralConfig;
 		private Long walletInitializationCredits;
 		private ActiveInactiveStatus status;
