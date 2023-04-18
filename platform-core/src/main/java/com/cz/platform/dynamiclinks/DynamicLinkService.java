@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -58,7 +59,7 @@ public class DynamicLinkService {
 		request.setAndroidInfo(androidInfo);
 
 		IosConfiguration iosConfiguration = whitelabelAppConfiguration.getIosConfiguration();
-		if (BooleanUtils.isTrue(iosConfiguration.getIsIosAppLive())) {
+		if (!ObjectUtils.isEmpty(iosConfiguration)) {
 			IosInfo iosInfo = new IosInfo();
 			iosInfo.setIosAppStoreId(iosConfiguration.getIosAppleStoreId());
 			iosInfo.setIosBundleId(iosConfiguration.getIosBundleId());
