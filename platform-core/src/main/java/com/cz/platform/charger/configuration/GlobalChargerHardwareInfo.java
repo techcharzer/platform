@@ -14,6 +14,7 @@ public class GlobalChargerHardwareInfo implements Serializable {
 	 */
 	private static final long serialVersionUID = -8410282833774514608L;
 	private String hardwareId;
+	private String uniqueIdentifier;
 	private HardwareInventoryStatus status;
 	private HardwareConfigurationDTO hardwareConfiguration;
 	private String deeplink;
