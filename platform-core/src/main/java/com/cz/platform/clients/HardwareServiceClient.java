@@ -55,12 +55,17 @@ public class HardwareServiceClient {
 	private PlatformCommonService platformCommonService;
 	private CustomRabbitMQTemplate rabbitMqTemplate;
 	private static final QueueConfiguration EXECUTE_COMMAND_QUEUE_CONFIG = new QueueConfiguration();
+	private static final QueueConfiguration UPDATE_HARDWARE_TRACKING = new QueueConfiguration();
 
 	@PostConstruct
 	private void fill() {
 		EXECUTE_COMMAND_QUEUE_CONFIG.setQueueName("execute_command");
 		EXECUTE_COMMAND_QUEUE_CONFIG.setExchangeName("hardware_service");
 		EXECUTE_COMMAND_QUEUE_CONFIG.setRoutingKey("execute_command");
+
+		UPDATE_HARDWARE_TRACKING.setQueueName("update_hardware_tracking");
+		UPDATE_HARDWARE_TRACKING.setExchangeName("update_hardware_tracking");
+		UPDATE_HARDWARE_TRACKING.setRoutingKey("update_hardware_tracking");
 	}
 
 	public HardwareStatusDTO getChargerOnline(String hardwareId) {
@@ -239,6 +244,97 @@ public class HardwareServiceClient {
 
 	public static interface CommandData {
 
+	}
+
+	public void updateHardwareOwnerShip(String hardwareId, String userId, Instant time,
+			HardwareTrackingInfoType infoType, HardwareTrackingInfoTypeData infoData) {
+		UpdateHardwareTracking ownership = new UpdateHardwareTracking();
+		ownership.setInfoType(infoType);
+		ownership.setUserId(userId);
+		ownership.setCreatedAt(time);
+		ownership.setHardwareId(hardwareId);
+		ownership.setInfoData(infoData);
+		updateHardwareOwnerShip(ownership);
+	}
+
+	public void updateHardwareOwnerShip(UpdateHardwareTracking ownership) {
+		log.info("request: {}", ownership);
+		validateRequest(ownership);
+		rabbitMqTemplate.convertAndSend(UPDATE_HARDWARE_TRACKING, ownership);
+	}
+
+	private void validateRequest(UpdateHardwareTracking ownership) {
+		if (ObjectUtils.isEmpty(ownership)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid ownership");
+		}
+		if (ObjectUtils.isEmpty(ownership.getHardwareId())) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid hardwareId");
+		}
+		if (ObjectUtils.isEmpty(ownership.getInfoType())) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid infoType");
+		}
+		if (ObjectUtils.isEmpty(ownership.getInfoData())) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid infoData");
+		}
+	}
+
+	@Data
+	public static class UpdateHardwareTracking {
+		private HardwareTrackingInfoType infoType;
+		private String hardwareId;
+		@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXTERNAL_PROPERTY, property = "infoType")
+		@JsonSubTypes({ @Type(value = WarehouseHardwareInventoryTypeData.class, name = "WAREHOUSE"),
+				@Type(value = TechnicianMobileNumberHardwareInventoryTypeData.class, name = "TECHNICIAN"),
+				@Type(value = DeliveryHardwareInventoryTypeData.class, name = "DELIVERY"),
+				@Type(value = InstalledAtInventoryTypeData.class, name = "INSTALLED_AT"),
+				@Type(value = VendorInventoryTypeData.class, name = "VENDOR"),
+				@Type(value = HostLocationInventoryTypeData.class, name = "HOST_LOCATION") })
+		private HardwareTrackingInfoTypeData infoData;
+		private Instant createdAt;
+		private String userId;
+	}
+
+	public enum HardwareTrackingInfoType {
+		WAREHOUSE, TECHNICIAN, DELIVERY, INSTALLED_AT, VENDOR, HOST_LOCATION
+	}
+
+	public static interface HardwareTrackingInfoTypeData {
+
+	}
+
+	@Data
+	public static class WarehouseHardwareInventoryTypeData implements HardwareTrackingInfoTypeData {
+		private String warehouseId;
+	}
+
+	@Data
+	public static class TechnicianHardwareInventoryTypeData implements HardwareTrackingInfoTypeData {
+		private String technicianId;
+	}
+
+	@Data
+	public static class DeliveryHardwareInventoryTypeData implements HardwareTrackingInfoTypeData {
+		private String deliveryTicketId;
+	}
+
+	@Data
+	public static class InstalledAtInventoryTypeData implements HardwareTrackingInfoTypeData {
+		private String installedAtId;
+	}
+
+	@Data
+	public static class VendorInventoryTypeData implements HardwareTrackingInfoTypeData {
+		private String vendorId;
+	}
+
+	@Data
+	public static class HostLocationInventoryTypeData implements HardwareTrackingInfoTypeData {
+		private String deliveryTicketId;
+	}
+
+	@Data
+	public static class TechnicianMobileNumberHardwareInventoryTypeData implements HardwareTrackingInfoTypeData {
+		private String mobileNumber;
 	}
 
 }
