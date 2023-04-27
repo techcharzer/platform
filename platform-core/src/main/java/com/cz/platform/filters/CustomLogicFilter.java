@@ -16,11 +16,11 @@ import lombok.ToString;
 @ToString
 public class CustomLogicFilter<T> extends AbstractFilter {
 
-	private T val;
+	private T value;
 
-	public CustomLogicFilter(String field, T val) {
+	public CustomLogicFilter(String field, T value) {
 		super(field, FilterOperationsType.CUSTOM_TYPE);
-		this.val = val;
+		this.value = value;
 	}
 
 	@Override
