@@ -41,7 +41,6 @@ public final class FilterParserService {
 		MAP_OF_FILTER_PARSING.put(FilterOperationsType.RANGE, this::rangeFilterParsing);
 		MAP_OF_FILTER_PARSING.put(FilterOperationsType.NEAR_TO, this::nearToFilterParsing);
 		MAP_OF_FILTER_PARSING.put(FilterOperationsType.DATE_RANGE, this::dateRangeFilterParsing);
-		MAP_OF_FILTER_PARSING.put(FilterOperationsType.CUSTOM_TYPE, this::customFilterParsing);
 		MAP_OF_FILTER_PARSING.put(FilterOperationsType.GREATER_THAN, this::gtFilterParsing);
 		MAP_OF_FILTER_PARSING.put(FilterOperationsType.LESS_THAN, this::ltFilterParsing);
 		MAP_OF_FILTER_PARSING.put(FilterOperationsType.GREATER_THAN_EQUAL, this::gteFilterParsing);
@@ -146,10 +145,6 @@ public final class FilterParserService {
 		filter.setMaxDistance(maxDistance);
 		filter.setMinDistance(minDistance);
 		return filter;
-	}
-
-	private AbstractFilter customFilterParsing(String field, List<String> value) {
-		return new CustomLogicFilter<List<String>>(field, value);
 	}
 
 	public List<AbstractFilter> parseQueryParams(MultiValueMap<String, String> map) {
