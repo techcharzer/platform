@@ -149,7 +149,7 @@ public final class FilterParserService {
 	}
 
 	private AbstractFilter customFilterParsing(String field, List<String> value) {
-		return new CustomLogicFilter(field);
+		return new CustomLogicFilter<List<String>>(field, value);
 	}
 
 	public List<AbstractFilter> parseQueryParams(MultiValueMap<String, String> map) {

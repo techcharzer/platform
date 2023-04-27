@@ -7,10 +7,13 @@ import com.cz.platform.exception.ValidationException;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
 
 @JsonIgnoreType
-public class CustomLogicFilter extends AbstractFilter {
+public class CustomLogicFilter<T> extends AbstractFilter {
 
-	public CustomLogicFilter(String field) {
+	private T val;
+
+	public CustomLogicFilter(String field, T val) {
 		super(field, FilterOperationsType.CUSTOM_TYPE);
+		this.val = val;
 	}
 
 	@Override
