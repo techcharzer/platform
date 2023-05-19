@@ -9,6 +9,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.PropertyPlaceholderHelper;
@@ -433,7 +435,7 @@ public final class CommonUtility {
 			return false;
 		}
 	}
-	
+
 	public static Optional<Range<Instant>> getTodayOpenTimings(Range<Integer> openCloseTimeInSeconds) {
 		ZonedDateTime now = ZonedDateTime.now(PlatformConstants.CURRENT_ZONE_ID);
 		Instant todayStart = now.truncatedTo(ChronoUnit.DAYS).toInstant();
@@ -445,6 +447,18 @@ public final class CommonUtility {
 		} else {
 			return Optional.of(new Range<Instant>(start, end));
 		}
+	}
+
+	public static <T> List<T> getPage(List<T> sourceList, Pageable page) {
+		if (page.getPageNumber() < 0 || page.getPageSize() <= 0) {
+			throw new IllegalArgumentException("invalid page size: " + page.getPageSize());
+		}
+
+		int fromIndex = page.getPageNumber() * page.getPageSize();
+		if (sourceList == null || sourceList.size() <= fromIndex) {
+			return Collections.emptyList();
+		}
+		return sourceList.subList(fromIndex, Math.min(fromIndex + page.getPageSize(), sourceList.size()));
 	}
 
 }
