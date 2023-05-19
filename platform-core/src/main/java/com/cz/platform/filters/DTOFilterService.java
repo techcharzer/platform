@@ -22,7 +22,7 @@ public abstract class DTOFilterService<T> {
 	protected abstract void fillMap();
 
 	public final List<T> filter(List<AbstractFilter> filters, List<T> data) {
-		log.debug("size before applying filter: {}", data.size());
+		log.trace("size before applying filter: {}", data.size());
 		if (ObjectUtils.isEmpty(filters)) {
 			return data;
 		}
@@ -31,7 +31,7 @@ public abstract class DTOFilterService<T> {
 			if (MAP_OF_FILTER_TO_QUERY_MAPPER.containsKey(filter.getField())) {
 				List<T> internalList = new LinkedList<>();
 				inclusions = MAP_OF_FILTER_TO_QUERY_MAPPER.get(filter.getField()).execute(filter, data, inclusions);
-				log.debug("inclusions found for : {}, {}", filter.getField(), inclusions);
+				log.trace("inclusions found for : {}, {}", filter.getField(), inclusions);
 				if (ObjectUtils.isEmpty(inclusions)) {
 					return Collections.emptyList();
 				}
@@ -42,7 +42,7 @@ public abstract class DTOFilterService<T> {
 				inclusions.clear();
 			}
 		}
-		log.debug("size after applying filter: {}", data.size());
+		log.trace("size after applying filter: {}", data.size());
 		return data;
 	}
 
