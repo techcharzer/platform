@@ -10,17 +10,14 @@ import java.util.Set;
 
 import org.apache.commons.lang3.ObjectUtils;
 
+import com.cz.platform.functionalInterface.AnonymousFunctionV3;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public abstract class DTOFilterService<T> {
 
-	@FunctionalInterface
-	static interface TriFunction<A, B, C, R> {
-		public R apply(A a, B b, C c);
-	}
-
-	protected final Map<String, TriFunction<AbstractFilter, List<T>, Set<Integer>, Set<Integer>>> MAP_OF_FILTER_TO_QUERY_MAPPER = new HashMap<>();
+	protected final Map<String, AnonymousFunctionV3<AbstractFilter, List<T>, Set<Integer>, Set<Integer>>> MAP_OF_FILTER_TO_QUERY_MAPPER = new HashMap<>();
 
 	protected abstract void fillMap();
 
@@ -33,7 +30,7 @@ public abstract class DTOFilterService<T> {
 		for (AbstractFilter filter : filters) {
 			if (MAP_OF_FILTER_TO_QUERY_MAPPER.containsKey(filter.getField())) {
 				List<T> internalList = new LinkedList<>();
-				inclusions = MAP_OF_FILTER_TO_QUERY_MAPPER.get(filter.getField()).apply(filter, data, inclusions);
+				inclusions = MAP_OF_FILTER_TO_QUERY_MAPPER.get(filter.getField()).execute(filter, data, inclusions);
 				log.debug("inclusions found for : {}, {}", filter.getField(), inclusions);
 				if (ObjectUtils.isEmpty(inclusions)) {
 					return Collections.emptyList();
