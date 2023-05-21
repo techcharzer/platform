@@ -44,4 +44,28 @@ public class CustomRabbitMQTemplate {
 		}
 
 	}
+
+	public void convertAndSendToDelayQueue(QueueConfiguration qConfig, Object data) {
+		if (ObjectUtils.isEmpty(qConfig)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid queue configuration");
+		}
+		if (ObjectUtils.isEmpty(qConfig.getRoutingKey())) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid queue routingKey");
+		}
+		if (ObjectUtils.isEmpty(qConfig.getExchangeName())) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid queue exchangeName");
+		}
+		if (ObjectUtils.isEmpty(data)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid data");
+		}
+		try {
+			String jsonString = mapper.writeValueAsString(data);
+			log.info("messgae {} queued to: {}", jsonString, qConfig);
+			template.convertAndSend(qConfig.getExchangeName(), qConfig.getDelayRoutingKey(), jsonString);
+		} catch (JsonProcessingException e) {
+			log.error("error occured while converting to json the data : {}", data, e);
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR, e);
+		}
+
+	}
 }
