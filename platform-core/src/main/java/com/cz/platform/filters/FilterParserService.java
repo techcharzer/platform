@@ -45,6 +45,7 @@ public final class FilterParserService {
 		MAP_OF_FILTER_PARSING.put(FilterOperationsType.LESS_THAN, this::ltFilterParsing);
 		MAP_OF_FILTER_PARSING.put(FilterOperationsType.GREATER_THAN_EQUAL, this::gteFilterParsing);
 		MAP_OF_FILTER_PARSING.put(FilterOperationsType.LESS_THAN_EQUAL, this::lteFilterParsing);
+		MAP_OF_FILTER_PARSING.put(FilterOperationsType.SINGLE_DATE_RANGE, this::singleDateRangeFilterParsing);
 	}
 
 	private AbstractFilter inFilterParsing(String field, List<String> value) {
@@ -117,6 +118,22 @@ public final class FilterParserService {
 			}
 		}
 		return new DateRangeFilter(field, ranges);
+	}
+
+	private AbstractFilter singleDateRangeFilterParsing(String field, List<String> value) {
+		if (ObjectUtils.isEmpty(value)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
+					"Invalid filter parameters. requestparam or requestparam value is empty.");
+		}
+		for (String range : value) {
+			Range<Long> r = CommonUtility.parseRangeLong(range, "-");
+			if (r != null) {
+				Range<Instant> rangeVal = new Range<Instant>(Instant.ofEpochMilli(r.getFrom()),
+						Instant.ofEpochMilli(r.getTo()));
+				return new SingleDateRangeFilter(field, rangeVal);
+			}
+		}
+		return null;
 	}
 
 	private AbstractFilter nearToFilterParsing(String field, List<String> value) {

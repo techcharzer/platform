@@ -14,22 +14,22 @@ public class DateRangeFilter extends AbstractFilter {
 	private List<Range<Instant>> ranges;
 
 	public DateRangeFilter() {
-		super(null, FilterOperationsType.RANGE);
+		super(null, FilterOperationsType.DATE_RANGE);
 	}
 
 	public DateRangeFilter(String field, List<Range<Instant>> value) {
-		super(field, FilterOperationsType.RANGE);
+		super(field, FilterOperationsType.DATE_RANGE);
 		this.ranges = value;
 	}
 
 	public DateRangeFilter(String field, Range<Instant> value) {
-		super(field, FilterOperationsType.RANGE);
+		super(field, FilterOperationsType.DATE_RANGE);
 		ranges = new ArrayList<Range<Instant>>();
 		ranges.add(value);
 	}
 
 	public DateRangeFilter(String field, Instant start, Instant end) {
-		super(field, FilterOperationsType.RANGE);
+		super(field, FilterOperationsType.DATE_RANGE);
 		ranges = new ArrayList<>();
 		ranges.add(new Range<Instant>(start, end));
 	}
