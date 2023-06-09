@@ -58,4 +58,15 @@ public class MapMyIndiaRevGeoCodingService implements RevGeoCodingService {
 
 	}
 
+	@Override
+	public RevGeoCodeAddressDTO getAddressIgnoreError(Double lat, Double lon) {
+		try {
+			return getAddress(lat, lon);
+		} catch (Exception e) {
+			log.error("error occured while fetching the message", e);
+			return null;
+		}
+
+	}
+
 }
