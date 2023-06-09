@@ -63,14 +63,13 @@ public class GoolgeMapsRevGeoCodingService implements RevGeoCodingService {
 					}
 				}
 			}
-			throw new ApplicationException(PlatformExceptionCodes.SERVICE_NOT_WORKING.getCode(),
-					"No error message no results");
+			log.debug("no error message or no result found : {}", response.getBody());
+			return null;
 		} catch (Exception e) {
-			log.error("error occured while fetching the address: {}", e);
+			log.error("error occured while fetching the address.", e);
 			throw new ApplicationException(PlatformExceptionCodes.SERVICE_NOT_WORKING.getCode(),
 					"Error occured while fetching the address from coordinates.");
 		}
-
 	}
 
 	@Data
@@ -84,6 +83,16 @@ public class GoolgeMapsRevGeoCodingService implements RevGeoCodingService {
 		private String long_name;
 		private String short_name;
 		private HashSet<String> types = new HashSet<>();
+	}
+
+	@Override
+	public RevGeoCodeAddressDTO getAddressIgnoreError(Double lat, Double lon) {
+		try {
+			return getAddress(lat, lon);
+		} catch (Exception e) {
+			log.error("error occured while fetching the address", e);
+			return null;
+		}
 	}
 
 }
