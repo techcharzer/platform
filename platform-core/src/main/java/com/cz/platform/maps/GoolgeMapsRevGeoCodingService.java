@@ -36,9 +36,12 @@ public class GoolgeMapsRevGeoCodingService implements RevGeoCodingService {
 				String.valueOf(lat), String.valueOf(lon), config.getSecretKey());
 		try {
 			ResponseEntity<JsonNode> response = template.getForEntity(url, JsonNode.class);
-			log.info("response : {}", response.getBody());
 			JsonNode node = response.getBody();
-			if (node.has("results")) {
+			if (node.has("error_message")) {
+				String errorMessage = node.get("error_message").asText();
+				throw new ApplicationException(PlatformExceptionCodes.SERVICE_NOT_WORKING.getCode(), errorMessage);
+			} else if (node.has("results")) {
+				log.debug("response : {}", response.getBody());
 				JsonNode results = node.get("results");
 				if (results.isArray()) {
 					for (JsonNode result : (ArrayNode) results) {
@@ -60,10 +63,12 @@ public class GoolgeMapsRevGeoCodingService implements RevGeoCodingService {
 					}
 				}
 			}
-			throw new ApplicationException(PlatformExceptionCodes.SERVICE_NOT_WORKING.getCode(), "No location found");
-		} catch (Exception e) {
 			throw new ApplicationException(PlatformExceptionCodes.SERVICE_NOT_WORKING.getCode(),
-					"Unable to fetch the city from coordinates");
+					"No error message no results");
+		} catch (Exception e) {
+			log.error("error occured while fetching the address: {}", e);
+			throw new ApplicationException(PlatformExceptionCodes.SERVICE_NOT_WORKING.getCode(),
+					"Error occured while fetching the address from coordinates.");
 		}
 
 	}
