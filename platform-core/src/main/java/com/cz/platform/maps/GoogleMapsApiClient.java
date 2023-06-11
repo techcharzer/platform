@@ -189,6 +189,24 @@ public class GoogleMapsApiClient implements RevGeoCodingService {
 		private HashSet<String> types = new HashSet<>();
 	}
 
+	public Map<String, DistanceAndDurationDTO> getDistanceIgnoreError(List<DistanceDurationRequest> requests) {
+		try {
+			return getDistance(requests);
+		} catch (Exception e) {
+			log.error("error occured while fetching the address", e);
+			return Collections.emptyMap();
+		}
+	}
+
+	public DistanceAndDurationDTO getDistanceIgnoreError(GeoCoordinatesDTO origin, GeoCoordinatesDTO destination) {
+		try {
+			return getDistance(origin, destination);
+		} catch (Exception e) {
+			log.error("error occured while fetching the address", e);
+			return null;
+		}
+	}
+
 	@Override
 	public RevGeoCodeAddressDTO getAddressIgnoreError(Double lat, Double lon) {
 		try {
