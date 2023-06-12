@@ -65,11 +65,6 @@ public final class CommonUtility {
 	static {
 		DAYS_MAPPING.put(0, "Today");
 		DAYS_MAPPING.put(1, "Yesterday");
-		DAYS_MAPPING.put(2, "2 days ago");
-		DAYS_MAPPING.put(3, "3 days ago");
-		DAYS_MAPPING.put(4, "4 days ago");
-		DAYS_MAPPING.put(5, "5 days ago");
-		DAYS_MAPPING.put(6, "6 days ago");
 
 		WEEKS_MAPPING.put(0, "This Week");
 		WEEKS_MAPPING.put(1, "Last Week");
@@ -186,10 +181,6 @@ public final class CommonUtility {
 
 	public static List<CodeValueDTO<String, String>> getRecentTimeFilterValues(int day, int week, int month) {
 		List<CodeValueDTO<String, String>> list = new ArrayList<>();
-		if (!DAYS_MAPPING.containsKey(day)) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
-					"Invalid filter day configuration");
-		}
 		if (!WEEKS_MAPPING.containsKey(week)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
 					"Invalid filter week configuration");
@@ -222,7 +213,11 @@ public final class CommonUtility {
 			Instant start = nowDate.minusDays(i).atStartOfDay().toInstant(INDIA_ZONE_OFFSET);
 			String code = MessageFormat.format("{0}-{1}", String.valueOf(start.toEpochMilli()),
 					String.valueOf(end.toEpochMilli()));
-			String value = MessageFormat.format("By Day - {0}", DAYS_MAPPING.get(i));
+			String text = DAYS_MAPPING.get(i);
+			if (ObjectUtils.isEmpty(text)) {
+				text = getDate(start);
+			}
+			String value = MessageFormat.format("By Day - {0}", text);
 			list.add(new CodeValueDTO<String, String>(code, value));
 			end = start;
 		}
