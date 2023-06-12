@@ -192,6 +192,9 @@ public final class CommonUtility {
 	}
 
 	public static void getMonthlyFilterValues(int noOfFilters, List<CodeValueDTO<String, String>> list) {
+		if (noOfFilters == 0) {
+			return;
+		}
 		LocalDate nowDate = LocalDate.now();
 		Instant end = nowDate.plusMonths(1).withDayOfMonth(1).atStartOfDay().toInstant(INDIA_ZONE_OFFSET);
 		for (int i = 0; i <= noOfFilters; ++i) {
@@ -206,6 +209,9 @@ public final class CommonUtility {
 	}
 
 	public static void getDayFilterValues(int noOfFilters, List<CodeValueDTO<String, String>> list) {
+		if (noOfFilters == 0) {
+			return;
+		}
 		LocalDate nowDate = LocalDate.now();
 		Instant end = nowDate.plusDays(1).atStartOfDay().toInstant(INDIA_ZONE_OFFSET);
 		for (int i = 0; i <= noOfFilters; ++i) {
@@ -223,8 +229,10 @@ public final class CommonUtility {
 		}
 	}
 
-	public static List<CodeValueDTO<String, String>> getWeekFilterValues(int noOfFilters,
-			List<CodeValueDTO<String, String>> list) {
+	public static void getWeekFilterValues(int noOfFilters, List<CodeValueDTO<String, String>> list) {
+		if (noOfFilters == 0) {
+			return;
+		}
 		LocalDate nowDate = LocalDate.now();
 		nowDate = nowDate.minusDays(nowDate.getDayOfWeek().getValue() - 1);
 		Instant end = nowDate.plusWeeks(1).atStartOfDay().toInstant(INDIA_ZONE_OFFSET);
@@ -237,7 +245,6 @@ public final class CommonUtility {
 			list.add(new CodeValueDTO<String, String>(code, value));
 			end = start;
 		}
-		return list;
 	}
 
 	public static String getKey(String first, String second) {
