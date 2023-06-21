@@ -1,13 +1,21 @@
 package com.cz.platform.maps;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.RecursiveTask;
 
 import org.apache.commons.codec.binary.StringUtils;
+import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,21 +29,24 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Primary
 @Service
 @Slf4j
-@AllArgsConstructor
 public class GoogleMapsApiClient implements RevGeoCodingService {
 
+	@Autowired
 	private GoogleMapsConfig config;
-
+	@Autowired
 	private RestTemplate template;
-
+	@Autowired
 	private ObjectMapper mapper;
+	@Autowired
+	@Lazy
+	private GoogleMapsApiClient googleApiClient;
+	private static final ForkJoinPool commonPool = ForkJoinPool.commonPool();
 
 	public RevGeoCodeAddressDTO getAddress(Double lat, Double lon) throws ApplicationException {
 		String url = MessageFormat.format("https://maps.googleapis.com/maps/api/geocode/json?latlng={0},{1}&key={2}",
@@ -83,11 +94,15 @@ public class GoogleMapsApiClient implements RevGeoCodingService {
 		request.setDestination(destination);
 		request.setOrigin(origin);
 		request.setRequestId("single");
-		Map<String, DistanceAndDurationDTO> response = getDistance(Collections.singletonList(request));
+		Map<String, DistanceAndDurationDTO> response = _getDistance(Collections.singletonList(request));
 		return response.get("single");
 	}
 
 	public Map<String, DistanceAndDurationDTO> getDistance(List<DistanceDurationRequest> distanceRequests) {
+		return commonPool.invoke(new CustomRecursiveTask(distanceRequests, googleApiClient));
+	}
+
+	private Map<String, DistanceAndDurationDTO> _getDistance(List<DistanceDurationRequest> distanceRequests) {
 		log.info("request : {}", distanceRequests);
 		Map<String, DistanceAndDurationDTO> map = new HashMap<>();
 		String url = createUrl(distanceRequests);
@@ -123,6 +138,56 @@ public class GoogleMapsApiClient implements RevGeoCodingService {
 			log.error("error occured while fetching the address.", e);
 			throw new ApplicationException(PlatformExceptionCodes.SERVICE_NOT_WORKING.getCode(),
 					"Error occured while fetching distance from between the coordinates.");
+		}
+
+	}
+
+	private static class CustomRecursiveTask extends RecursiveTask<Map<String, DistanceAndDurationDTO>> {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 73284379823478941L;
+		private List<DistanceDurationRequest> request;
+		private GoogleMapsApiClient googleApiClient;
+
+		private static final int THRESHOLD = 10;
+
+		public CustomRecursiveTask(List<DistanceDurationRequest> distanceRequest, GoogleMapsApiClient client) {
+			this.request = distanceRequest;
+			this.googleApiClient = client;
+		}
+
+		@Override
+		protected Map<String, DistanceAndDurationDTO> compute() {
+			Map<String, DistanceAndDurationDTO> result = Collections.emptyMap();
+			if (ObjectUtils.isEmpty(request)) {
+				return result;
+			} else if (request.size() > THRESHOLD) {
+				ForkJoinTask.invokeAll(createSubtasks()).stream().map(ForkJoinTask::join);
+				for (ForkJoinTask<Map<String, DistanceAndDurationDTO>> task : ForkJoinTask
+						.invokeAll(createSubtasks())) {
+					try {
+						if (ObjectUtils.isEmpty(result)) {
+							result = task.get();
+						} else {
+							result.putAll(task.get());
+						}
+					} catch (InterruptedException | ExecutionException e) {
+						log.error("error occured at fork join pool", e);
+					}
+				}
+			} else {
+				result = googleApiClient._getDistance(request);
+			}
+			return result;
+		}
+
+		private List<CustomRecursiveTask> createSubtasks() {
+			List<CustomRecursiveTask> dividedTasks = new ArrayList<>();
+			dividedTasks.add(new CustomRecursiveTask(request.subList(0, request.size() / 2), this.googleApiClient));
+			dividedTasks.add(
+					new CustomRecursiveTask(request.subList(request.size() / 2, request.size()), this.googleApiClient));
+			return dividedTasks;
 		}
 
 	}
