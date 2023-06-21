@@ -11,11 +11,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
+import java.util.function.Function;
 
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -29,23 +28,22 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Primary
 @Service
-@Slf4j
+@AllArgsConstructor
 public class GoogleMapsApiClient implements RevGeoCodingService {
 
-	@Autowired
 	private GoogleMapsConfig config;
-	@Autowired
+
 	private RestTemplate template;
-	@Autowired
+
 	private ObjectMapper mapper;
-	@Autowired
-	@Lazy
-	private GoogleMapsApiClient googleApiClient;
+
 	private static final ForkJoinPool commonPool = ForkJoinPool.commonPool();
 
 	public RevGeoCodeAddressDTO getAddress(Double lat, Double lon) throws ApplicationException {
@@ -99,7 +97,7 @@ public class GoogleMapsApiClient implements RevGeoCodingService {
 	}
 
 	public Map<String, DistanceAndDurationDTO> getDistance(List<DistanceDurationRequest> distanceRequests) {
-		return commonPool.invoke(new CustomRecursiveTask(distanceRequests, googleApiClient));
+		return commonPool.invoke(new CustomRecursiveTask(distanceRequests, this::_getDistance));
 	}
 
 	private Map<String, DistanceAndDurationDTO> _getDistance(List<DistanceDurationRequest> distanceRequests) {
@@ -135,7 +133,7 @@ public class GoogleMapsApiClient implements RevGeoCodingService {
 			log.debug("no error message or no result found : {}", response.getBody());
 			return null;
 		} catch (Exception e) {
-			log.error("error occured while fetching the address.", e);
+			log.error("error occured while fetching the distance.", e);
 			throw new ApplicationException(PlatformExceptionCodes.SERVICE_NOT_WORKING.getCode(),
 					"Error occured while fetching distance from between the coordinates.");
 		}
@@ -148,13 +146,14 @@ public class GoogleMapsApiClient implements RevGeoCodingService {
 		 */
 		private static final long serialVersionUID = 73284379823478941L;
 		private List<DistanceDurationRequest> request;
-		private GoogleMapsApiClient googleApiClient;
+		private Function<List<DistanceDurationRequest>, Map<String, DistanceAndDurationDTO>> function;
 
 		private static final int THRESHOLD = 10;
 
-		public CustomRecursiveTask(List<DistanceDurationRequest> distanceRequest, GoogleMapsApiClient client) {
+		public CustomRecursiveTask(List<DistanceDurationRequest> distanceRequest,
+				Function<List<DistanceDurationRequest>, Map<String, DistanceAndDurationDTO>> function) {
 			this.request = distanceRequest;
-			this.googleApiClient = client;
+			this.function = function;
 		}
 
 		@Override
@@ -177,16 +176,15 @@ public class GoogleMapsApiClient implements RevGeoCodingService {
 					}
 				}
 			} else {
-				result = googleApiClient._getDistance(request);
+				result = function.apply(request);
 			}
 			return result;
 		}
 
 		private List<CustomRecursiveTask> createSubtasks() {
 			List<CustomRecursiveTask> dividedTasks = new ArrayList<>();
-			dividedTasks.add(new CustomRecursiveTask(request.subList(0, request.size() / 2), this.googleApiClient));
-			dividedTasks.add(
-					new CustomRecursiveTask(request.subList(request.size() / 2, request.size()), this.googleApiClient));
+			dividedTasks.add(new CustomRecursiveTask(request.subList(0, request.size() / 2), function));
+			dividedTasks.add(new CustomRecursiveTask(request.subList(request.size() / 2, request.size()), function));
 			return dividedTasks;
 		}
 
