@@ -35,13 +35,14 @@ public class ChargerDTO implements Serializable {
 	private AddressDTO address;
 	private String operationalZoneId;
 	private Set<String> viewerIds;
+	private String deeplink;
 	private DealConfigurationDTO dealConfiguration;
 	private Instant listingTime;
 	private String primaryChargePointOperatorId;
 	private String secondaryChargePointOperatorId;
 
 	public static final String[] INCLUDED_FIELDS = new String[] { "id", "name", "uniqueIdentifier",
-			"openCloseTimeInSeconds", "sockets", "chargerType", "supportedVehicle", "address", "images", "deeplink",
+			"openCloseTimeInSeconds", "sockets", "chargerType", "supportedVehicle", "address", "images",
 			"configuration", "status", "dealConfiguration", "deeplink", "usageType", "protectedNetworkId",
 			"primaryChargePointOperatorId", "secondaryChargePointOperatorId" };
 
