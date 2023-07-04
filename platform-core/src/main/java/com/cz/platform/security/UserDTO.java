@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.ObjectUtils;
 
 import com.cz.platform.enums.LogInFrom;
 import com.cz.platform.enums.OperatingSystem;
@@ -20,7 +21,11 @@ public interface UserDTO {
 
 	public ZoneId getZoneId();
 
-	public boolean isLogInFrom(LogInFrom logInFrom);
+	public LogInFrom getLogInFrom();
+
+	public default boolean isLogInFrom(LogInFrom logInFrom) {
+		return ObjectUtils.isEmpty(logInFrom) ? false : getLogInFrom().equals(logInFrom);
+	}
 
 	public default void validateLogInFrom(LogInFrom logInFrom) {
 		if (BooleanUtils.isFalse(isLogInFrom(logInFrom))) {

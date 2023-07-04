@@ -3,8 +3,6 @@ package com.cz.platform.security;
 import java.time.ZoneId;
 import java.util.List;
 
-import org.apache.commons.lang3.ObjectUtils;
-
 import com.cz.platform.PlatformConstants;
 import com.cz.platform.enums.LogInFrom;
 import com.cz.platform.enums.OperatingSystem;
@@ -25,11 +23,6 @@ class LoggedInUser implements UserDTO {
 	@Override
 	public ZoneId getZoneId() {
 		return ZoneId.of(PlatformConstants.CURRENT_TIME_ZONE);
-	}
-
-	@Override
-	public boolean isLogInFrom(LogInFrom logInFrom) {
-		return ObjectUtils.isEmpty(logInFrom) ? false : logInFrom.equals(this.logInFrom);
 	}
 
 }
