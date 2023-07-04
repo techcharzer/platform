@@ -6,8 +6,8 @@ import java.util.List;
 import org.apache.commons.lang3.ObjectUtils;
 
 import com.cz.platform.PlatformConstants;
+import com.cz.platform.enums.LogInFrom;
 import com.cz.platform.enums.OperatingSystem;
-import com.cz.platform.enums.UserType;
 
 import lombok.Data;
 
@@ -18,7 +18,7 @@ class LoggedInUser implements UserDTO {
 	private String mobileNumber;
 	private List<RoleDTO> roles;
 	// this fields is equivalent to login from.
-	private UserType userType;
+	private LogInFrom logInFrom;
 	private String chargePointOperatorId;
 	private OperatingSystem operatingSystem;
 
@@ -28,8 +28,8 @@ class LoggedInUser implements UserDTO {
 	}
 
 	@Override
-	public boolean isLogInFrom(UserType logInFrom) {
-		return ObjectUtils.isEmpty(logInFrom) ? false : logInFrom.equals(this.userType);
+	public boolean isLogInFrom(LogInFrom logInFrom) {
+		return ObjectUtils.isEmpty(logInFrom) ? false : logInFrom.equals(this.logInFrom);
 	}
 
 }
