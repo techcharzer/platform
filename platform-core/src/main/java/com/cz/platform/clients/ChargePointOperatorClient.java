@@ -107,6 +107,7 @@ public class ChargePointOperatorClient {
 		private String id;
 		private String companyName;
 		private Double charzerProfitShareOnBooking;
+		private Boolean hasMobileApplication;
 		private String accountHolderUserId;
 	}
 
