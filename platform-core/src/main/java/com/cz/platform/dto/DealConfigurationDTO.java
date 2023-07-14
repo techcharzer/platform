@@ -22,4 +22,5 @@ public class DealConfigurationDTO implements Serializable {
 			@Type(value = DevicePurchasedDealConfiguration.class, name = "HARDWARE_PURCHASED"), })
 	private DealConfigurationData configurationData;
 	private ProfitShareConfiguration profitShareConfiguration;
+	private Boolean immediatePayout;
 }
