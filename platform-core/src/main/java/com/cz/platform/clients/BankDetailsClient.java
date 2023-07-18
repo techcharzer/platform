@@ -1,6 +1,7 @@
 package com.cz.platform.clients;
 
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -48,7 +49,7 @@ public class BankDetailsClient {
 
 	public Map<String, BankDetailsDTO> getBankDetailsByUserId(Set<String> userIds, String chargePointOperatorId) {
 		if (ObjectUtils.isEmpty(userIds)) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid userId");
+			return Collections.emptyMap();
 		}
 		log.debug("fetchig userId :{}", userIds);
 		HttpHeaders headers = new HttpHeaders();
@@ -75,7 +76,7 @@ public class BankDetailsClient {
 
 	public Map<String, BankDetailsDTO> getBankDetailsById(Set<String> bankDetailsIds) {
 		if (ObjectUtils.isEmpty(bankDetailsIds)) {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid bankDetails");
+			return Collections.emptyMap();
 		}
 		log.debug("fetchig userId :{}", bankDetailsIds);
 		HttpHeaders headers = new HttpHeaders();
