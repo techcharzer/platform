@@ -62,4 +62,8 @@ public final class PlatformCommonService {
 		RLock lock = redissonClient.getLock(key);
 		lock.forceUnlock();
 	}
+
+	public void forceUnlock(RLock lock) {
+		lock.forceUnlock();
+	}
 }
