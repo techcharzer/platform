@@ -45,7 +45,7 @@ public class PreventMultipleRequestAspect {
 		} catch (Exception e) {
 			throw e;
 		} finally {
-			platformCommonService.unlock(lock);
+			platformCommonService.forceUnlock(lock);
 		}
 	}
 
