@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
@@ -33,7 +34,7 @@ public class GenericDailyTrackerService {
 		request.setTime(instant);
 		Map<String, Long> map = new HashMap<>();
 		for (Pair<TrackerKey, Long> val : values) {
-			map.put(getKey(val.getFirst().getKey()), val.getSecond());
+			map.put(getKey(val.getFirst()), val.getSecond());
 		}
 		request.setKeyValuePair(map);
 		template.convertAndSend(rabbitQueueConfiguration.getUpdateDailyTracker(), request);
@@ -44,7 +45,7 @@ public class GenericDailyTrackerService {
 		request.setTime(Instant.now());
 		Map<String, Long> map = new HashMap<>();
 		for (Pair<TrackerKey, Long> val : values) {
-			map.put(getKey(val.getFirst().getKey()), val.getSecond());
+			map.put(getKey(val.getFirst()), val.getSecond());
 		}
 		request.setKeyValuePair(map);
 		template.convertAndSend(rabbitQueueConfiguration.getUpdateDailyTracker(), request);
@@ -62,7 +63,7 @@ public class GenericDailyTrackerService {
 		DailyTrackerSaveUpdateRequest request = new DailyTrackerSaveUpdateRequest();
 		request.setTime(instant);
 		Map<String, Long> map = new HashMap<>();
-		map.put(getKey(key.getKey()), delta);
+		map.put(getKey(key), delta);
 		request.setKeyValuePair(map);
 		template.convertAndSend(rabbitQueueConfiguration.getUpdateDailyTracker(), request);
 	}
@@ -73,11 +74,32 @@ public class GenericDailyTrackerService {
 		private Map<String, Long> keyValuePair;
 	}
 
-	private String getKey(String key) {
-		return MessageFormat.format("{0}#{1}", applicationName.toUpperCase(), key.toUpperCase());
+	private String getKey(TrackerKey key) {
+		if (ObjectUtils.isNotEmpty(key.getDynamicKey())) {
+			return MessageFormat.format("{0}#{1}", key.getDynamicKey(), key.getKey());
+		} else {
+			return MessageFormat.format("{0}#{1}", applicationName.toUpperCase(), key.getKey());
+		}
 	}
 
 	public static interface TrackerKey {
+		/**
+		 * this method is used for those cases where per charger / per user/ per booking
+		 * metrics are required. 
+		 * 
+		 * Example find utilization on daily basis for the
+		 * dashboard for ABC and xyz chargers.
+		 * Here ChargerId will be the dynamic key.
+		 * @return
+		 */
+		default String getDynamicKey() {
+			return null;
+		}
+
+		/**
+		 * in the above example this will be UNIT_CONSUMED
+		 * @return
+		 */
 		String getKey();
 	}
 
