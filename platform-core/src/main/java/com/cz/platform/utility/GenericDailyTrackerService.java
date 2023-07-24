@@ -62,9 +62,6 @@ public class GenericDailyTrackerService {
 	private SecurityConfigProps securityProps;
 
 	@Autowired
-	private PlatformCommonService commonService;
-
-	@Autowired
 	private ObjectMapper mapper;
 
 	public void updateValue(Instant instant, List<Pair<TrackerKey, Long>> values) {
@@ -113,36 +110,28 @@ public class GenericDailyTrackerService {
 	}
 
 	private String getKey(TrackerKey key) {
-		if (ObjectUtils.isNotEmpty(key.getDynamicKey())) {
-			return MessageFormat.format("{0}#{1}", key.getDynamicKey(), key.getKey());
-		} else {
-			return MessageFormat.format("{0}#{1}", applicationName.toUpperCase(), key.getKey());
+		if (key instanceof ItemTrackerKey) {
+			return key.getKey();
 		}
+		return MessageFormat.format("{0}#{1}", applicationName.toUpperCase(), key.getKey());
 	}
 
 	public static interface TrackerKey {
-		/**
-		 * this method is used for those cases where per charger / per user/ per booking
-		 * metrics are required.
-		 * 
-		 * Example find utilization on daily basis for the dashboard for ABC and xyz
-		 * chargers. Here ChargerId will be the dynamic key.
-		 * 
-		 * @return
-		 */
-		default String getDynamicKey() {
-			return null;
-		}
-
-		/**
-		 * in the above example this will be UNIT_CONSUMED
-		 * 
-		 * @return
-		 */
 		String getKey();
 	}
 
-	public List<TrackerRequestResponseForSingleDay> getTrackerForToday(List<TrackerKey> keys) {
+	@Data
+	public static class ItemTrackerKey implements TrackerKey {
+		private String itemId;
+		private String track;
+
+		@Override
+		public String getKey() {
+			return MessageFormat.format("{0}#{1}", itemId, track);
+		}
+	}
+
+	public List<TrackerRequestResponseForSingleDay> getTrackerForToday(List<ItemTrackerKey> keys) {
 		List<TrackerRequestResponseForMultipleDays> response = getTrackerForLastNDays(1, keys);
 		List<TrackerRequestResponseForSingleDay> days = new ArrayList<>();
 		for (TrackerRequestResponseForMultipleDays multipleDaysResponse : response) {
@@ -162,7 +151,8 @@ public class GenericDailyTrackerService {
 		private TrackerResponse response;
 	}
 
-	public List<TrackerRequestResponseForMultipleDays> getTrackerForLastNDays(int noOfLasDays, List<TrackerKey> keys) {
+	public List<TrackerRequestResponseForMultipleDays> getTrackerForLastNDays(int noOfLasDays,
+			List<ItemTrackerKey> keys) {
 		List<String> dates = getDates(noOfLasDays);
 		if (ObjectUtils.isEmpty(dates)) {
 			return Collections.emptyList();
@@ -172,11 +162,7 @@ public class GenericDailyTrackerService {
 		Set<String> keysFormatted = new HashSet<String>();
 		List<TrackerRequestResponseForMultipleDays> requestResponses = new ArrayList<>();
 		for (TrackerKey key : keys) {
-			if (ObjectUtils.isEmpty(key.getDynamicKey())) {
-				throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
-						"tracker keys get is allowed for per item not for global.");
-			}
-			String formattedKey = getKey(key);
+			String formattedKey = key.getKey();
 			keysFormatted.add(formattedKey);
 			TrackerRequestResponseForMultipleDays requestResponse = new TrackerRequestResponseForMultipleDays();
 			requestResponse.setFormattedKey(formattedKey);
