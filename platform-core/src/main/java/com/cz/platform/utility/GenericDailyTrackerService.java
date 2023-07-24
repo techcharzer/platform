@@ -163,7 +163,7 @@ public class GenericDailyTrackerService {
 		request.setDates(dates);
 		Set<String> keysFormatted = new HashSet<String>();
 		List<TrackerRequestResponseForMultipleDays> requestResponses = new ArrayList<>();
-		for (TrackerKey key : keys) {
+		for (ItemTrackerKey key : keys) {
 			String formattedKey = key.getKey();
 			keysFormatted.add(formattedKey);
 			TrackerRequestResponseForMultipleDays requestResponse = new TrackerRequestResponseForMultipleDays();
