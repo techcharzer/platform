@@ -208,7 +208,7 @@ public class GenericDailyTrackerService {
 
 	@Data
 	public static class TrackerRequestResponseForMultipleDays {
-		private TrackerKey request;
+		private ItemTrackerKey request;
 		@JsonIgnore
 		private String formattedKey;
 		private List<TrackerResponse> response;
