@@ -2,6 +2,7 @@ package com.cz.platform.utility;
 
 import java.text.MessageFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -133,11 +134,11 @@ public class GenericDailyTrackerService {
 		}
 	}
 
-	public List<TrackerRequestResponseForSingleDay> getTrackerForToday(List<ItemTrackerKey> keys) {
-		List<TrackerRequestResponseForMultipleDays> response = getTrackerForLastNDays(1, keys);
-		List<TrackerRequestResponseForSingleDay> days = new ArrayList<>();
-		for (TrackerRequestResponseForMultipleDays multipleDaysResponse : response) {
-			TrackerRequestResponseForSingleDay singleDay = new TrackerRequestResponseForSingleDay();
+	public List<TrackerRequestResponseForSingle> getTrackerForToday(List<ItemTrackerKey> keys) {
+		List<TrackerRequestResponseForMultiple> response = getTrackerForLastNDays(1, keys);
+		List<TrackerRequestResponseForSingle> days = new ArrayList<>();
+		for (TrackerRequestResponseForMultiple multipleDaysResponse : response) {
+			TrackerRequestResponseForSingle singleDay = new TrackerRequestResponseForSingle();
 			singleDay.setRequest(multipleDaysResponse.getRequest());
 			singleDay.setFormattedKey(multipleDaysResponse.getFormattedKey());
 			singleDay.setResponse(multipleDaysResponse.getResponse().get(0));
@@ -147,26 +148,57 @@ public class GenericDailyTrackerService {
 	}
 
 	@Data
-	public static class TrackerRequestResponseForSingleDay {
+	public static class TrackerRequestResponseForSingle {
 		private TrackerKey request;
 		private String formattedKey;
 		private TrackerResponse response;
 	}
 
-	public List<TrackerRequestResponseForMultipleDays> getTrackerForLastNDays(int noOfLasDays,
-			List<ItemTrackerKey> keys) {
+	public List<TrackerRequestResponseForMultiple> getTrackerForLastNDays(int noOfLasDays, List<ItemTrackerKey> keys) {
 		List<String> dates = getDates(noOfLasDays);
+		return getTrackerForLastNDays(dates, keys);
+	}
+
+	public List<TrackerRequestResponseForSingle> getTrackerForThisMonth(List<ItemTrackerKey> keys) {
+		List<TrackerRequestResponseForMultiple> response = getTrackerForThisMonthDayWise(keys);
+		List<TrackerRequestResponseForSingle> days = new ArrayList<>();
+		for (TrackerRequestResponseForMultiple multipleDaysResponse : response) {
+			TrackerRequestResponseForSingle singleDay = new TrackerRequestResponseForSingle();
+			singleDay.setRequest(multipleDaysResponse.getRequest());
+			singleDay.setFormattedKey(multipleDaysResponse.getFormattedKey());
+			TrackerResponse monthResponse = new TrackerResponse();
+			Long sum = 0L;
+			for (TrackerResponse trackerResponse : multipleDaysResponse.getResponse()) {
+				sum += trackerResponse.getCount();
+			}
+			monthResponse.setCount(sum);
+			LocalDate date = LocalDate.now(PlatformConstants.CURRENT_ZONE_ID);
+			monthResponse.setUniqueId(date.getMonth().name());
+			singleDay.setResponse(monthResponse);
+			days.add(singleDay);
+		}
+		return days;
+	}
+
+	public List<TrackerRequestResponseForMultiple> getTrackerForThisMonthDayWise(List<ItemTrackerKey> keys) {
+		LocalDate date = LocalDate.now(PlatformConstants.CURRENT_ZONE_ID);
+		List<String> dates = getDates(date.getDayOfMonth());
+		return getTrackerForLastNDays(dates, keys);
+	}
+
+	private List<TrackerRequestResponseForMultiple> getTrackerForLastNDays(List<String> dates,
+			List<ItemTrackerKey> keys) {
 		if (ObjectUtils.isEmpty(dates)) {
 			return Collections.emptyList();
 		}
 		GetTrackingRequest request = new GetTrackingRequest();
 		request.setDates(dates);
 		Set<String> keysFormatted = new HashSet<String>();
-		List<TrackerRequestResponseForMultipleDays> requestResponses = new ArrayList<>();
+		List<TrackerRequestResponseForMultiple> requestResponses = new ArrayList<>();
 		for (ItemTrackerKey key : keys) {
 			String formattedKey = key.getKey();
 			keysFormatted.add(formattedKey);
-			TrackerRequestResponseForMultipleDays requestResponse = new TrackerRequestResponseForMultipleDays();
+			TrackerRequestResponseForMultiple requestResponse = new TrackerRequestResponseForMultiple();
 			requestResponse.setFormattedKey(formattedKey);
 			requestResponse.setRequest(key);
 			requestResponses.add(requestResponse);
@@ -185,13 +217,13 @@ public class GenericDailyTrackerService {
 			Map<String, Map<String, Long>> dateKeyCountMap = mapper.convertValue(response.getBody(),
 					new TypeReference<Map<String, Map<String, Long>>>() {
 					});
-			for (TrackerRequestResponseForMultipleDays requestResponse : requestResponses) {
+			for (TrackerRequestResponseForMultiple requestResponse : requestResponses) {
 				List<TrackerResponse> responses = new ArrayList<>();
 				for (String date : dates) {
 					TrackerResponse trackResponse = new TrackerResponse();
 					long count = dateKeyCountMap.get(date).getOrDefault(requestResponse.getFormattedKey(), 0L);
 					trackResponse.setCount(count);
-					trackResponse.setDate(date);
+					trackResponse.setUniqueId(date);
 					responses.add(trackResponse);
 				}
 				requestResponse.setResponse(responses);
@@ -207,7 +239,7 @@ public class GenericDailyTrackerService {
 	}
 
 	@Data
-	public static class TrackerRequestResponseForMultipleDays {
+	public static class TrackerRequestResponseForMultiple {
 		private ItemTrackerKey request;
 		@JsonIgnore
 		private String formattedKey;
@@ -216,7 +248,7 @@ public class GenericDailyTrackerService {
 
 	@Data
 	public static class TrackerResponse {
-		private String date;
+		private String uniqueId;
 		private Long count;
 	}
 
