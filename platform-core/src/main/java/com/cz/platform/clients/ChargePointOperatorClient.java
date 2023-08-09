@@ -2,6 +2,7 @@ package com.cz.platform.clients;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
+import java.util.List;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -106,6 +107,7 @@ public class ChargePointOperatorClient {
 		private static final long serialVersionUID = 6106129986682393403L;
 		private String id;
 		private String companyName;
+		private List<String> gstNumbers;
 		private Double charzerProfitShareOnBooking;
 		private Boolean hasMobileApplication;
 		private String accountHolderUserId;
