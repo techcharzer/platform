@@ -21,6 +21,8 @@ import com.cz.platform.PlatformConstants;
 import com.cz.platform.dto.Range;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
+import com.cz.platform.exception.ValidationException;
+import com.cz.platform.notifications.GenericRabbitQueueConfiguration;
 import com.cz.platform.security.SecurityConfigProps;
 import com.cz.platform.utility.PlatformCommonService;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -42,6 +44,8 @@ public class BookingClient {
 	private UrlConfig urlConfig;
 	private ObjectMapper mapper;
 	private PlatformCommonService commonService;
+	private CustomRabbitMQTemplate rabbitMqTemplate;
+	private GenericRabbitQueueConfiguration rabbitQueConfiguration;
 
 	public BookingInfo getBookingDetails(String bookingId) {
 		if (ObjectUtils.isEmpty(bookingId)) {
@@ -211,6 +215,30 @@ public class BookingClient {
 		private int utilizedBookingCount;
 		private Double predictionBookingWillWork;
 
+	}
+
+	public void startBooking(IStartBookingRequest request) {
+		log.info("start booking request:{}", request);
+		if (ObjectUtils.isEmpty(request)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "IInvalid request");
+		}
+		rabbitMqTemplate.convertAndSend(rabbitQueConfiguration.getStartBookingQueueV2(), request);
+	}
+
+	public void stopBooking(IStopBookingRequest request) {
+		log.info("stop booking request:{}", request);
+		if (ObjectUtils.isEmpty(request)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "IInvalid request");
+		}
+		rabbitMqTemplate.convertAndSend(rabbitQueConfiguration.getStopBookingQueueV2(), request);
+	}
+
+	public static interface IStartBookingRequest {
+		String getSourceType();
+	}
+
+	public interface IStopBookingRequest {
+		String getSourceType();
 	}
 
 }
