@@ -55,8 +55,11 @@ public class BookingClient {
 	private UrlConfig urlConfig;
 	@Autowired
 	private ObjectMapper mapper;
+	@Autowired
 	private PlatformCommonService commonService;
+	@Autowired
 	private CustomRabbitMQTemplate rabbitMqTemplate;
+	@Autowired
 	private GenericRabbitQueueConfiguration rabbitQueConfiguration;
 
 	public BookingInfo getBookingDetails(String bookingId) {
