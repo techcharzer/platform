@@ -3,7 +3,6 @@ package com.cz.platform.charger.configuration;
 import java.io.Serializable;
 
 import com.cz.platform.enums.ChargerType;
-import com.cz.platform.enums.ConnectivityType;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -31,7 +30,4 @@ public class HardwareConfigurationDTO implements Serializable {
 			@Type(value = ThirdPartyNetworkChargerConfiguration.class, name = "OTHER_NETWORK_CHARGER"), })
 	private HardwareConfigurationData configuration;
 
-	public ConnectivityType getConnectivityType() {
-		return ChargerType.getConnectivityType(this.chargerType);
-	}
 }
