@@ -2,20 +2,26 @@ package com.cz.platform.utility;
 
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.codec.binary.StringUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.cz.platform.PlatformConstants;
+import com.cz.platform.exception.ApplicationException;
+import com.cz.platform.exception.AuthenticationException;
+import com.cz.platform.exception.ErrorField;
 import com.cz.platform.exception.LoggerType;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public final class PlatformCommonService {
@@ -23,17 +29,38 @@ public final class PlatformCommonService {
 	private ObjectMapper mapper;
 	private RedissonClient redissonClient;
 
-	public boolean handle404Error(String errorResponse) {
-		JsonNode node = null;
+	public ErrorField parseError(String errorResponse) {
 		try {
-			node = mapper.readTree(errorResponse);
+			return mapper.readValue(errorResponse, ErrorField.class);
 		} catch (JsonProcessingException e) {
+			log.error("error occured while parsing the error message", errorResponse);
+		}
+		return null;
+	}
+
+	public boolean is404Error(String errorResponse) {
+		ErrorField error = parseError(errorResponse);
+		if (ObjectUtils.isEmpty(error)) {
 			return false;
 		}
-		if (node != null && node.has("code") && node.get("code").asText().equals(PlatformConstants.CODE_404)) {
-			return true;
+		return StringUtils.equals(error.getCode(), PlatformConstants.CODE_404);
+	}
+
+	public void throwRespectiveError(String errorResponse) {
+		ErrorField error = parseError(errorResponse);
+		if (ObjectUtils.isEmpty(error)) {
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR);
 		}
-		return false;
+		switch (error.getErrorType()) {
+		case APPLICATION_EXCEPTION:
+			throw new ApplicationException(error.getCode(), error.getMessage());
+		case VALIDATION_EXCEPTION:
+			throw new ApplicationException(error.getCode(), error.getMessage());
+		case AUTHENTICATION_EXCEPTION:
+			throw new AuthenticationException(error.getCode(), error.getMessage());
+		default:
+			break;
+		}
 	}
 
 	public RLock takeLock(String key, long leaseTimeInSeconds) {

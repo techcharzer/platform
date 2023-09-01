@@ -22,6 +22,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.ErrorField;
+import com.cz.platform.exception.ErrorField.ErrorType;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 import com.cz.platform.security.UserDTO;
@@ -41,7 +42,8 @@ public class GlobalExceptionHandler {
 		String requestLog = logRequest(request);
 		String response = MessageFormat.format("parameter {0} is invalid", e.getName());
 		LOG.error("methodArgumentTypeMismatchException occured: {}", requestLog, e);
-		ErrorField field = new ErrorField(PlatformExceptionCodes.INVALID_DATA.getCode(), response);
+		ErrorField field = new ErrorField(PlatformExceptionCodes.INVALID_DATA.getCode(), response,
+				ErrorType.APPLICATION_EXCEPTION);
 		return field;
 	}
 
@@ -88,7 +90,8 @@ public class GlobalExceptionHandler {
 		String requestLog = logRequest(request);
 		String response = MessageFormat.format("Request method '{0}' not supported", e.getMethod());
 		LOG.error("HttpRequestMethodNotSupportedException occured: {}", requestLog, e);
-		ErrorField field = new ErrorField(PlatformExceptionCodes.INVALID_DATA.getCode(), response);
+		ErrorField field = new ErrorField(PlatformExceptionCodes.INVALID_DATA.getCode(), response,
+				ErrorType.APPLICATION_EXCEPTION);
 		return field;
 	}
 
@@ -98,7 +101,8 @@ public class GlobalExceptionHandler {
 	public ErrorField httpReadableException(HttpMessageNotReadableException e, HttpServletRequest request) {
 		String requestLog = logRequest(request);
 		LOG.error("HttpMessageNotReadableException occured: {}", requestLog, e);
-		ErrorField field = new ErrorField(PlatformExceptionCodes.INVALID_DATA.getCode(), e.getMessage());
+		ErrorField field = new ErrorField(PlatformExceptionCodes.INVALID_DATA.getCode(), e.getMessage(),
+				ErrorType.APPLICATION_EXCEPTION);
 		return field;
 	}
 
@@ -136,7 +140,7 @@ public class GlobalExceptionHandler {
 		String requestLog = logRequest(request);
 		LOG.error("AccessDeniedException occured: {}", requestLog, e);
 		ErrorField errorField = new ErrorField(PlatformExceptionCodes.ACCESS_DENIED.getCode(),
-				PlatformExceptionCodes.ACCESS_DENIED.getMessage());
+				PlatformExceptionCodes.ACCESS_DENIED.getMessage(), ErrorType.AUTHENTICATION_EXCEPTION);
 		return errorField;
 	}
 
@@ -147,7 +151,8 @@ public class GlobalExceptionHandler {
 		String requestLog = logRequest(request);
 		LOG.error("JsonParseException occured: {}", requestLog, e);
 		String message = MessageFormat.format("Invalid JSON. {0}", e.getMessage());
-		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message);
+		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message,
+				ErrorType.APPLICATION_EXCEPTION);
 		return field;
 	}
 
@@ -158,7 +163,8 @@ public class GlobalExceptionHandler {
 		String requestLog = logRequest(request);
 		LOG.error("InvalidFormatException occured: {}", requestLog, e);
 		String message = e.getMessage();
-		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message);
+		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message,
+				ErrorType.VALIDATION_EXCEPTION);
 		return field;
 	}
 
@@ -169,7 +175,8 @@ public class GlobalExceptionHandler {
 		String requestLog = logRequest(request);
 		LOG.error("RuntimeException occured: {}", requestLog, e);
 		String message = "Some error occurred please try again later.";
-		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message);
+		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message,
+				ErrorType.APPLICATION_EXCEPTION);
 		return field;
 	}
 
@@ -180,7 +187,8 @@ public class GlobalExceptionHandler {
 		String requestLog = logRequest(request);
 		LOG.error("Exception occured: {}", requestLog, e);
 		String message = "Some error occurred please try again later.";
-		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message);
+		ErrorField field = new ErrorField(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(), message,
+				ErrorType.APPLICATION_EXCEPTION);
 		return field;
 	}
 

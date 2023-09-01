@@ -1,5 +1,7 @@
 package com.cz.platform.exception;
 
+import com.cz.platform.exception.ErrorField.ErrorType;
+
 public class ApplicationException extends RuntimeException {
 
 	private static final long serialVersionUID = 198653274382982L;
@@ -15,12 +17,12 @@ public class ApplicationException extends RuntimeException {
 
 	public ApplicationException(String code, String message) {
 		super(code.concat(":").concat(message));
-		error = new ErrorField(code, message);
+		error = new ErrorField(code, message, ErrorType.APPLICATION_EXCEPTION);
 	}
 
 	public ApplicationException(String exceptionName, String code, String message, Exception e) {
 		super(exceptionName, e);
-		error = new ErrorField(code, message);
+		error = new ErrorField(code, message, ErrorType.APPLICATION_EXCEPTION);
 	}
 
 	public ApplicationException(IExceptionCodes exception, Exception e) {

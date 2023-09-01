@@ -58,7 +58,7 @@ public class ChargePointOperatorClient {
 			log.info("api response : {}", response.getBody());
 			return response.getBody();
 		} catch (HttpStatusCodeException exception) {
-			if (commonService.handle404Error(exception.getResponseBodyAsString())) {
+			if (commonService.is404Error(exception.getResponseBodyAsString())) {
 				return null;
 			}
 			log.error("error response from the server :{}", exception.getResponseBodyAsString());

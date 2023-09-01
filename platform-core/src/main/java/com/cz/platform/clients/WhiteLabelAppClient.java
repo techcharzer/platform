@@ -57,7 +57,7 @@ public class WhiteLabelAppClient {
 					entity, WhiteLabelApplicationConfigurationDTO.class);
 			return response.getBody();
 		} catch (HttpStatusCodeException exeption) {
-			if (commonService.handle404Error(exeption.getResponseBodyAsString())) {
+			if (commonService.is404Error(exeption.getResponseBodyAsString())) {
 				return null;
 			}
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
