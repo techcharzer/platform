@@ -12,6 +12,8 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -45,14 +47,25 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@AllArgsConstructor
 public class HardwareServiceClient {
 
+	@Autowired
+	@Qualifier(PlatformConstants.EXTERNAL_SLOW_CLIENT)
 	private RestTemplate template;
+
+	@Autowired
 	private SecurityConfigProps securityProps;
+
+	@Autowired
 	private UrlConfig urlConfig;
+
+	@Autowired
 	private ObjectMapper mapper;
+
+	@Autowired
 	private PlatformCommonService platformCommonService;
+
+	@Autowired
 	private CustomRabbitMQTemplate rabbitMqTemplate;
 	private static final QueueConfiguration EXECUTE_COMMAND_QUEUE_CONFIG = new QueueConfiguration();
 	private static final QueueConfiguration UPDATE_HARDWARE_TRACKING = new QueueConfiguration();
