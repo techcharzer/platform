@@ -1,3 +1,4 @@
+
 package com.cz.platform.clients;
 
 import java.text.MessageFormat;
@@ -236,7 +237,7 @@ public class HardwareServiceClient {
 					urlConfig.getBaseUrl());
 			log.debug("request : {} body and headers {}", url, entity);
 			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.POST, entity, JsonNode.class);
-			log.info("request: {} , response : {}", entity, response.getBody());
+			log.info("response : {}", response.getBody());
 		} catch (HttpStatusCodeException exeption) {
 			platformCommonService.throwRespectiveError(exeption.getResponseBodyAsString());
 		}
