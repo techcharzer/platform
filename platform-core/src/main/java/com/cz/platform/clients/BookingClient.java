@@ -24,6 +24,7 @@ import com.cz.platform.dto.ActionResponse;
 import com.cz.platform.dto.FailedResponseData;
 import com.cz.platform.dto.IActionResponseData;
 import com.cz.platform.dto.Range;
+import com.cz.platform.dto.SocketDTO;
 import com.cz.platform.dto.SuccessfullyCreatedDTO;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.ErrorField;
@@ -191,7 +192,7 @@ public class BookingClient {
 	@Data
 	public static class ChargerInfo {
 		private String chargerId;
-		private String socketId;
+		private SocketDTO socket;
 		private Long pricePerUnitAtBookingTime;
 		private String hardwareId;
 	}
