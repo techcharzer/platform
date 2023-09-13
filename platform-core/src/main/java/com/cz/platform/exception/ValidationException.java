@@ -1,5 +1,7 @@
 package com.cz.platform.exception;
 
+import com.cz.platform.exception.ErrorField.ErrorType;
+
 public class ValidationException extends RuntimeException {
 
 	private static final long serialVersionUID = 198765467682L;
@@ -12,12 +14,12 @@ public class ValidationException extends RuntimeException {
 
 	public ValidationException(String code, String message) {
 		super(code.concat(":").concat(message));
-		error = new ErrorField(code, message);
+		error = new ErrorField(code, message, ErrorType.VALIDATION_EXCEPTION);
 	}
 
 	public ValidationException(String code, String message, LoggerType loggerType) {
 		super(code.concat(":").concat(message));
-		error = new ErrorField(code, message);
+		error = new ErrorField(code, message, ErrorType.VALIDATION_EXCEPTION);
 		this.logType = loggerType;
 	}
 

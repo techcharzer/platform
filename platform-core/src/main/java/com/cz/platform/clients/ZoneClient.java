@@ -62,7 +62,7 @@ public class ZoneClient {
 			return Optional.of(response.getBody());
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
-			if (platformCommonService.handle404Error(exeption.getResponseBodyAsString())) {
+			if (platformCommonService.is404Error(exeption.getResponseBodyAsString())) {
 				return Optional.empty();
 			}
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
@@ -90,7 +90,7 @@ public class ZoneClient {
 			return Optional.of(response.getBody());
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
-			if (platformCommonService.handle404Error(exeption.getResponseBodyAsString())) {
+			if (platformCommonService.is404Error(exeption.getResponseBodyAsString())) {
 				return Optional.empty();
 			}
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),

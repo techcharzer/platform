@@ -77,7 +77,7 @@ public class UserClient {
 			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.GET, entity, JsonNode.class);
 			return response.getBody().get("token").asText();
 		} catch (HttpStatusCodeException exeption) {
-			if (commonService.handle404Error(exeption.getResponseBodyAsString())) {
+			if (commonService.is404Error(exeption.getResponseBodyAsString())) {
 				return null;
 			}
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
@@ -111,7 +111,7 @@ public class UserClient {
 			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, UserDetails>>() {
 			});
 		} catch (HttpStatusCodeException exeption) {
-			if (commonService.handle404Error(exeption.getResponseBodyAsString())) {
+			if (commonService.is404Error(exeption.getResponseBodyAsString())) {
 				return Collections.emptyMap();
 			}
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
@@ -139,7 +139,7 @@ public class UserClient {
 			return mapper.convertValue(response.getBody(), new TypeReference<Map<String, UserDetails>>() {
 			});
 		} catch (HttpStatusCodeException exeption) {
-			if (commonService.handle404Error(exeption.getResponseBodyAsString())) {
+			if (commonService.is404Error(exeption.getResponseBodyAsString())) {
 				return Collections.emptyMap();
 			}
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
@@ -229,7 +229,7 @@ public class UserClient {
 			log.info("api response : {}", list);
 			return list;
 		} catch (HttpStatusCodeException exeption) {
-			if (commonService.handle404Error(exeption.getResponseBodyAsString())) {
+			if (commonService.is404Error(exeption.getResponseBodyAsString())) {
 				return null;
 			}
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
@@ -256,7 +256,7 @@ public class UserClient {
 			log.info("api response : {}", response.getBody());
 			return response.getBody();
 		} catch (HttpStatusCodeException exception) {
-			if (commonService.handle404Error(exception.getResponseBodyAsString())) {
+			if (commonService.is404Error(exception.getResponseBodyAsString())) {
 				return null;
 			}
 			log.error("error response from the server :{}", exception.getResponseBodyAsString());

@@ -76,7 +76,7 @@ public class ChargerClient {
 			return response.getBody();
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
-			if (platformCommonService.handle404Error(exeption.getResponseBodyAsString())) {
+			if (platformCommonService.is404Error(exeption.getResponseBodyAsString())) {
 				return null;
 			}
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
@@ -104,7 +104,7 @@ public class ChargerClient {
 			return response.getBody();
 		} catch (HttpStatusCodeException exeption) {
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
-			if (platformCommonService.handle404Error(exeption.getResponseBodyAsString())) {
+			if (platformCommonService.is404Error(exeption.getResponseBodyAsString())) {
 				return null;
 			}
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),

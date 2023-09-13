@@ -1,3 +1,4 @@
+
 package com.cz.platform.clients;
 
 import java.text.MessageFormat;
@@ -11,7 +12,8 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.lang3.BooleanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -45,14 +47,25 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@AllArgsConstructor
 public class HardwareServiceClient {
 
+	@Autowired
+	@Qualifier(PlatformConstants.EXTERNAL_SLOW_CLIENT)
 	private RestTemplate template;
+
+	@Autowired
 	private SecurityConfigProps securityProps;
+
+	@Autowired
 	private UrlConfig urlConfig;
+
+	@Autowired
 	private ObjectMapper mapper;
+
+	@Autowired
 	private PlatformCommonService platformCommonService;
+
+	@Autowired
 	private CustomRabbitMQTemplate rabbitMqTemplate;
 	private static final QueueConfiguration EXECUTE_COMMAND_QUEUE_CONFIG = new QueueConfiguration();
 	private static final QueueConfiguration UPDATE_HARDWARE_TRACKING = new QueueConfiguration();
@@ -117,7 +130,7 @@ public class HardwareServiceClient {
 					GlobalChargerHardwareInfo.class);
 			return response.getBody();
 		} catch (HttpStatusCodeException exeption) {
-			if (platformCommonService.handle404Error(exeption.getResponseBodyAsString())) {
+			if (platformCommonService.is404Error(exeption.getResponseBodyAsString())) {
 				return null;
 			}
 			log.error("error response from the server :{}", exeption.getResponseBodyAsString());
@@ -168,42 +181,79 @@ public class HardwareServiceClient {
 		}
 	}
 
-	public void startCharging(StartChargingDTO startCommand) {
+	public void startChargingAsync(StartChargingDTO startCommand) {
 		log.debug("start charging :{}, socketId: {}", startCommand);
-		HardwareStatusDTO online = getChargerOnline(startCommand.getHardwareId());
-		if (!ObjectUtils.isEmpty(online) && BooleanUtils.isTrue(online.getIsOnline())) {
-			CommandDTO commandDTO = new CommandDTO();
-			commandDTO.setCommand(CommandType.START_BOOKING);
-			commandDTO.setCommandData(startCommand);
-			commandDTO.setHardwareId(startCommand.getHardwareId());
-			commandDTO.setSocketId(startCommand.getSocketId());
-			commandDTO.setUserId(startCommand.getUserId());
-			executeCommand(commandDTO);
-		} else {
-			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
-					"Charger is offline. Please restart, wait and retry start charging.");
-		}
+		CommandDTO commandDTO = new CommandDTO();
+		commandDTO.setCommand(CommandType.START_CHARGING);
+		commandDTO.setCommandData(startCommand);
+		commandDTO.setHardwareId(startCommand.getHardwareId());
+		commandDTO.setSocketId(startCommand.getSocketId());
+		commandDTO.setUserId(startCommand.getUserId());
+		executeCommandAsync(commandDTO);
 	}
 
-	private void executeCommand(CommandDTO command) {
-		String key = MessageFormat.format("HARDWARE_EXECUTE_COMMAND_WAIT_{0}_{1}", command.getHardwareId(),
-				command.getSocketId());
-		// addded wait timme of 10 seconds for each hardware and socket combination to
-		// prevent confusion to the charger. TECH-T1172
-		platformCommonService.takeLock(key, 10,
-				"Your old request is being processed please wait for 10 seconds and try again.", LoggerType.DO_NOT_LOG);
-		rabbitMqTemplate.convertAndSend(EXECUTE_COMMAND_QUEUE_CONFIG, command);
-	}
-
-	public void stopCharging(StopChargingDTO stopCharging) {
+	public void stopChargingAsync(StopChargingDTO stopCharging) {
 		log.debug("stop charging :{}, socketId: {}", stopCharging);
 		CommandDTO commandDTO = new CommandDTO();
-		commandDTO.setCommand(CommandType.STOP);
+		commandDTO.setCommand(CommandType.STOP_CHARGING);
 		commandDTO.setCommandData(stopCharging);
 		commandDTO.setHardwareId(stopCharging.getHardwareId());
 		commandDTO.setSocketId(stopCharging.getSocketId());
 		commandDTO.setUserId(stopCharging.getUserId());
-		executeCommand(commandDTO);
+		executeCommandAsync(commandDTO);
+	}
+
+	private void executeCommandAsync(CommandDTO command) {
+		String key = MessageFormat.format("HARDWARE_EXECUTE_COMMAND_WAIT_{0}_{1}", command.getHardwareId(),
+				command.getSocketId());
+		// addded wait timme of 10 seconds for each hardware and socket combination to
+		// prevent confusion to the charger. TECH-T1172
+		platformCommonService.takeLock(key, 5,
+				"Your old request is being processed please wait for 10 seconds and try again.", LoggerType.DO_NOT_LOG);
+		rabbitMqTemplate.convertAndSend(EXECUTE_COMMAND_QUEUE_CONFIG, command);
+	}
+
+	public void startChargingSync(StartChargingDTO startCommand) {
+		log.debug("start charging :{}, socketId: {}", startCommand);
+		CommandDTO commandDTO = new CommandDTO();
+		commandDTO.setCommand(CommandType.START_CHARGING);
+		commandDTO.setCommandData(startCommand);
+		commandDTO.setHardwareId(startCommand.getHardwareId());
+		commandDTO.setSocketId(startCommand.getSocketId());
+		commandDTO.setUserId(startCommand.getUserId());
+		executeCommandSync(commandDTO);
+	}
+
+	public void stopChargingSync(StopChargingDTO stopCharging) {
+		log.debug("stop charging :{}, socketId: {}", stopCharging);
+		CommandDTO commandDTO = new CommandDTO();
+		commandDTO.setCommand(CommandType.STOP_CHARGING);
+		commandDTO.setCommandData(stopCharging);
+		commandDTO.setHardwareId(stopCharging.getHardwareId());
+		commandDTO.setSocketId(stopCharging.getSocketId());
+		commandDTO.setUserId(stopCharging.getUserId());
+		executeCommandSync(commandDTO);
+	}
+
+	public void executeCommandSync(CommandDTO command) {
+		if (ObjectUtils.isEmpty(command)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid request");
+		}
+		log.debug("command :{}", command);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("ccu-service"));
+		HttpEntity<CommandDTO> entity = new HttpEntity<>(command, headers);
+		try {
+			String url = MessageFormat.format("{0}/ccu/secure/internal-call/hardware/execute-command",
+					urlConfig.getBaseUrl());
+			log.debug("request : {} body and headers {}", url, entity);
+			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.POST, entity, JsonNode.class);
+			log.info("response : {}", response.getBody());
+		} catch (HttpStatusCodeException exeption) {
+			platformCommonService.throwRespectiveError(exeption.getResponseBodyAsString());
+		}
 	}
 
 	@Data
@@ -213,14 +263,13 @@ public class HardwareServiceClient {
 		private String userId;
 		private CommandType command;
 		@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXTERNAL_PROPERTY, property = "command")
-		@JsonSubTypes({ @Type(value = StartChargingDTO.class, name = "START_BOOKING"),
-				@Type(value = StopChargingDTO.class, name = "STOP"),
-				@Type(value = StopChargingDTO.class, name = "PAUSE_BOOKING") })
+		@JsonSubTypes({ @Type(value = StartChargingDTO.class, name = "START_CHARGING"),
+				@Type(value = StopChargingDTO.class, name = "STOP_CHARGING") })
 		private CommandData commandData;
 	}
 
 	private enum CommandType {
-		STOP, START_BOOKING, PAUSE_BOOKING
+		STOP_CHARGING, START_CHARGING
 	}
 
 	@Data
@@ -228,6 +277,7 @@ public class HardwareServiceClient {
 		private String hardwareId;
 		private String socketId;
 		private String userId;
+		private String bookingId;
 		private String reasonForStopping;
 	}
 

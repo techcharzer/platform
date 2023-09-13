@@ -18,4 +18,5 @@ public class GenericRabbitQueueConfiguration {
 	private QueueConfiguration initiateOutboundCall;
 	private QueueConfiguration startBookingQueueV2;
 	private QueueConfiguration stopBookingQueueV2;
+	private QueueConfiguration pdfGenerationAndUpload;
 }

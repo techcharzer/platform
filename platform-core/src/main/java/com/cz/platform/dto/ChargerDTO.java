@@ -37,6 +37,7 @@ public class ChargerDTO implements Serializable {
 	private String operationalZoneId;
 	private Set<String> viewerIds;
 	private String deeplink;
+	private String stickyNote;
 	private DealConfigurationDTO dealConfiguration;
 	private Instant listingTime;
 	private String primaryChargePointOperatorId;
