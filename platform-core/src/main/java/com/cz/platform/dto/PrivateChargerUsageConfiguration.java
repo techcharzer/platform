@@ -12,6 +12,6 @@ public class PrivateChargerUsageConfiguration implements ChargerUsageTypeConfigu
 	* 
 	*/
 	private static final long serialVersionUID = -8621268082263284456L;
-	private ChargerUsageType usageType = ChargerUsageType.PUBLIC;
+	private ChargerUsageType usageType = ChargerUsageType.PRIVATE;
 
 }
