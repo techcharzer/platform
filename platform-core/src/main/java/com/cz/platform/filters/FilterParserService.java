@@ -13,6 +13,7 @@ import java.util.function.BiFunction;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.codec.binary.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
@@ -24,6 +25,7 @@ import com.cz.platform.exception.ValidationException;
 import com.cz.platform.utility.CommonUtility;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -162,6 +164,40 @@ public final class FilterParserService {
 		filter.setMaxDistance(maxDistance);
 		filter.setMinDistance(minDistance);
 		return filter;
+	}
+
+	public RequestParams parseRequestParams(MultiValueMap<String, String> map) {
+		RequestParams params = new RequestParams();
+
+		log.debug("query params : {}", map);
+		List<AbstractFilter> filters = new ArrayList<AbstractFilter>();
+
+		for (String key : map.keySet()) {
+			try {
+				if (StringUtils.equals("downloadRequest", key)) {
+					params.setDownloadRequest(true);
+				} else {
+					AbstractFilter filter = getFilter(key, map.get(key));
+					if (!ObjectUtils.isEmpty(filter)) {
+						filters.add(filter);
+					}
+				}
+			} catch (Exception e) {
+				log.debug("parsing failed for {} fail fast enabled : {}", key, filterConfig.getFailFast());
+				if (filterConfig.getFailFast()) {
+					throw e;
+				}
+			}
+		}
+		log.debug("filters parsed: {}", filters);
+		params.setFilters(filters);
+		return params;
+	}
+
+	@Data
+	public static class RequestParams {
+		private boolean isDownloadRequest;
+		private List<AbstractFilter> filters;
 	}
 
 	public List<AbstractFilter> parseQueryParams(MultiValueMap<String, String> map) {
