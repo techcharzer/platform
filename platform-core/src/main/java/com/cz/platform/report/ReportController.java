@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cz.platform.dto.Range;
 import com.cz.platform.report.GenericReportService.IFetchReportRequest;
-import com.cz.platform.report.GenericReportService.ReportRowDTO;
+import com.cz.platform.report.GenericReportService.ReportSingleRowDTO;
 import com.cz.platform.report.GenericReportService.StepSizeType;
 import com.cz.platform.security.SecurityUtils;
 import com.cz.platform.security.UserDTO;
@@ -30,7 +30,7 @@ public class ReportController {
 	private GenericReportService filterService;
 
 	@GetMapping("/app/{key}")
-	public Page<ReportRowDTO> getReportCardDTOForAPP(@PathVariable("key") String key,
+	public Page<ReportSingleRowDTO> getReportCardDTOForAPP(@PathVariable("key") String key,
 			@RequestParam("from") long fromEpochSecond, @RequestParam("to") long toEpochSecond,
 			@RequestParam(name = "stepSize", defaultValue = "DAILY") StepSizeType stepSize, Pageable page) {
 		UserDTO user = SecurityUtils.getLoggedInUser();
@@ -54,7 +54,7 @@ public class ReportController {
 	}
 
 	@GetMapping("/czo/{key}")
-	public Page<ReportRowDTO> getDashBoardCardDTOForCZO(@PathVariable("key") String key,
+	public Page<ReportSingleRowDTO> getDashBoardCardDTOForCZO(@PathVariable("key") String key,
 			@RequestParam("from") long fromEpochSecond, @RequestParam("to") long toEpochSecond,
 			@RequestParam(name = "stepSize", defaultValue = "DAILY") StepSizeType stepSize, Pageable page) {
 		Instant from = Instant.ofEpochSecond(fromEpochSecond);
@@ -75,7 +75,7 @@ public class ReportController {
 	}
 
 	@GetMapping("/cms/{key}")
-	public Page<ReportRowDTO> getDashBoardCardDTOForCMS(@PathVariable("key") String key,
+	public Page<ReportSingleRowDTO> getDashBoardCardDTOForCMS(@PathVariable("key") String key,
 			@RequestParam("from") long fromEpochSecond, @RequestParam("to") long toEpochSecond,
 			@RequestParam(name = "stepSize", defaultValue = "DAILY") StepSizeType stepSize, Pageable page) {
 		Instant from = Instant.ofEpochSecond(fromEpochSecond);
@@ -99,7 +99,7 @@ public class ReportController {
 	}
 
 	@GetMapping("/group/{groupId}/{key}")
-	public Page<ReportRowDTO> getDashBoardCardDTOForUserGroup(@PathVariable("key") String key,
+	public Page<ReportSingleRowDTO> getDashBoardCardDTOForUserGroup(@PathVariable("key") String key,
 			@PathVariable("groupId") String groupId, @RequestParam("from") long fromEpochSecond,
 			@RequestParam("to") long toEpochSecond,
 			@RequestParam(name = "stepSize", defaultValue = "DAILY") StepSizeType stepSize, Pageable page) {
@@ -123,7 +123,7 @@ public class ReportController {
 	}
 
 	@GetMapping("/fleet/{fleetId}/{key}")
-	public Page<ReportRowDTO> getDashBoardCardDTOForFleet(@PathVariable("key") String key,
+	public Page<ReportSingleRowDTO> getDashBoardCardDTOForFleet(@PathVariable("key") String key,
 			@PathVariable("fleetId") String fleetId, @RequestParam("from") long fromEpochSecond,
 			@RequestParam("to") long toEpochSecond,
 			@RequestParam(name = "stepSize", defaultValue = "DAILY") StepSizeType stepSize, Pageable page) {
