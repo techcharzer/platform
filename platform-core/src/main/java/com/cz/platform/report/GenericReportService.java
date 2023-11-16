@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import com.cz.platform.dto.Range;
@@ -43,7 +44,8 @@ public class GenericReportService {
 			if (page.getPageNumber() == 0) {
 				rows = MAP_OF_DATA_FETCHERS.get(request.getKey()).fetchData(request);
 			}
-			return new PageImpl<>(rows, page, 1);
+			Pageable newPage = PageRequest.of(0, rows.size());
+			return new PageImpl<>(rows, newPage, rows.size());
 		} catch (Exception e) {
 			log.error("error occured while fetching the report: {}", request, e);
 			throw new ApplicationException(PlatformExceptionCodes.INVALID_DATA.getCode(), e.getMessage());
