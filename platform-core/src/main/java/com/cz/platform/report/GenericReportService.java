@@ -25,10 +25,10 @@ public class GenericReportService {
 
 	@FunctionalInterface
 	public interface CustomReportFetcher {
-		List<ReportCardDTO> fetchData(IFetchReportRequest request);
+		List<ReportRowDTO> fetchData(IFetchReportRequest request);
 	}
 
-	public Page<ReportCardDTO> getDashBoardCardDTO(IFetchReportRequest request, Pageable page) {
+	public Page<ReportRowDTO> getDashBoardCardDTO(IFetchReportRequest request, Pageable page) {
 		if (ObjectUtils.isEmpty(request)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid request");
 		}
@@ -38,7 +38,7 @@ public class GenericReportService {
 		if (!MAP_OF_DATA_FETCHERS.containsKey(request.getKey())) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid report type");
 		}
-		List<ReportCardDTO> reports = new ArrayList<>();
+		List<ReportRowDTO> reports = new ArrayList<>();
 		try {
 			if (page.getPageNumber() == 0) {
 				reports = MAP_OF_DATA_FETCHERS.get(request.getKey()).fetchData(request);
@@ -62,7 +62,7 @@ public class GenericReportService {
 		StepSizeType getStepSize();
 	}
 
-	public static interface ReportCardDTO {
+	public static interface ReportRowDTO {
 
 	}
 
