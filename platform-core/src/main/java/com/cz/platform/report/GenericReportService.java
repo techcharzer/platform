@@ -44,7 +44,7 @@ public class GenericReportService {
 			if (page.getPageNumber() == 0) {
 				rows = MAP_OF_DATA_FETCHERS.get(request.getKey()).fetchData(request);
 			}
-			Pageable newPage = PageRequest.of(0, rows.size());
+			Pageable newPage = PageRequest.of(page.getPageNumber(), rows.size());
 			return new PageImpl<>(rows, newPage, rows.size());
 		} catch (Exception e) {
 			log.error("error occured while fetching the report: {}", request, e);
