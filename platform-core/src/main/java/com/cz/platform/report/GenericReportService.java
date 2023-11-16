@@ -37,7 +37,7 @@ public class GenericReportService {
 		}
 		if (!MAP_OF_DATA_FETCHERS.containsKey(request.getKey())) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
-					"Invalid key for fetching dashboard");
+					"Invalid key for fetching reports");
 		}
 		List<ReportCardDTO> reports = new ArrayList<>();
 		try {
@@ -47,7 +47,7 @@ public class GenericReportService {
 			}
 			return new PageImpl<>(reports, page, 1);
 		} catch (Exception e) {
-			log.error("error occured while fetching the dashboard: {}", request, e);
+			log.error("error occured while fetching the reports: {}", request, e);
 			throw new ApplicationException(PlatformExceptionCodes.INVALID_DATA.getCode(), e.getMessage());
 		}
 	}
