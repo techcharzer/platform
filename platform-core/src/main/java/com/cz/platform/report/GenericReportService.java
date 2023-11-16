@@ -41,10 +41,12 @@ public class GenericReportService {
 		}
 		List<ReportSingleRowDTO> rows = new ArrayList<>();
 		try {
+			int size = page.getPageSize();
 			if (page.getPageNumber() == 0) {
 				rows = MAP_OF_DATA_FETCHERS.get(request.getKey()).fetchData(request);
+				size = rows.size();
 			}
-			Pageable newPage = PageRequest.of(page.getPageNumber(), rows.size());
+			Pageable newPage = PageRequest.of(page.getPageNumber(), size);
 			return new PageImpl<>(rows, newPage, rows.size());
 		} catch (Exception e) {
 			log.error("error occured while fetching the report: {}", request, e);
