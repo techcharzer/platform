@@ -21,7 +21,7 @@ import com.cz.platform.security.UserDTO;
 import lombok.Data;
 
 @RestController
-@RequestMapping("/secure/dashboard")
+@RequestMapping("/secure/report")
 public class ReportController {
 
 	@Lazy
