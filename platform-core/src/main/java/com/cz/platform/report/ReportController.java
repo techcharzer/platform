@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cz.platform.dto.Range;
@@ -29,9 +30,16 @@ public class ReportController {
 	private GenericReportService filterService;
 
 	@GetMapping("/app/{key}")
-	public Page<ReportCardDTO> getReportCardDTOForAPP(@PathVariable("key") String key, Pageable page) {
+	public Page<ReportCardDTO> getReportCardDTOForAPP(@PathVariable("key") String key,
+			@RequestParam("from") long fromEpochSecond, @RequestParam("to") long toEpochSecond,
+			@RequestParam(name = "stepSize", defaultValue = "DAILY") StepSizeType stepSize, Pageable page) {
 		UserDTO user = SecurityUtils.getLoggedInUser();
+		Instant from = Instant.ofEpochSecond(fromEpochSecond);
+		Instant to = Instant.ofEpochSecond(toEpochSecond);
+		Range<Instant> range = new Range<Instant>(from, to);
 		DHAppReportRequest request = new DHAppReportRequest();
+		request.setRange(range);
+		request.setStepSize(stepSize);
 		request.setKey(key);
 		request.setUserId(user.getUserId());
 		return filterService.getDashBoardCardDTO(request, page);
@@ -46,8 +54,15 @@ public class ReportController {
 	}
 
 	@GetMapping("/czo/{key}")
-	public Page<ReportCardDTO> getDashBoardCardDTOForCZO(@PathVariable("key") String key, Pageable page) {
+	public Page<ReportCardDTO> getDashBoardCardDTOForCZO(@PathVariable("key") String key,
+			@RequestParam("from") long fromEpochSecond, @RequestParam("to") long toEpochSecond,
+			@RequestParam(name = "stepSize", defaultValue = "DAILY") StepSizeType stepSize, Pageable page) {
+		Instant from = Instant.ofEpochSecond(fromEpochSecond);
+		Instant to = Instant.ofEpochSecond(toEpochSecond);
+		Range<Instant> range = new Range<Instant>(from, to);
 		CZOReportRequest request = new CZOReportRequest();
+		request.setRange(range);
+		request.setStepSize(stepSize);
 		request.setKey(key);
 		return filterService.getDashBoardCardDTO(request, page);
 	}
@@ -60,9 +75,16 @@ public class ReportController {
 	}
 
 	@GetMapping("/cms/{key}")
-	public Page<ReportCardDTO> getDashBoardCardDTOForCMS(@PathVariable("key") String key, Pageable page) {
-		UserDTO user = SecurityUtils.getLoggedInUser();
+	public Page<ReportCardDTO> getDashBoardCardDTOForCMS(@PathVariable("key") String key,
+			@RequestParam("from") long fromEpochSecond, @RequestParam("to") long toEpochSecond,
+			@RequestParam(name = "stepSize", defaultValue = "DAILY") StepSizeType stepSize, Pageable page) {
+		Instant from = Instant.ofEpochSecond(fromEpochSecond);
+		Instant to = Instant.ofEpochSecond(toEpochSecond);
+		Range<Instant> range = new Range<Instant>(from, to);
 		CMSReportRequest request = new CMSReportRequest();
+		request.setRange(range);
+		request.setStepSize(stepSize);
+		UserDTO user = SecurityUtils.getLoggedInUser();
 		request.setKey(key);
 		request.setChargePointOperatorId(user.getChargePointOperatorId());
 		return filterService.getDashBoardCardDTO(request, page);
@@ -78,8 +100,15 @@ public class ReportController {
 
 	@GetMapping("/group/{groupId}/{key}")
 	public Page<ReportCardDTO> getDashBoardCardDTOForUserGroup(@PathVariable("key") String key,
-			@PathVariable("groupId") String groupId, Pageable page)  {
+			@PathVariable("groupId") String groupId, @RequestParam("from") long fromEpochSecond,
+			@RequestParam("to") long toEpochSecond,
+			@RequestParam(name = "stepSize", defaultValue = "DAILY") StepSizeType stepSize, Pageable page) {
+		Instant from = Instant.ofEpochSecond(fromEpochSecond);
+		Instant to = Instant.ofEpochSecond(toEpochSecond);
+		Range<Instant> range = new Range<Instant>(from, to);
 		UserGroupReportRequest request = new UserGroupReportRequest();
+		request.setRange(range);
+		request.setStepSize(stepSize);
 		request.setKey(key);
 		request.setGroupId(groupId);
 		return filterService.getDashBoardCardDTO(request, page);
@@ -95,8 +124,15 @@ public class ReportController {
 
 	@GetMapping("/fleet/{fleetId}/{key}")
 	public Page<ReportCardDTO> getDashBoardCardDTOForFleet(@PathVariable("key") String key,
-			@PathVariable("fleetId") String fleetId, Pageable page)  {
+			@PathVariable("fleetId") String fleetId, @RequestParam("from") long fromEpochSecond,
+			@RequestParam("to") long toEpochSecond,
+			@RequestParam(name = "stepSize", defaultValue = "DAILY") StepSizeType stepSize, Pageable page) {
+		Instant from = Instant.ofEpochSecond(fromEpochSecond);
+		Instant to = Instant.ofEpochSecond(toEpochSecond);
+		Range<Instant> range = new Range<Instant>(from, to);
 		FleetReportRequest request = new FleetReportRequest();
+		request.setRange(range);
+		request.setStepSize(stepSize);
 		request.setKey(key);
 		request.setFleetId(fleetId);
 		return filterService.getDashBoardCardDTO(request, page);
