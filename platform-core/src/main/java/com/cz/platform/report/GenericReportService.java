@@ -25,7 +25,7 @@ public class GenericReportService {
 
 	@FunctionalInterface
 	public interface CustomReportFetcher {
-		ReportCardDTO fetchData(IFetchReportRequest request);
+		List<ReportCardDTO> fetchData(IFetchReportRequest request);
 	}
 
 	public Page<ReportCardDTO> getDashBoardCardDTO(IFetchReportRequest request, Pageable page) {
@@ -41,8 +41,7 @@ public class GenericReportService {
 		List<ReportCardDTO> reports = new ArrayList<>();
 		try {
 			if (page.getPageNumber() == 0) {
-				ReportCardDTO report = MAP_OF_DATA_FETCHERS.get(request.getKey()).fetchData(request);
-				reports.add(report);
+				reports = MAP_OF_DATA_FETCHERS.get(request.getKey()).fetchData(request);
 			}
 			return new PageImpl<>(reports, page, 1);
 		} catch (Exception e) {
