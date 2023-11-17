@@ -186,7 +186,7 @@ public class GenericDailyTrackerService {
 		return getTrackerForLastNDays(dates, keys);
 	}
 
-	private List<TrackerRequestResponseForMultiple> getTrackerForLastNDays(List<String> dates,
+	public List<TrackerRequestResponseForMultiple> getTrackerForLastNDays(List<String> dates,
 			List<ItemTrackerKey> keys) {
 		if (ObjectUtils.isEmpty(dates)) {
 			return Collections.emptyList();
