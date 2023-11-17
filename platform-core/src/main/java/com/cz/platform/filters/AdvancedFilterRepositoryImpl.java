@@ -125,12 +125,33 @@ public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository
 		validateFilters(filters);
 		return mongoTemplate.findDistinct(query, field, clazz, clazzResponse);
 	}
-	
+
 	private GenericFilterToQueryCreator getQueryMapper(Class<T> clazz) {
 		GenericFilterToQueryCreator queryMapper = factory.getService(clazz);
 		if (ObjectUtils.isEmpty(queryMapper)) {
 			queryMapper = defaultFilterToQueryMapper;
 		}
 		return queryMapper;
+	}
+
+	@Override
+	public CustomOffsetLimitResponse<T> filter(List<AbstractFilter> filters, int limit, long offset, Class<T> clazz) {
+		GenericFilterToQueryCreator queryMapper = getQueryMapper(clazz);
+		Criteria criterias = queryMapper.getFilter(filters);
+
+		Query query = new Query();
+		if (!ObjectUtils.isEmpty(criterias)) {
+			query.addCriteria(criterias);
+		}
+		log.debug("query: {} class : {}", query, clazz);
+		validateFilters(filters);
+		Long count = mongoTemplate.count(query, clazz);
+		query.limit(limit);
+		query.skip(offset);
+		List<T> list = mongoTemplate.find(query, clazz);
+		CustomOffsetLimitResponse<T> response = new CustomOffsetLimitResponse<>();
+		response.setList(list);
+		response.setTotalCount(count);
+		return response;
 	}
 }
