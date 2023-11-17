@@ -156,7 +156,7 @@ public class GenericDailyTrackerService {
 
 	public List<TrackerRequestResponseForMultiple> getTrackerForLastNDays(int noOfLasDays, List<ItemTrackerKey> keys) {
 		List<String> dates = getDates(noOfLasDays);
-		return getTrackerForLastNDays(dates, keys);
+		return getTrackerForDates(dates, keys);
 	}
 
 	public List<TrackerRequestResponseForSingle> getTrackerForThisMonth(List<ItemTrackerKey> keys) {
@@ -183,10 +183,10 @@ public class GenericDailyTrackerService {
 	public List<TrackerRequestResponseForMultiple> getTrackerForThisMonthDayWise(List<ItemTrackerKey> keys) {
 		LocalDate date = LocalDate.now(PlatformConstants.CURRENT_ZONE_ID);
 		List<String> dates = getDates(date.getDayOfMonth());
-		return getTrackerForLastNDays(dates, keys);
+		return getTrackerForDates(dates, keys);
 	}
 
-	public List<TrackerRequestResponseForMultiple> getTrackerForLastNDays(List<String> dates,
+	public List<TrackerRequestResponseForMultiple> getTrackerForDates(List<String> dates,
 			List<ItemTrackerKey> keys) {
 		if (ObjectUtils.isEmpty(dates)) {
 			return Collections.emptyList();
