@@ -25,6 +25,7 @@ public class ChargerDTO implements Serializable {
 	private String chargerId;
 	private String name;
 	private String qrCodeValue;
+	private String locationId;
 	private ChargerStatus status;
 	private Range<Integer> openCloseTimeInSeconds;
 	private List<VehicleType> supportedVehicle;
@@ -46,7 +47,7 @@ public class ChargerDTO implements Serializable {
 	public static final String[] INCLUDED_FIELDS = new String[] { "id", "name", "uniqueIdentifier", "hardwareId",
 			"openCloseTimeInSeconds", "sockets", "chargerType", "supportedVehicle", "address", "images",
 			"configuration", "status", "dealConfiguration", "deeplink", "usageType", "protectedNetworkId",
-			"primaryChargePointOperatorId", "secondaryChargePointOperatorId", "qrCodeValue" };
+			"primaryChargePointOperatorId", "secondaryChargePointOperatorId", "qrCodeValue", "locationId" };
 
 	public List<SocketDTO> getSockets() {
 		List<SocketDTO> sockets = new ArrayList<>();
