@@ -203,6 +203,16 @@ public class HardwareServiceClient {
 		executeCommandAsync(commandDTO);
 	}
 
+	public void rebootChargerAsync(RebootChargerDTO rebootRequest) {
+		log.debug("reboot charger: {}", rebootRequest);
+		CommandDTO commandDTO = new CommandDTO();
+		commandDTO.setCommand(CommandType.REBOOT_CHARGER);
+		commandDTO.setCommandData(rebootRequest);
+		commandDTO.setHardwareId(rebootRequest.getHardwareId());
+		commandDTO.setUserId(rebootRequest.getUserId());
+		executeCommandAsync(commandDTO);
+	}
+
 	private void executeCommandAsync(CommandDTO command) {
 		String key = MessageFormat.format("HARDWARE_EXECUTE_COMMAND_WAIT_{0}_{1}", command.getHardwareId(),
 				command.getSocketId());
@@ -235,6 +245,16 @@ public class HardwareServiceClient {
 		executeCommandSync(commandDTO);
 	}
 
+	public void rebootChargerSync(RebootChargerDTO rebootRequest) {
+		log.debug("reboot charger: {}", rebootRequest);
+		CommandDTO commandDTO = new CommandDTO();
+		commandDTO.setCommand(CommandType.REBOOT_CHARGER);
+		commandDTO.setCommandData(rebootRequest);
+		commandDTO.setHardwareId(rebootRequest.getHardwareId());
+		commandDTO.setUserId(rebootRequest.getUserId());
+		executeCommandSync(commandDTO);
+	}
+
 	public void executeCommandSync(CommandDTO command) {
 		if (ObjectUtils.isEmpty(command)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "Invalid request");
@@ -264,12 +284,13 @@ public class HardwareServiceClient {
 		private CommandType command;
 		@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXTERNAL_PROPERTY, property = "command")
 		@JsonSubTypes({ @Type(value = StartChargingDTO.class, name = "START_CHARGING"),
-				@Type(value = StopChargingDTO.class, name = "STOP_CHARGING") })
+				@Type(value = StopChargingDTO.class, name = "STOP_CHARGING"),
+				@Type(value = RebootChargerDTO.class, name = "STOP_CHARGING") })
 		private CommandData commandData;
 	}
 
 	private enum CommandType {
-		STOP_CHARGING, START_CHARGING
+		STOP_CHARGING, START_CHARGING, REBOOT_CHARGER
 	}
 
 	@Data
@@ -279,6 +300,12 @@ public class HardwareServiceClient {
 		private String userId;
 		private String bookingId;
 		private String reasonForStopping;
+	}
+
+	@Data
+	public static class RebootChargerDTO implements CommandData {
+		private String hardwareId;
+		private String userId;
 	}
 
 	@Data
