@@ -39,7 +39,7 @@ public class ChargerDTO implements Serializable {
 	private Set<String> viewerIds;
 	private String deeplink;
 	private String stickyNote;
-	private Boolean sentNotificationToPremiseOwner;
+	private Boolean sendNotificationToPremiseOwner;
 	private DealConfigurationDTO dealConfiguration;
 	private Instant listingTime;
 	private String primaryChargePointOperatorId;
@@ -49,7 +49,7 @@ public class ChargerDTO implements Serializable {
 			"openCloseTimeInSeconds", "sockets", "chargerType", "supportedVehicle", "address", "images",
 			"configuration", "status", "dealConfiguration", "deeplink", "usageType", "protectedNetworkId",
 			"primaryChargePointOperatorId", "secondaryChargePointOperatorId", "qrCodeValue", "locationId",
-			"sentNotificationToPremiseOwner" };
+			"sendNotificationToPremiseOwner" };
 
 	public List<SocketDTO> getSockets() {
 		List<SocketDTO> sockets = new ArrayList<>();
