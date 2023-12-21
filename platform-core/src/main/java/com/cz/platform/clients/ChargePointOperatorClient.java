@@ -67,6 +67,36 @@ public class ChargePointOperatorClient {
 		}
 	}
 
+	public ChargePointOperatorDTO getChargePointOperatorByOCPIPartyId(String ocpiPartyId) {
+		if (ObjectUtils.isEmpty(ocpiPartyId)) {
+			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(),
+					"Invalid chargePointOperatorId");
+		}
+		log.debug("fetching: {}", ocpiPartyId);
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		headers.set(PlatformConstants.SSO_TOKEN_HEADER, securityProps.getCreds().get("user-service"));
+		HttpEntity<String> entity = new HttpEntity<>(null, headers);
+		try {
+			String url = MessageFormat.format(
+					"{0}/user-service/secure/internal-server/chargePointOperator/ocpiPartyId/{1}",
+					urlConfig.getBaseUrl(), ocpiPartyId);
+			log.debug("request: {}, headers {}", url, entity);
+			ResponseEntity<ChargePointOperatorDTO> response = template.exchange(url, HttpMethod.GET, entity,
+					ChargePointOperatorDTO.class);
+			log.info("api response : {}", response.getBody());
+			return response.getBody();
+		} catch (HttpStatusCodeException exception) {
+			if (commonService.is404Error(exception.getResponseBodyAsString())) {
+				return null;
+			}
+			log.error("error response from the server :{}", exception.getResponseBodyAsString());
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"charge point api not working");
+		}
+	}
+
 	public boolean isValidChargePointOperator(String chargePointOperator) {
 		return !ObjectUtils.isEmpty(getChargePointOperator(chargePointOperator));
 	}
