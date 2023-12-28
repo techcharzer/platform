@@ -135,7 +135,7 @@ public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository
 	}
 
 	@Override
-	public CustomOffsetLimitResponse<T> filter(List<AbstractFilter> filters, int limit, long offset, Class<T> clazz) {
+	public CustomPageResponse<T> filter(List<AbstractFilter> filters, int limit, long offset, Class<T> clazz) {
 		GenericFilterToQueryCreator queryMapper = getQueryMapper(clazz);
 		Criteria criterias = queryMapper.getFilter(filters);
 
@@ -149,7 +149,7 @@ public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository
 		query.limit(limit);
 		query.skip(offset);
 		List<T> list = mongoTemplate.find(query, clazz);
-		CustomOffsetLimitResponse<T> response = new CustomOffsetLimitResponse<>();
+		CustomPageResponse<T> response = new CustomPageResponse<>();
 		response.setList(list);
 		response.setLimit(limit);
 		response.setOffset(offset);

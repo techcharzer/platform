@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class CustomOffsetLimitResponse<T> {
+public class CustomPageResponse<T> {
 	private List<T> list;
 	private long totalCount;
 	private long offset;

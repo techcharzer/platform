@@ -16,7 +16,7 @@ public interface AdvancedFilterRepository<T> {
 
 	List<T> filter(List<AbstractFilter> filters, Class<T> clazz);
 
-	CustomOffsetLimitResponse<T> filter(List<AbstractFilter> filter, int limit, long offset, Class<T> clazz);
+	CustomPageResponse<T> filter(List<AbstractFilter> filter, int limit, long offset, Class<T> clazz);
 
 	Optional<T> filterOne(List<AbstractFilter> filters, Class<T> clazz);
 
