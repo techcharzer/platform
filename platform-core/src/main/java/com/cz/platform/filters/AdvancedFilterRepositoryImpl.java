@@ -151,6 +151,8 @@ public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository
 		List<T> list = mongoTemplate.find(query, clazz);
 		CustomOffsetLimitResponse<T> response = new CustomOffsetLimitResponse<>();
 		response.setList(list);
+		response.setLimit(limit);
+		response.setOffset(offset);
 		response.setTotalCount(count);
 		return response;
 	}
