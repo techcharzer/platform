@@ -44,12 +44,13 @@ public class ChargerDTO implements Serializable {
 	private Instant listingTime;
 	private String primaryChargePointOperatorId;
 	private String secondaryChargePointOperatorId;
+	private Instant updatedAt;
 
 	public static final String[] INCLUDED_FIELDS = new String[] { "id", "name", "uniqueIdentifier", "hardwareId",
 			"openCloseTimeInSeconds", "sockets", "chargerType", "supportedVehicle", "address", "images",
 			"configuration", "status", "dealConfiguration", "deeplink", "usageType", "protectedNetworkId",
 			"primaryChargePointOperatorId", "secondaryChargePointOperatorId", "qrCodeValue", "locationId",
-			"sendNotificationToPremiseOwner" };
+			"sendNotificationToPremiseOwner", "updatedAt" };
 
 	public List<SocketDTO> getSockets() {
 		List<SocketDTO> sockets = new ArrayList<>();
