@@ -20,4 +20,5 @@ public class GenericRabbitQueueConfiguration {
 	private QueueConfiguration stopBookingQueueV2;
 	private QueueConfiguration pdfGenerationAndUpload;
 	private QueueConfiguration raiseBookingUtilizationAnomalyTicket;
+	private QueueConfiguration httpScheduleTask;
 }
