@@ -1,5 +1,10 @@
 package com.cz.platform.utility;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.binary.StringUtils;
@@ -9,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import com.cz.platform.PlatformConstants;
+import com.cz.platform.dto.Range;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.AuthenticationException;
 import com.cz.platform.exception.ErrorField;
@@ -93,4 +99,23 @@ public final class PlatformCommonService {
 	public void forceUnlock(RLock lock) {
 		lock.forceUnlock();
 	}
+
+	public String writeAsString(Object obj) {
+		try {
+			return mapper.writeValueAsString(obj);
+		} catch (JsonProcessingException e) {
+			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR.getCode(),
+					"Unable to write as string", e);
+		}
+	}
+
+	public String writeAsStringIgnoreError(Object obj) {
+		try {
+			return writeAsString(obj);
+		} catch (ApplicationException e) {
+			log.error("error occured while writing obj to json:{}", obj);
+			return null;
+		}
+	}
+
 }

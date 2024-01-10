@@ -4,6 +4,8 @@ import java.text.MessageFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -463,4 +465,76 @@ public final class CommonUtility {
 		return sourceList.subList(fromIndex, Math.min(fromIndex + page.getPageSize(), sourceList.size()));
 	}
 
+	public Range<Instant> getLastMonthRange() {
+		// Create a ZonedDateTime object
+		ZonedDateTime zonedDateTime = ZonedDateTime.now();
+
+		// Get the month of the ZonedDateTime object
+		int month = zonedDateTime.getMonth().getValue();
+		int year = zonedDateTime.getYear();
+
+		// Create a LocalDate object with the month and year of the ZonedDateTime object
+		LocalDate localDate = LocalDate.of(year, month - 1, 1);
+
+		// Create a LocalTime object with the time set to 00:00:00
+		LocalTime localTime = LocalTime.of(0, 0, 0);
+
+		// Create a LocalDateTime object with the LocalDate and LocalTime objects
+		LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+
+		// Create a ZonedDateTime object with the LocalDateTime object and the timezone
+		// of the original ZonedDateTime object
+		ZonedDateTime startOfMonth = ZonedDateTime.of(localDateTime, zonedDateTime.getZone());
+		return new Range<Instant>(startOfMonth.toInstant(), startOfMonth.plusMonths(1).toInstant().minusMillis(1L));
+	}
+
+	public Range<Instant> getThisMonthRange() {
+		// Create a ZonedDateTime object
+		ZonedDateTime zonedDateTime = ZonedDateTime.now();
+
+		// Get the month of the ZonedDateTime object
+		int month = zonedDateTime.getMonth().getValue();
+		int year = zonedDateTime.getYear();
+
+		// Create a LocalDate object with the month and year of the ZonedDateTime object
+		LocalDate localDate = LocalDate.of(year, month, 1);
+
+		// Create a LocalTime object with the time set to 00:00:00
+		LocalTime localTime = LocalTime.of(0, 0, 0);
+
+		// Create a LocalDateTime object with the LocalDate and LocalTime objects
+		LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+
+		// Create a ZonedDateTime object with the LocalDateTime object and the timezone
+		// of the original ZonedDateTime object
+		ZonedDateTime startOfMonth = ZonedDateTime.of(localDateTime, zonedDateTime.getZone());
+		return new Range<Instant>(startOfMonth.toInstant(), startOfMonth.plusMonths(1).toInstant().minusMillis(1L));
+	}
+
+	public Range<Instant> getTomorrow() {
+		ZonedDateTime now = ZonedDateTime.now();
+		LocalDateTime tomorrow = now.plusDays(1L).toLocalDateTime();
+		LocalDateTime min = tomorrow.with(LocalTime.MIN);
+		LocalDateTime max = tomorrow.with(LocalTime.MAX);
+		return new Range<Instant>(ZonedDateTime.of(min, now.getZone()).toInstant(),
+				ZonedDateTime.of(max, now.getZone()).toInstant());
+	}
+
+	public Range<Instant> getToday() {
+		ZonedDateTime now = ZonedDateTime.now();
+		LocalDateTime tomorrow = now.toLocalDateTime();
+		LocalDateTime min = tomorrow.with(LocalTime.MIN);
+		LocalDateTime max = tomorrow.with(LocalTime.MAX);
+		return new Range<Instant>(ZonedDateTime.of(min, now.getZone()).toInstant(),
+				ZonedDateTime.of(max, now.getZone()).toInstant());
+	}
+
+	public Range<Instant> getYesterday() {
+		ZonedDateTime now = ZonedDateTime.now();
+		LocalDateTime tomorrow = now.minusDays(1L).toLocalDateTime();
+		LocalDateTime min = tomorrow.with(LocalTime.MIN);
+		LocalDateTime max = tomorrow.with(LocalTime.MAX);
+		return new Range<Instant>(ZonedDateTime.of(min, now.getZone()).toInstant(),
+				ZonedDateTime.of(max, now.getZone()).toInstant());
+	}
 }
