@@ -470,11 +470,12 @@ public final class CommonUtility {
 		ZonedDateTime zonedDateTime = ZonedDateTime.now();
 
 		// Get the month of the ZonedDateTime object
+		zonedDateTime = zonedDateTime.minusMonths(1);
 		int month = zonedDateTime.getMonth().getValue();
 		int year = zonedDateTime.getYear();
 
 		// Create a LocalDate object with the month and year of the ZonedDateTime object
-		LocalDate localDate = LocalDate.of(year, month - 1, 1);
+		LocalDate localDate = LocalDate.of(year, month, 1);
 
 		// Create a LocalTime object with the time set to 00:00:00
 		LocalTime localTime = LocalTime.of(0, 0, 0);
