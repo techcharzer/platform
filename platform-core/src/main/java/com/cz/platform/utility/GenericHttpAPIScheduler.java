@@ -41,6 +41,7 @@ public class GenericHttpAPIScheduler {
 		task.setName(uniqueId);
 		task.setTaskType(type);
 		task.setScheduleTime(time.getEpochSecond());
+		scheduleAutomaticAnalysis(task);
 	}
 
 	public void scheduleAutomaticAnalysis(HTTPScheduleTask task) {
