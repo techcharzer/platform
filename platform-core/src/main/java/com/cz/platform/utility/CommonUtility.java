@@ -1,5 +1,6 @@
 package com.cz.platform.utility;
 
+import java.io.Closeable;
 import java.text.MessageFormat;
 import java.time.Duration;
 import java.time.Instant;
@@ -81,6 +82,23 @@ public final class CommonUtility {
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MMMM yy", Locale.UK)
 			.withZone(PlatformConstants.CURRENT_ZONE_ID);
 	private static final String COLON = ":";
+
+	private final static String REG_EMAIL_PATTERN = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9.-]+$";
+	private final static Pattern PATTERN_EMAIL = Pattern.compile(REG_EMAIL_PATTERN);
+
+	public static void close(Closeable c) {
+		try {
+			if (c != null) {
+				c.close();
+			}
+		} catch (Exception e) {
+			log.error("Error occured while closing the closeable.", e);
+		}
+	}
+
+	public static boolean validateEmail(final String email) {
+		return PATTERN_EMAIL.matcher(email).find();
+	}
 
 	public static String getUrlSlug(String str) {
 		return ObjectUtils.isEmpty(str) ? str : replaceSpaceWithHyphen(str.toLowerCase());
