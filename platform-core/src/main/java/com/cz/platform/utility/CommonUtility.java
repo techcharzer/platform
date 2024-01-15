@@ -97,6 +97,9 @@ public final class CommonUtility {
 	}
 
 	public static boolean validateEmail(final String email) {
+		if (ObjectUtils.isEmpty(email)) {
+			return false;
+		}
 		return PATTERN_EMAIL.matcher(email).find();
 	}
 
