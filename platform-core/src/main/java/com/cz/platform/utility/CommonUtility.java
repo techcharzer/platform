@@ -83,7 +83,7 @@ public final class CommonUtility {
 			.withZone(PlatformConstants.CURRENT_ZONE_ID);
 	private static final String COLON = ":";
 
-	private final static String REG_EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+	private final static String REG_EMAIL_PATTERN = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,10}$";
 	private final static Pattern PATTERN_EMAIL = Pattern.compile(REG_EMAIL_PATTERN);
 
 	public static void close(Closeable c) {
