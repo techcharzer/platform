@@ -224,7 +224,7 @@ public class BookingClient {
 			if (isBookingCompleteOrCancelled()) {
 				return timingInfo.getActualDuration().getTo();
 			} else {
-				return timingInfo.getBookedDuration().getTo();
+				return Instant.now();
 			}
 		}
 
