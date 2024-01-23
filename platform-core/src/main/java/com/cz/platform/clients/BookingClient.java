@@ -89,7 +89,7 @@ public class BookingClient {
 
 	public Map<String, BookingInfo> getBookingDetails(Set<String> bookingIds) {
 		if (ObjectUtils.isEmpty(bookingIds)) {
-			return null;
+			return Collections.emptyMap();
 		}
 		log.debug("fetchig boookingDetails :{}", bookingIds);
 		HttpHeaders headers = new HttpHeaders();
