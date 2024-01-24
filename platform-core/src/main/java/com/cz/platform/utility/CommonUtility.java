@@ -486,7 +486,7 @@ public final class CommonUtility {
 		return sourceList.subList(fromIndex, Math.min(fromIndex + page.getPageSize(), sourceList.size()));
 	}
 
-	public Range<Instant> getLastMonthRange() {
+	public static Range<Instant> getLastMonthRange() {
 		// Create a ZonedDateTime object
 		ZonedDateTime zonedDateTime = ZonedDateTime.now();
 
@@ -510,7 +510,7 @@ public final class CommonUtility {
 		return new Range<Instant>(startOfMonth.toInstant(), startOfMonth.plusMonths(1).toInstant().minusMillis(1L));
 	}
 
-	public Range<Instant> getThisMonthRange() {
+	public static Range<Instant> getThisMonthRange() {
 		// Create a ZonedDateTime object
 		ZonedDateTime zonedDateTime = ZonedDateTime.now();
 
@@ -533,7 +533,7 @@ public final class CommonUtility {
 		return new Range<Instant>(startOfMonth.toInstant(), startOfMonth.plusMonths(1).toInstant().minusMillis(1L));
 	}
 
-	public Range<Instant> getTomorrow() {
+	public static Range<Instant> getTomorrow() {
 		ZonedDateTime now = ZonedDateTime.now();
 		LocalDateTime tomorrow = now.plusDays(1L).toLocalDateTime();
 		LocalDateTime min = tomorrow.with(LocalTime.MIN);
@@ -542,7 +542,7 @@ public final class CommonUtility {
 				ZonedDateTime.of(max, now.getZone()).toInstant());
 	}
 
-	public Range<Instant> getToday() {
+	public static Range<Instant> getToday() {
 		ZonedDateTime now = ZonedDateTime.now();
 		LocalDateTime tomorrow = now.toLocalDateTime();
 		LocalDateTime min = tomorrow.with(LocalTime.MIN);
@@ -551,7 +551,7 @@ public final class CommonUtility {
 				ZonedDateTime.of(max, now.getZone()).toInstant());
 	}
 
-	public Range<Instant> getYesterday() {
+	public static Range<Instant> getYesterday() {
 		ZonedDateTime now = ZonedDateTime.now();
 		LocalDateTime tomorrow = now.minusDays(1L).toLocalDateTime();
 		LocalDateTime min = tomorrow.with(LocalTime.MIN);
