@@ -15,6 +15,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.cz.platform.PlatformConstants;
+import com.cz.platform.dto.PostalAddress;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
@@ -141,6 +142,8 @@ public class ChargePointOperatorClient {
 		private Double charzerProfitShareOnBooking;
 		private Boolean hasMobileApplication;
 		private String accountHolderUserId;
+		private PostalAddress address;
+		private String website;
 	}
 
 	@Data
