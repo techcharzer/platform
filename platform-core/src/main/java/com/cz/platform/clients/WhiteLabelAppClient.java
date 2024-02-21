@@ -73,6 +73,8 @@ public class WhiteLabelAppClient {
 		private String appName;
 		private String downloadLink;
 		private String deepLinkDomainPrefixUrl;
+		private int minWalletCreditsRequiredForBooking;
+		private int minWalletCreditsForBookingStop;
 		private AndroidConfiguration androidConfiguration;
 		private IosConfiguration iosConfiguration;
 		private ReferralConfig referralConfig;
