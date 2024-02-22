@@ -11,7 +11,6 @@ public class ActuatorSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/actuator/**").hasRole("ACTUATOR_ENDPOINTS").antMatchers("/**")
-				.permitAll();
+		http.authorizeRequests().antMatchers("/actuator/**").hasRole("ACTUATOR_ENDPOINTS").anyRequest().authenticated();
 	}
 }
