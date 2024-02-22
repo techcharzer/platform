@@ -19,7 +19,6 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.cz.platform.PlatformConstants;
-import com.cz.platform.clients.UrlConfig;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.security.SecurityConfigProps;
@@ -88,7 +87,20 @@ public class WalletClient {
 		}
 	}
 
-	public Map<String, WalletDTO> getUserWalletDTO(Set<String> walletId) {
+	public WalletDTO getWalletDTO(String walletId) {
+		if (ObjectUtils.isEmpty(walletId)) {
+			return null;
+		}
+		Set<String> ids = new HashSet<>();
+		ids.add(walletId);
+		Map<String, WalletDTO> details = getWalletDTO(ids);
+		if (details.containsKey(walletId)) {
+			return details.get(walletId);
+		}
+		return null;
+	}
+
+	public Map<String, WalletDTO> getWalletDTO(Set<String> walletId) {
 		log.debug("fetchig wallet :{}", walletId);
 		if (ObjectUtils.isEmpty(walletId)) {
 			return Collections.emptyMap();
