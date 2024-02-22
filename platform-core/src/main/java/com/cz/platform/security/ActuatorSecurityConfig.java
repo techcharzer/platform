@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @Order(-1)
 @Slf4j
 @Configuration
-public final class ActuatorSecurityConfig extends WebSecurityConfigurerAdapter {
+public class ActuatorSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private AuthService authService;
