@@ -3,6 +3,7 @@ package com.cz.platform.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Order(0)
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
@@ -41,12 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// No session will be created or used by spring security
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-		// need to add permit all for actuator request as well.
-		http
-        .authorizeRequests()
-            .antMatchers("/actuator/**").hasRole("ACTUATOR_ENDPOINTS")
-            .antMatchers("/secure/**").authenticated()
-            .antMatchers("/**").permitAll();
+		http.antMatcher("/secure/**").authorizeRequests().anyRequest().authenticated();
 
 		// If a user try to access a resource without having enough permissions
 		http.exceptionHandling().accessDeniedPage("/login");
