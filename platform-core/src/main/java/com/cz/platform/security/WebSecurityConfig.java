@@ -42,8 +42,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 		// need to add permit all for actuator request as well.
-		http.antMatcher("/secure/**").authorizeRequests().antMatchers("/actuator/**").hasRole("ACTUATOR_ENDPOINTS")
-				.anyRequest().authenticated();
+		http
+        .authorizeRequests()
+            .antMatchers("/actuator/**").hasRole("ACTUATOR_ENDPOINTS")
+            .antMatchers("/secure/**").authenticated()
+            .antMatchers("/**").permitAll();
 
 		// If a user try to access a resource without having enough permissions
 		http.exceptionHandling().accessDeniedPage("/login");
