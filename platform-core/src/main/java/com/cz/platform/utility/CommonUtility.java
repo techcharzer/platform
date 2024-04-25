@@ -183,6 +183,14 @@ public final class CommonUtility {
 					valCriteria = Criteria.where(pathOfConfiguration.concat(".chargerBoxId")).is(chargerControlId);
 				}
 				break;
+			case OCPI_THIRD_PARTY_CHARGER:
+				if (regexEnabled) {
+					valCriteria = Criteria.where(pathOfConfiguration.concat(".evseId")).regex(chargerControlId,
+							"i");
+				} else {
+					valCriteria = Criteria.where(pathOfConfiguration.concat(".evseId")).is(chargerControlId);
+				}
+				break;
 			case OTHER_NETWORK_CHARGER:
 				break;
 			default:
