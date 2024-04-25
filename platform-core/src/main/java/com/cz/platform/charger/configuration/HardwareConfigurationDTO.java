@@ -27,7 +27,8 @@ public class HardwareConfigurationDTO implements Serializable {
 			@Type(value = EVPointChargerConfiguration.class, name = "EV_POINT_CHARGER"),
 			@Type(value = MekrOmniConfiguration.class, name = "MEKR_OMNI"),
 			@Type(value = MokoPlugOmniConfiguration.class, name = "MOKO_PLUG_OMNI"),
-			@Type(value = ThirdPartyNetworkChargerConfiguration.class, name = "OTHER_NETWORK_CHARGER"), })
+			@Type(value = ThirdPartyNetworkChargerConfiguration.class, name = "OTHER_NETWORK_CHARGER"),
+			@Type(value = OcpiThirdPartyCharger.class, name = "OCPI_THIRD_PARTY_CHARGER"), })
 	private HardwareConfigurationData configuration;
 
 }
