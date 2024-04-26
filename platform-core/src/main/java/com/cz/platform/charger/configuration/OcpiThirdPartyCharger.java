@@ -4,12 +4,11 @@ import lombok.Data;
 
 @Data
 public class OcpiThirdPartyCharger implements HardwareConfigurationData {
-	private String evseId;
 	private String uniqueId;
 	
 	@Override
 	public String getChargerControlId() {
-		return evseId;
+		return uniqueId;
 	}
 
 	@Override
