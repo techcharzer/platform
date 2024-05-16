@@ -12,12 +12,15 @@ import lombok.NoArgsConstructor;
 public class SuccessDTO {
 	private String message;
 
+	private static final SuccessDTO SUCCESS = new SuccessDTO(PlatformConstants.SUCCESS);
+	private static final SuccessDTO REQUEST_SUBMITTED = new SuccessDTO(PlatformConstants.REQUEST_SUBMITTED);
+
 	public static SuccessDTO of() {
-		return new SuccessDTO(PlatformConstants.SUCCESS);
+		return SUCCESS;
 	}
 
 	public static SuccessDTO requestSubmitted() {
-		return new SuccessDTO(PlatformConstants.REQUEST_SUBMITTED);
+		return REQUEST_SUBMITTED;
 	}
 
 }

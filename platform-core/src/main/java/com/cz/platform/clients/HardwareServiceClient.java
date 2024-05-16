@@ -272,7 +272,7 @@ public class HardwareServiceClient {
 			ResponseEntity<JsonNode> response = template.exchange(url, HttpMethod.POST, entity, JsonNode.class);
 			log.info("response : {}", response.getBody());
 		} catch (HttpStatusCodeException exeption) {
-			platformCommonService.throwRespectiveError(exeption.getResponseBodyAsString());
+			platformCommonService.throwRespectiveError(exeption.getResponseBodyAsString(), LoggerType.DO_NOT_LOG);
 		}
 	}
 

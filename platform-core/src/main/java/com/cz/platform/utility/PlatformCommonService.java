@@ -52,7 +52,7 @@ public final class PlatformCommonService {
 		return StringUtils.equals(error.getCode(), PlatformConstants.CODE_404);
 	}
 
-	public void throwRespectiveError(String errorResponse) {
+	public void throwRespectiveError(String errorResponse, LoggerType loggerType) {
 		ErrorField error = parseError(errorResponse);
 		if (ObjectUtils.isEmpty(error)) {
 			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR);
@@ -61,7 +61,7 @@ public final class PlatformCommonService {
 		case APPLICATION_EXCEPTION:
 			throw new ApplicationException(error.getCode(), error.getMessage());
 		case VALIDATION_EXCEPTION:
-			throw new ApplicationException(error.getCode(), error.getMessage());
+			throw new ValidationException(error.getCode(), error.getMessage(), loggerType);
 		case AUTHENTICATION_EXCEPTION:
 			throw new AuthenticationException(error.getCode(), error.getMessage());
 		default:
