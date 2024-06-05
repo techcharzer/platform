@@ -1,5 +1,7 @@
 package com.cz.platform.clients;
 
+import java.time.Instant;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 
@@ -15,6 +17,7 @@ public class MeterValue {
 	private Long electricCurrentInMilliAmpere;
 	private Long currentMeterReadingInWattHour;
 	private String connectorStatus;
+	private Instant receivedAt;
 
 	public Long getElectricCurrentInMilliAmpere() {
 		if (!ObjectUtils.isEmpty(onlineDTO) && BooleanUtils.isTrue(onlineDTO.getIsOnline())) {
