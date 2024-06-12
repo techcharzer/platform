@@ -33,6 +33,7 @@ public class UniqueUtilityService {
 	@Qualifier(PlatformConstants.REDIS_TEMPLATE_FOR_UNIQUE_NUMBERS)
 	private RedisTemplate<String, Integer> redisTemplate;
 	private static final String NEW_LOGIC_KEY = "NEW_LOGIC_KEY_V1";
+	@Autowired
 	private RedissonClient redissonClient;
 	private static final String BASE_SALT = "23456789abcdefghijkmnpqrstuvwxyz";
 	private static final Map<Long, Character> MAP_OF_INTEGER_TO_CHARACTER = new HashMap<>();
