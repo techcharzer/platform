@@ -105,7 +105,7 @@ public class UniqueUtilityService {
 		obj.setId(basePath);
 		obj.setValue(value);
 		mongoTemplate.save(obj);
-		log.info("saved unique object: {}", obj);
+		log.info("auto increment: {}", obj);
 	}
 
 	private MongoTemplate mongoTemplate;
