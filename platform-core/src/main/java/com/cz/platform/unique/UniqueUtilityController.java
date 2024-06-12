@@ -1,8 +1,5 @@
 package com.cz.platform.unique;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,15 +13,10 @@ class UniqueUtilityController {
 
 	private UniqueUtilityService utility;
 
-	@PutMapping("/secure/unique-utility/populate-cache")
-	public SuccessDTO populateRedisCache() {
-		utility.populateRedisCache();
+	@PutMapping("/secure/unique-utility/new-logic")
+	public SuccessDTO enableNewLogic() {
+		utility.enableNewLogic();
 		return SuccessDTO.of();
-	}
-
-	@GetMapping("/secure/unique-utility")
-	public List<UniqueUtilityEntity> getListOfUniqueEntity() {
-		return utility.getUniqueEntityList();
 	}
 
 }
