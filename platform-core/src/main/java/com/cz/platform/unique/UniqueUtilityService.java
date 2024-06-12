@@ -35,6 +35,10 @@ public class UniqueUtilityService {
 	private static final String NEW_LOGIC_KEY = "NEW_LOGIC_KEY_V1";
 	@Autowired
 	private RedissonClient redissonClient;
+	@Autowired
+	private MongoTemplate mongoTemplate;
+	@Autowired
+	private PlatformCommonService platformCommonService;
 	private static final String BASE_SALT = "23456789abcdefghijkmnpqrstuvwxyz";
 	private static final Map<Long, Character> MAP_OF_INTEGER_TO_CHARACTER = new HashMap<>();
 
@@ -107,9 +111,6 @@ public class UniqueUtilityService {
 		mongoTemplate.save(obj);
 		log.info("auto increment: {}", obj);
 	}
-
-	private MongoTemplate mongoTemplate;
-	private PlatformCommonService platformCommonService;
 
 	public Long getNextNumberV2(String id) {
 		Query query = new Query();
