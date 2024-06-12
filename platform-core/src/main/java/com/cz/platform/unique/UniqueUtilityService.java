@@ -105,7 +105,7 @@ public class UniqueUtilityService {
 	}
 
 	public void save(String basePath, Long value) {
-		UniqueUtilityEntity obj = new UniqueUtilityEntity();
+		AutoIncrementEntity obj = new AutoIncrementEntity();
 		obj.setId(basePath);
 		obj.setValue(value);
 		mongoTemplate.save(obj);
@@ -118,10 +118,10 @@ public class UniqueUtilityService {
 		query.addCriteria(criteria);
 		Update update = new Update();
 		update.inc("value", 1L);
-		mongoTemplate.updateFirst(query, update, UniqueUtilityEntity.class);
-		UniqueUtilityEntity value = mongoTemplate.findById(id, UniqueUtilityEntity.class);
+		mongoTemplate.updateFirst(query, update, AutoIncrementEntity.class);
+		AutoIncrementEntity value = mongoTemplate.findById(id, AutoIncrementEntity.class);
 		if (ObjectUtils.isEmpty(value)) {
-			value = new UniqueUtilityEntity();
+			value = new AutoIncrementEntity();
 			value.setId(id);
 			value.setValue(1L);
 			platformCommonService.takeLock("CREATE_NEW_KEY" + id, 1, "key generation failed try again after 2 seconds",
@@ -134,7 +134,13 @@ public class UniqueUtilityService {
 
 	public void enableNewLogic() {
 		RAtomicLong atomicLong = redissonClient.getAtomicLong(NEW_LOGIC_KEY);
-		atomicLong.addAndGet(10);
+		atomicLong.set(10);
+		log.info("new logic in place");
+	}
+	
+	public void disableNewLogic() {
+		RAtomicLong atomicLong = redissonClient.getAtomicLong(NEW_LOGIC_KEY);
+		atomicLong.set(0);
 		log.info("new logic in place");
 	}
 
