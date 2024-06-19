@@ -43,7 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// No session will be created or used by spring security
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-		http.antMatcher("/secure/**").authorizeRequests().anyRequest().authenticated();
+		http.antMatcher("/*/secure/*").authorizeRequests().anyRequest().permitAll();
 
 		// If a user try to access a resource without having enough permissions
 		http.exceptionHandling().accessDeniedPage("/login");
