@@ -40,10 +40,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.formLogin().disable().logout().disable().httpBasic().disable();
 		http.headers().frameOptions().disable();
 
-		// No session will be created or used by spring security
+		// No session will be created or used by spring security[
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-		http.antMatcher("/*/secure/*").authorizeRequests().anyRequest().permitAll();
+		http.antMatcher("/secure/**").authorizeRequests().anyRequest().authenticated();
 
 		// If a user try to access a resource without having enough permissions
 		http.exceptionHandling().accessDeniedPage("/login");
