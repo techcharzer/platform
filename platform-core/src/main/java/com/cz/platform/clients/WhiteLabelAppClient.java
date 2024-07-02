@@ -87,10 +87,10 @@ public class WhiteLabelAppClient {
 			 * 
 			 */
 			private static final long serialVersionUID = 1047464315179245425L;
-			public Long referrerCreditUnits;
-			public Long refereeCreditUnits;
-			public Long firstBookingReferrerCreditUnits;
-			public String referralMessageTemplate;
+			private Long referrerCreditUnits;
+			private Long refereeCreditUnits;
+			private Long firstBookingReferrerCreditUnits;
+			private String referralMessageTemplate;
 		}
 
 		@Data
