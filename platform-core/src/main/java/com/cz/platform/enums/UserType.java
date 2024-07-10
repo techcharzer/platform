@@ -2,6 +2,7 @@ package com.cz.platform.enums;
 
 import org.apache.commons.lang3.ObjectUtils;
 
+@Deprecated
 public enum UserType {
 	CZO, CUSTOMER, INTERNAL_SERVICE, CMS;
 
