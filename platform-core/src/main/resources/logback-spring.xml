@@ -99,5 +99,10 @@
 			<appender-ref ref="Sentry" />
 			<appender-ref ref="FILE" />
 		</logger>
+		<logger level="DEBUG" name="eu.chargetime" additivity="false">
+			<appender-ref ref="CONSOLE" />
+			<appender-ref ref="Sentry" />
+			<appender-ref ref="FILE" />
+		</logger>
 	</springProfile>
 </configuration>
