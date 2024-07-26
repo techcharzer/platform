@@ -86,6 +86,9 @@ public final class CommonUtility {
 	private final static String REG_EMAIL_PATTERN = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,10}$";
 	private final static Pattern PATTERN_EMAIL = Pattern.compile(REG_EMAIL_PATTERN);
 
+	private static final String MOBILE_NUMBER_REGEX = "^[6-9]\\d{9}$"; // Simple mobile number regex
+	private static final Pattern PATTERN_MOBILE_NUMBER = Pattern.compile(MOBILE_NUMBER_REGEX);
+
 	public static void close(Closeable c) {
 		try {
 			if (c != null) {
@@ -567,4 +570,16 @@ public final class CommonUtility {
 		return new Range<Instant>(ZonedDateTime.of(min, now.getZone()).toInstant(),
 				ZonedDateTime.of(max, now.getZone()).toInstant());
 	}
+	
+	public static boolean validateMobileNumber(String mobileNumber) {
+		if (ObjectUtils.isEmpty(mobileNumber) || mobileNumber.length() != 10) {
+			return false;
+		}
+		Matcher matcher = PATTERN_MOBILE_NUMBER.matcher(mobileNumber);
+		if (matcher.matches()) {
+			return true;
+		}
+		return false;
+	}
+
 }
