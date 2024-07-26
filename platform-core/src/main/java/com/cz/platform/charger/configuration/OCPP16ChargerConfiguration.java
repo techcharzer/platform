@@ -21,6 +21,7 @@ public class OCPP16ChargerConfiguration implements HardwareConfigurationData, Se
 	private static final long serialVersionUID = -9180953709391315499L;
 	private String chargerBoxId;
 	private OCPPVersion version;
+	private OCPPServer server;
 	private Map<String, String> customData;
 
 	@Override
@@ -41,6 +42,10 @@ public class OCPP16ChargerConfiguration implements HardwareConfigurationData, Se
 		JSON_16("1.6J");
 
 		private String versionName;
+	}
+	
+	public enum OCPPServer {
+		STEVE, OCPP_V1
 	}
 
 }
