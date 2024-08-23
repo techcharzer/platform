@@ -15,5 +15,4 @@ public class ZohoConfig {
 	private String clientId;
 	private String clientSecret;
 	private String redirectUri;
-	private Boolean leadPushEnabled;
 }

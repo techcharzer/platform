@@ -68,4 +68,8 @@ public class ZohoTokenClient {
 		return ACCESS_TOKEN;
 	}
 
+	public String getBaseUrl() {
+		return config.getApiUrl();
+	}
+
 }
