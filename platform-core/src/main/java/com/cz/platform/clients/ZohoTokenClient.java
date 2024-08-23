@@ -18,12 +18,10 @@ import com.cz.platform.exception.PlatformExceptionCodes;
 import com.cz.platform.exception.ValidationException;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-@AllArgsConstructor
 public class ZohoTokenClient {
 
 	private static String ACCESS_TOKEN = "";
