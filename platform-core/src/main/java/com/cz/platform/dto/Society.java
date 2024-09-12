@@ -37,7 +37,7 @@ public class Society implements GroupConfiguration, Serializable {
 		 */
 		private static final long serialVersionUID = -7200456165935601236L;
 		private Boolean isApplied;
-		private Long value;
+		private Long valueInWattHour;
 	}
 
 }
