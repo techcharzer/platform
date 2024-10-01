@@ -44,6 +44,7 @@ public class ChargerDTO implements Serializable {
 	private Instant listingTime;
 	private String primaryChargePointOperatorId;
 	private String secondaryChargePointOperatorId;
+	private Integer rating;
 	private Instant updatedAt;
 
 	public static final String[] INCLUDED_FIELDS = new String[] { "id", "name", "uniqueIdentifier", "hardwareId",
