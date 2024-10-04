@@ -79,6 +79,9 @@ public class GlobalExceptionHandler {
 		if (ObjectUtils.isEmpty(context.getAuthentication().getPrincipal())) {
 			return Optional.empty();
 		}
+		if (!(context.getAuthentication().getPrincipal() instanceof UserDTO)) {
+			return Optional.empty();
+		}
 		UserDTO user = (UserDTO) context.getAuthentication().getPrincipal();
 		return Optional.of(user.getUserId());
 	}
