@@ -203,6 +203,7 @@ public class BookingClient {
 		private String groupId;
 		private String cityId;
 		private Instant bookedAt;
+		private String ocppTransactionId;
 		private Long userBookingCount;
 		private Double predictionVehicleWillGetCharged;
 		private Instant updatedAt;
@@ -345,17 +346,12 @@ public class BookingClient {
 	public static interface BookingSource {
 
 		BookingSourceType getBookingSourceType();
-
-		default List<Long> getTransactionId() {
-			return Collections.emptyList();
-		}
 	}
 
 	@Data
 	public static class CMSAppBookingSource implements BookingSource {
 		private String cmsUserId;
 		private String chargePointOperatorId;
-		private List<Long> transactionId;
 		private BookingSourceType bookingSourceType = BookingSourceType.CMS_APP;
 	}
 
@@ -364,7 +360,6 @@ public class BookingClient {
 		private String whiteLabelApp;
 		private String appVersion;
 		private Rating rating;
-		private List<Long> transactionId;
 		private BookingSourceType bookingSourceType = BookingSourceType.MOBILE_APP;
 
 		@Data
@@ -377,14 +372,12 @@ public class BookingClient {
 	@Data
 	public static class RFIDTapBookingSource implements BookingSource {
 		private String rfidCardCode;
-		private List<Long> transactionId;
 		private BookingSourceType bookingSourceType = BookingSourceType.RFID_TAP;
 	}
 
 	@Data
 	public static class CZOAppBookingSource implements BookingSource {
 		private String czoUserId;
-		private List<Long> transactionId;
 		private BookingSourceType bookingSourceType = BookingSourceType.CZO_APP;
 	}
 
@@ -396,7 +389,6 @@ public class BookingClient {
 
 	@Data
 	public static class WhatsappBookingSource implements BookingSource {
-		private List<Long> transactionId;
 		private BookingSourceType bookingSourceType = BookingSourceType.WHATSAPP;
 	}
 
