@@ -425,7 +425,7 @@ public class BookingClient {
 		if (ObjectUtils.isEmpty(request)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "IInvalid request");
 		}
-		rabbitMqTemplate.convertAndSend(rabbitQueConfiguration.getStartBookingQueueV2(), request);
+		rabbitMqTemplate.convertAndSend(rabbitQueConfiguration.getStartBookingQueueV3(), request);
 	}
 
 	public void stopBookingAsync(IStopBookingRequest request) {
@@ -433,7 +433,7 @@ public class BookingClient {
 		if (ObjectUtils.isEmpty(request)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "IInvalid request");
 		}
-		rabbitMqTemplate.convertAndSend(rabbitQueConfiguration.getStopBookingQueueV2(), request);
+		rabbitMqTemplate.convertAndSend(rabbitQueConfiguration.getStopBookingQueueV3(), request);
 	}
 
 	public static interface IStartBookingRequest {
