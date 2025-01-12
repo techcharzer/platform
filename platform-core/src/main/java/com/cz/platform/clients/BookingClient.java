@@ -203,7 +203,7 @@ public class BookingClient {
 		private String groupId;
 		private String cityId;
 		private Instant bookedAt;
-		private String ocppTransactionId;
+		private Long ocppTransactionId;
 		private Long userBookingCount;
 		private Double predictionVehicleWillGetCharged;
 		private Instant updatedAt;
