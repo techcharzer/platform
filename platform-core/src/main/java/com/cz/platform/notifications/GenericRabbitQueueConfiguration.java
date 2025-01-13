@@ -16,8 +16,8 @@ public class GenericRabbitQueueConfiguration {
 	private QueueConfiguration updateDailyTracker;
 	private QueueConfiguration entityAuditing;
 	private QueueConfiguration initiateOutboundCall;
-	private QueueConfiguration startBookingQueueV2;
-	private QueueConfiguration stopBookingQueueV2;
+	private QueueConfiguration startBookingQueueV3;
+	private QueueConfiguration stopBookingQueueV3;
 	private QueueConfiguration pdfGenerationAndUpload;
 	private QueueConfiguration raiseBookingUtilizationAnomalyTicket;
 	private QueueConfiguration httpScheduleTask;

@@ -203,7 +203,7 @@ public class BookingClient {
 		private String groupId;
 		private String cityId;
 		private Instant bookedAt;
-		private String ocppTransactionId;
+		private Long ocppTransactionId;
 		private Long userBookingCount;
 		private Double predictionVehicleWillGetCharged;
 		private Instant updatedAt;
@@ -385,6 +385,7 @@ public class BookingClient {
 	@Data
 	public static class HardwareBootUpBookingSource implements BookingSource {
 		private String customRFIDCardCode;
+		private List<Long> transactionId;
 		private BookingSourceType bookingSourceType = BookingSourceType.HARDWARE_BOOT_UP;
 	}
 
@@ -416,7 +417,7 @@ public class BookingClient {
 		if (ObjectUtils.isEmpty(request)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "IInvalid request");
 		}
-		rabbitMqTemplate.convertAndSend(rabbitQueConfiguration.getStartBookingQueueV2(), request);
+		rabbitMqTemplate.convertAndSend(rabbitQueConfiguration.getStartBookingQueueV3(), request);
 	}
 
 	public void stopBookingAsync(IStopBookingRequest request) {
@@ -424,7 +425,7 @@ public class BookingClient {
 		if (ObjectUtils.isEmpty(request)) {
 			throw new ValidationException(PlatformExceptionCodes.INVALID_DATA.getCode(), "IInvalid request");
 		}
-		rabbitMqTemplate.convertAndSend(rabbitQueConfiguration.getStopBookingQueueV2(), request);
+		rabbitMqTemplate.convertAndSend(rabbitQueConfiguration.getStopBookingQueueV3(), request);
 	}
 
 	public static interface IStartBookingRequest {
