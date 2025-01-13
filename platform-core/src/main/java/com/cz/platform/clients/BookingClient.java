@@ -24,7 +24,6 @@ import org.springframework.web.client.RestTemplate;
 import com.cz.platform.PlatformConstants;
 import com.cz.platform.dto.ActionResponse;
 import com.cz.platform.dto.AddressDTO;
-import com.cz.platform.dto.ChargerUsageTypeConfiguration;
 import com.cz.platform.dto.DealConfigurationDTO;
 import com.cz.platform.dto.FailedResponseData;
 import com.cz.platform.dto.HardwareSocket;
@@ -33,6 +32,7 @@ import com.cz.platform.dto.Range;
 import com.cz.platform.dto.SocketDTO;
 import com.cz.platform.dto.SuccessfullyCreatedDTO;
 import com.cz.platform.enums.ChargerType;
+import com.cz.platform.enums.ChargerUsageType;
 import com.cz.platform.enums.VehicleType;
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.ErrorField;
@@ -274,7 +274,8 @@ public class BookingClient {
 		private Long electricityRateAtBookingTime;
 		private AddressDTO address;
 		private HardwareInfo hardwareInfo;
-		private ChargerUsageTypeConfiguration usageConfiguration;
+		private ChargerUsageType usageType;
+		private String groupId;
 		private DealConfigurationDTO dealConfiguration;
 		private Range<Integer> openCloseTimeInSeconds;
 		private String locationId;
@@ -346,17 +347,12 @@ public class BookingClient {
 	public static interface BookingSource {
 
 		BookingSourceType getBookingSourceType();
-
-		default List<Long> getTransactionId() {
-			return Collections.emptyList();
-		}
 	}
 
 	@Data
 	public static class CMSAppBookingSource implements BookingSource {
 		private String cmsUserId;
 		private String chargePointOperatorId;
-		private List<Long> transactionId;
 		private BookingSourceType bookingSourceType = BookingSourceType.CMS_APP;
 	}
 
@@ -365,7 +361,6 @@ public class BookingClient {
 		private String whiteLabelApp;
 		private String appVersion;
 		private Rating rating;
-		private List<Long> transactionId;
 		private BookingSourceType bookingSourceType = BookingSourceType.MOBILE_APP;
 
 		@Data
@@ -378,14 +373,12 @@ public class BookingClient {
 	@Data
 	public static class RFIDTapBookingSource implements BookingSource {
 		private String rfidCardCode;
-		private List<Long> transactionId;
 		private BookingSourceType bookingSourceType = BookingSourceType.RFID_TAP;
 	}
 
 	@Data
 	public static class CZOAppBookingSource implements BookingSource {
 		private String czoUserId;
-		private List<Long> transactionId;
 		private BookingSourceType bookingSourceType = BookingSourceType.CZO_APP;
 	}
 
@@ -398,7 +391,6 @@ public class BookingClient {
 
 	@Data
 	public static class WhatsappBookingSource implements BookingSource {
-		private List<Long> transactionId;
 		private BookingSourceType bookingSourceType = BookingSourceType.WHATSAPP;
 	}
 

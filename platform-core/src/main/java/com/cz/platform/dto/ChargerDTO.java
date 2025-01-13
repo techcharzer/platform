@@ -11,6 +11,7 @@ import org.springframework.util.ObjectUtils;
 
 import com.cz.platform.charger.configuration.GlobalChargerHardwareInfo;
 import com.cz.platform.enums.ChargerStatus;
+import com.cz.platform.enums.ChargerUsageType;
 import com.cz.platform.enums.VehicleType;
 import com.cz.platform.utility.CommonUtility;
 
@@ -33,7 +34,8 @@ public class ChargerDTO implements Serializable {
 	private GlobalChargerHardwareInfo hardwareInfo;
 	private Map<String, Long> price;
 	private Boolean forceShowOnMap;
-	private ChargerUsageTypeConfiguration usageConfiguration;
+	private ChargerUsageType usageType;
+	private String groupId;
 	private AddressDTO address;
 	private String operationalZoneId;
 	private Set<String> viewerIds;
