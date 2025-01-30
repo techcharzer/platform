@@ -74,4 +74,17 @@ public class ChargerDTO implements Serializable {
 	public Image getDefaultImage() {
 		return CommonUtility.getDefaultImage(images);
 	}
+
+	@Deprecated
+	public ChargerUsageTypeConfiguration getUsageConfiguration() {
+		switch (this.usageType) {
+		case PUBLIC:
+			return new PublicChargerUsageConfiguration();
+		case PROTECTED:
+			return new ProtectedChargerUsageConfiguration(ChargerUsageType.PROTECTED, this.groupId);
+		case PRIVATE:
+			return new PrivateChargerUsageConfiguration();
+		}
+		return null;
+	}
 }

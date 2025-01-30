@@ -24,10 +24,14 @@ import org.springframework.web.client.RestTemplate;
 import com.cz.platform.PlatformConstants;
 import com.cz.platform.dto.ActionResponse;
 import com.cz.platform.dto.AddressDTO;
+import com.cz.platform.dto.ChargerUsageTypeConfiguration;
 import com.cz.platform.dto.DealConfigurationDTO;
 import com.cz.platform.dto.FailedResponseData;
 import com.cz.platform.dto.HardwareSocket;
 import com.cz.platform.dto.IActionResponseData;
+import com.cz.platform.dto.PrivateChargerUsageConfiguration;
+import com.cz.platform.dto.ProtectedChargerUsageConfiguration;
+import com.cz.platform.dto.PublicChargerUsageConfiguration;
 import com.cz.platform.dto.Range;
 import com.cz.platform.dto.SocketDTO;
 import com.cz.platform.dto.SuccessfullyCreatedDTO;
@@ -281,6 +285,19 @@ public class BookingClient {
 		private String locationId;
 		private ChargingType chargingType;
 		private Boolean sendNotificationToPremiseOwner;
+		
+		@Deprecated
+		public ChargerUsageTypeConfiguration getUsageConfiguration() {
+			switch (this.usageType) {
+			case PUBLIC:
+				return new PublicChargerUsageConfiguration();
+			case PROTECTED:
+				return new ProtectedChargerUsageConfiguration(ChargerUsageType.PROTECTED, this.groupId);
+			case PRIVATE:
+				return new PrivateChargerUsageConfiguration();
+			}
+			return null;
+		}
 	}
 
 	@Data
