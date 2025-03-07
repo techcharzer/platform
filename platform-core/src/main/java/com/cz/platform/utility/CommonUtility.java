@@ -188,8 +188,7 @@ public final class CommonUtility {
 				break;
 			case OCPI_THIRD_PARTY_CHARGER:
 				if (regexEnabled) {
-					valCriteria = Criteria.where(pathOfConfiguration.concat(".evseId")).regex(chargerControlId,
-							"i");
+					valCriteria = Criteria.where(pathOfConfiguration.concat(".evseId")).regex(chargerControlId, "i");
 				} else {
 					valCriteria = Criteria.where(pathOfConfiguration.concat(".evseId")).is(chargerControlId);
 				}
@@ -498,50 +497,21 @@ public final class CommonUtility {
 	}
 
 	public static Range<Instant> getLastMonthRange() {
-		// Create a ZonedDateTime object
-		ZonedDateTime zonedDateTime = ZonedDateTime.now();
-
-		// Get the month of the ZonedDateTime object
-		zonedDateTime = zonedDateTime.minusMonths(1);
-		int month = zonedDateTime.getMonth().getValue();
-		int year = zonedDateTime.getYear();
-
-		// Create a LocalDate object with the month and year of the ZonedDateTime object
-		LocalDate localDate = LocalDate.of(year, month, 1);
-
-		// Create a LocalTime object with the time set to 00:00:00
-		LocalTime localTime = LocalTime.of(0, 0, 0);
-
-		// Create a LocalDateTime object with the LocalDate and LocalTime objects
-		LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-
-		// Create a ZonedDateTime object with the LocalDateTime object and the timezone
-		// of the original ZonedDateTime object
-		ZonedDateTime startOfMonth = ZonedDateTime.of(localDateTime, zonedDateTime.getZone());
-		return new Range<Instant>(startOfMonth.toInstant(), startOfMonth.plusMonths(1).toInstant().minusMillis(1L));
+		ZonedDateTime zd = Instant.now().atZone(PlatformConstants.CURRENT_ZONE_ID);
+		ZonedDateTime end = zd.withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
+		ZonedDateTime start = zd.minusMonths(1).withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
+		log.debug("start: {} end: {}, al start: {}, al end: {}", start.toEpochSecond(), end.toEpochSecond(),
+				start.toInstant().toEpochMilli(), end.toInstant().toEpochMilli());
+		return new Range<Instant>(start.toInstant(), end.toInstant());
 	}
 
 	public static Range<Instant> getThisMonthRange() {
-		// Create a ZonedDateTime object
-		ZonedDateTime zonedDateTime = ZonedDateTime.now();
-
-		// Get the month of the ZonedDateTime object
-		int month = zonedDateTime.getMonth().getValue();
-		int year = zonedDateTime.getYear();
-
-		// Create a LocalDate object with the month and year of the ZonedDateTime object
-		LocalDate localDate = LocalDate.of(year, month, 1);
-
-		// Create a LocalTime object with the time set to 00:00:00
-		LocalTime localTime = LocalTime.of(0, 0, 0);
-
-		// Create a LocalDateTime object with the LocalDate and LocalTime objects
-		LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-
-		// Create a ZonedDateTime object with the LocalDateTime object and the timezone
-		// of the original ZonedDateTime object
-		ZonedDateTime startOfMonth = ZonedDateTime.of(localDateTime, zonedDateTime.getZone());
-		return new Range<Instant>(startOfMonth.toInstant(), startOfMonth.plusMonths(1).toInstant().minusMillis(1L));
+		ZonedDateTime zd = Instant.now().atZone(PlatformConstants.CURRENT_ZONE_ID);
+		ZonedDateTime end = zd.withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
+		ZonedDateTime start = zd.plusMonths(1).withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
+		log.debug("start: {} end: {}, al start: {}, al end: {}", start.toEpochSecond(), end.toEpochSecond(),
+				start.toInstant().toEpochMilli(), end.toInstant().toEpochMilli());
+		return new Range<Instant>(start.toInstant(), end.toInstant());
 	}
 
 	public static Range<Instant> getTomorrow() {
@@ -570,7 +540,7 @@ public final class CommonUtility {
 		return new Range<Instant>(ZonedDateTime.of(min, now.getZone()).toInstant(),
 				ZonedDateTime.of(max, now.getZone()).toInstant());
 	}
-	
+
 	public static boolean validateMobileNumber(String mobileNumber) {
 		if (ObjectUtils.isEmpty(mobileNumber) || mobileNumber.length() != 10) {
 			return false;
