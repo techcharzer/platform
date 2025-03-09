@@ -7,13 +7,14 @@ import java.util.Set;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ScopedProxyMode;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@RefreshScope
+@RefreshScope(proxyMode = ScopedProxyMode.NO)
 @Configuration
 @ConfigurationProperties(prefix = "app.config.filter")
 public class GenericFilterConfig {
