@@ -1,12 +1,15 @@
 package com.cz.platform.security;
 
 import java.text.MessageFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import javax.crypto.SecretKey;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +35,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -52,7 +54,9 @@ public class AuthService {
 	@Autowired
 	private UrlConfig urlConfig;
 
-	private String secretKey;
+	@Deprecated
+	private String oldSecretKey;
+	private SecretKey secretKey;
 
 	@Autowired
 	private RestTemplate template;
@@ -62,20 +66,13 @@ public class AuthService {
 
 	@PostConstruct
 	protected void init() {
-		secretKey = Base64.getEncoder().encodeToString(props.getJwtSecretKey().getBytes());
+		oldSecretKey = Base64.getEncoder().encodeToString(props.getJwtSecretKey().getBytes());
+		secretKey = Keys.hmacShaKeyFor(props.getNewJwtSecretKey().getBytes());
 	}
 
 	public String createToken(String clientId, List<String> roles) {
-
-		Claims claims = Jwts.claims().setSubject(clientId);
-		claims.put(AUTH, roles);
-
-		Date now = new Date();
-
-		return Jwts.builder()//
-				.setClaims(claims)//
-				.setIssuedAt(now)//
-				.signWith(SignatureAlgorithm.HS256, secretKey)//
+		Instant now = Instant.now();
+		return Jwts.builder().subject(clientId).claim(AUTH, roles).issuedAt(Date.from(now)).signWith(secretKey)
 				.compact();
 	}
 
@@ -122,35 +119,51 @@ public class AuthService {
 		return new UsernamePasswordAuthenticationToken(user, "", permissions);
 	}
 
-	public String getUsername(String token) {
-		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+	private UserDTO validateServerToken(String token) throws ApplicationException {
+		Jws<Claims> claimsWrapped = validateViaNewSecretKey(token);
+		if (claimsWrapped == null) {
+			claimsWrapped = validateOldSecretKey(token);
+		}
+		if (claimsWrapped == null) {
+			throw new AuthenticationException(PlatformExceptionCodes.AUTHENTICATION_CODE);
+		}
+		Claims claims = claimsWrapped.getPayload();
+		String userName = claims.getSubject();
+		log.debug("server called : {}", userName);
+
+		@SuppressWarnings("unchecked")
+		List<String> roles = (List<String>) claims.get(AUTH);
+		LoggedInUser user = new LoggedInUser();
+		user.setRoles(new ArrayList<>());
+		user.setUserId(userName);
+		user.setLogInFrom(LogInFrom.INTERNAL_SERVICE);
+
+		RoleDTO roleDTO = new RoleDTO();
+		roleDTO.setRoleId(PlatformConstants.DEFAULT_ROLE_ID);
+		roleDTO.setPermissions(roles);
+		user.getRoles().add(roleDTO);
+		return user;
 	}
 
-	public UserDTO validateServerToken(String token) throws ApplicationException {
+	private Jws<Claims> validateViaNewSecretKey(String token) {
 		try {
-			String userName = getUsername(token);
-			log.debug("server called : {}, in token : {}", userName, token);
-			Jws<Claims> claimsWrapped = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-			Claims claims = claimsWrapped.getBody();
+			Jws<Claims> claims = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
+			log.debug("validated through new secretKey");
+			return claims;
+		} catch (Exception e) {
+			log.debug("new validation failed: {}", e);
+			return null;
+		}
+	}
 
-			@SuppressWarnings("unchecked")
-			List<String> roles = (List<String>) claims.get(AUTH);
-
-			LoggedInUser user = new LoggedInUser();
-			user.setRoles(new ArrayList<>());
-			user.setUserId(userName);
-			user.setLogInFrom(LogInFrom.INTERNAL_SERVICE);
-
-			RoleDTO roleDTO = new RoleDTO();
-			roleDTO.setRoleId(PlatformConstants.DEFAULT_ROLE_ID);
-			roleDTO.setPermissions(roles);
-			user.getRoles().add(roleDTO);
-			return user;
-		} catch (JwtException | IllegalArgumentException e) {
-			throw new AuthenticationException(PlatformExceptionCodes.AUTHENTICATION_CODE);
+	private Jws<Claims> validateOldSecretKey(String token) {
+		try {
+			Jws<Claims> claims = Jwts.parser().setSigningKey(oldSecretKey).build().parseClaimsJws(token);
+			log.debug("validated through old secretKey");
+			return claims;
 		} catch (Exception exeption) {
-			log.error("error occured while validating token", exeption);
-			throw new ApplicationException(PlatformExceptionCodes.INTERNAL_SERVER_ERROR);
+			log.error("error occured while validating old token", exeption);
+			return null;
 		}
 	}
 

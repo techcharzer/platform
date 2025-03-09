@@ -1,0 +1,22 @@
+MONGO_DB: dummy_service
+spring:
+    application:
+        name: dummy-service
+    cloud:
+        config:
+            uri: http://localhost:8888/cloud-config-server
+            label: qa
+    profiles:
+        default: dev
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: refresh
+rabbitmq:
+    queueConsumers: 
+      - dummy_data_queue
+server:
+    servlet:
+        context-path: /dummy-service

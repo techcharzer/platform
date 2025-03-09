@@ -20,6 +20,7 @@ import lombok.Data;
 public class SecurityConfigProps {
 
 	private String jwtSecretKey;
+	private String newJwtSecretKey;
 	private List<String> testingRoles = new ArrayList<>();
 	private Map<String, String> creds = new HashMap<>();
 

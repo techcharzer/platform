@@ -28,8 +28,6 @@ public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository
 
 	private MongoTemplate mongoTemplate;
 
-	private GenericEntityToQueryCreatorFactory factory;
-
 	private DefaultGenericFilterToQueryMapper defaultFilterToQueryMapper;
 
 	@Override
@@ -127,7 +125,7 @@ public class AdvancedFilterRepositoryImpl<T> implements AdvancedFilterRepository
 	}
 
 	private GenericFilterToQueryCreator getQueryMapper(Class<T> clazz) {
-		GenericFilterToQueryCreator queryMapper = factory.getService(clazz);
+		GenericFilterToQueryCreator queryMapper = GenericEntityToQueryCreatorFactory.getService(clazz);
 		if (ObjectUtils.isEmpty(queryMapper)) {
 			queryMapper = defaultFilterToQueryMapper;
 		}

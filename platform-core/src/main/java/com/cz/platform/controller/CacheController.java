@@ -18,18 +18,16 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class CacheController {
 
-	private ICacheCommonService service;
-
 	@PutMapping("/secure/refresh-cache")
 	@Secured("ROLE_REFRESH_CACHE")
 	public SuccessDTO refreshCache(@RequestBody List<String> listOfCache) {
-		service.refreshCache(listOfCache);
+		ICacheCommonService.refreshCache(listOfCache);
 		return SuccessDTO.of();
 	}
 
 	@GetMapping("/secure/refresh-cache/keys")
 	@Secured("ROLE_REFRESH_CACHE")
 	public Set<String> refreshCacheKeys() {
-		return service.refreshCacheKeys();
+		return ICacheCommonService.refreshCacheKeys();
 	}
 }
