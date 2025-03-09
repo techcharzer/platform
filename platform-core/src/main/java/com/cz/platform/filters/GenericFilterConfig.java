@@ -12,7 +12,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @ConfigurationProperties(prefix = "app.config.filter")
 public class GenericFilterConfig {
 	private Set<String> excludedParams;
