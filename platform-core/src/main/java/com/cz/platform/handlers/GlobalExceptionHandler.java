@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.cz.platform.exception.ApplicationException;
 import com.cz.platform.exception.ErrorField;
@@ -43,6 +44,18 @@ public class GlobalExceptionHandler {
 		String response = MessageFormat.format("parameter {0} is invalid", e.getName());
 		LOG.error("methodArgumentTypeMismatchException occured: {}", requestLog, e);
 		ErrorField field = new ErrorField(PlatformExceptionCodes.INVALID_DATA.getCode(), response,
+				ErrorType.APPLICATION_EXCEPTION);
+		return field;
+	}
+
+	@ExceptionHandler(NoResourceFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ResponseBody
+	public ErrorField noResourceException(NoResourceFoundException e, HttpServletRequest request) {
+		String requestLog = logRequest(request);
+		String response = MessageFormat.format("Path not found: {0}", request.getRequestURI());
+		LOG.error("NoResourceFoundException occured: {}", requestLog, e);
+		ErrorField field = new ErrorField(PlatformExceptionCodes.NOT_FOUND.getCode(), response,
 				ErrorType.APPLICATION_EXCEPTION);
 		return field;
 	}

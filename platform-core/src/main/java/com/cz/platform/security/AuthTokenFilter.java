@@ -3,7 +3,6 @@ package com.cz.platform.security;
 import java.io.IOException;
 import java.util.Optional;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -39,10 +38,22 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 	}
 
 	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+		// Skip the filter for any request that is NOT /actuator/** or /secure/**
+		String path = request.getRequestURI();
+		path = path.replaceFirst(request.getContextPath(), "");
+		boolean isAuthenticationMustBeApplied = path.startsWith("/actuator/") || path.startsWith("/secure/");
+		log.debug("isAuthenticationMustBeApplied over request  {}: {}", path, isAuthenticationMustBeApplied);
+		return !(isAuthenticationMustBeApplied);
+	}
+
+	@Override
 	protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
 			FilterChain filterChain) throws ServletException, IOException {
 		try {
+
 			String clientToken = resolveAuthToken(httpServletRequest);
+			log.debug("resolving token: {}", clientToken);
 			if (!ObjectUtils.isEmpty(clientToken)) {
 				Optional<String> chargePointOperatorId = resolveChargePointOperatorId(httpServletRequest);
 				Authentication auth = authService.getClientAuthentication(clientToken, chargePointOperatorId);
@@ -50,6 +61,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 				SecurityContextImpl secureContext = new SecurityContextImpl();
 				secureContext.setAuthentication(auth);
 				SecurityContextHolder.setContext(secureContext);
+				log.debug("client token: {}", clientToken);
 			} else {
 				String serverSideToken = httpServletRequest.getHeader(PlatformConstants.SSO_TOKEN_HEADER);
 				if (ObjectUtils.isEmpty(serverSideToken)) {
@@ -62,7 +74,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 					SecurityContextImpl secureContext = new SecurityContextImpl();
 					secureContext.setAuthentication(auth);
 					SecurityContextHolder.setContext(secureContext);
+					log.debug("server token: {}", serverSideToken);
 				} else {
+					log.debug("no token");
 					throw new AuthenticationException(PlatformExceptionCodes.ACCESS_DENIED.getCode(),
 							"No auth keys present.");
 				}

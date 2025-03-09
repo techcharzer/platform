@@ -3,10 +3,8 @@ package com.cz.platform.security;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,9 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Order(0)
 @Configuration
-@RefreshScope
 @EnableWebSecurity
 public class WebSecurityConfig {
 
@@ -41,17 +37,16 @@ public class WebSecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		log.info("SECURITY CONFIGURED");
 		http.csrf(csrf -> csrf.disable())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.headers(headers -> headers.frameOptions(frame -> frame.disable()))
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/actuator/**").hasRole("ACTUATOR_ENDPOINTS")
-						.requestMatchers("/secure/**").authenticated())
+						.requestMatchers("/secure/**").authenticated().anyRequest().permitAll())
 				.exceptionHandling(ex -> ex.accessDeniedPage("/login"))
 				.addFilterBefore(new AuthTokenFilter(authService, mapper),
 						SecurityContextHolderAwareRequestFilter.class)
 				.cors(cors -> cors.configurationSource(corsConfigurationSource()));
-
+		log.info("SECURITY CONFIGURED");
 		return http.build();
 	}
 
