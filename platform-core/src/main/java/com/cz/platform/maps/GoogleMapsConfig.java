@@ -9,7 +9,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@RefreshScope
 @Configuration
 @ConfigurationProperties(prefix = "app.config.maps.google")
 public class GoogleMapsConfig {

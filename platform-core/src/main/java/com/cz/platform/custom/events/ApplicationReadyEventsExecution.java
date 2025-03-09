@@ -1,6 +1,7 @@
 package com.cz.platform.custom.events;
 
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @AllArgsConstructor
+@RefreshScope
 @Slf4j
 public class ApplicationReadyEventsExecution {
 
