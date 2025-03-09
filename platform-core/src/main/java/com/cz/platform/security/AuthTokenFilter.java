@@ -32,17 +32,21 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
 	private ObjectMapper mapper;
 
-	public AuthTokenFilter(AuthService authService, ObjectMapper mapper) {
+	private String securePath;
+	private String actuatorPath;
+
+	public AuthTokenFilter(AuthService authService, ObjectMapper mapper, String contextPath) {
 		this.authService = authService;
 		this.mapper = mapper;
+		this.actuatorPath = String.format("%s/actuator/", contextPath);
+		this.securePath = String.format("%s/secure/", contextPath);
 	}
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 		// Skip the filter for any request that is NOT /actuator/** or /secure/**
 		String path = request.getRequestURI();
-		path = path.replaceFirst(request.getContextPath(), "");
-		boolean isAuthenticationMustBeApplied = path.startsWith("/actuator/") || path.startsWith("/secure/");
+		boolean isAuthenticationMustBeApplied = path.startsWith(actuatorPath) || path.startsWith(securePath);
 		log.debug("isAuthenticationMustBeApplied over request  {}: {}", path, isAuthenticationMustBeApplied);
 		return !(isAuthenticationMustBeApplied);
 	}

@@ -3,6 +3,7 @@ package com.cz.platform.security;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,6 +35,8 @@ public class WebSecurityConfig {
 	private ObjectMapper mapper;
 	@Autowired
 	private CorsConfigProps props;
+	@Value("${server.servlet.context-path}")
+	private String contextPath;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -43,7 +46,7 @@ public class WebSecurityConfig {
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/actuator/**").hasRole("ACTUATOR_ENDPOINTS")
 						.requestMatchers("/secure/**").authenticated().anyRequest().permitAll())
 				.exceptionHandling(ex -> ex.accessDeniedPage("/login"))
-				.addFilterBefore(new AuthTokenFilter(authService, mapper),
+				.addFilterBefore(new AuthTokenFilter(authService, mapper, contextPath),
 						SecurityContextHolderAwareRequestFilter.class)
 				.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 		log.info("SECURITY CONFIGURED");
