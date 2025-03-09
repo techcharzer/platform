@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.function.BiFunction;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
@@ -30,7 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @AllArgsConstructor
-public final class FilterParserService {
+@RefreshScope
+public class FilterParserService {
 
 	private GenericFilterConfig filterConfig;
 

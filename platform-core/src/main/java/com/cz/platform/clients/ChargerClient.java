@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -38,6 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
+@RefreshScope
 public class ChargerClient {
 
 	@Autowired

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
 
 import com.cz.platform.PlatformConstants;
@@ -14,7 +13,6 @@ import com.cz.platform.PlatformConstants;
 import lombok.Data;
 
 @Data
-@RefreshScope
 @Configuration
 @ConfigurationProperties(prefix = PlatformConstants.SECURITY_CONFIG_PREFIX)
 public class SecurityConfigProps {
