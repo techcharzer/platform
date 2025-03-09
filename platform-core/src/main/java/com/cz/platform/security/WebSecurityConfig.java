@@ -37,7 +37,10 @@ public class WebSecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		log.info("SECURITY CONFIGURED");
-
+		http.authorizeHttpRequests(
+				auth -> auth.requestMatchers("/actuator/**").hasRole("ACTUATOR_ENDPOINTS").anyRequest().authenticated())
+				.addFilterBefore(new AuthTokenFilter(authService, mapper),
+						SecurityContextHolderAwareRequestFilter.class);
 		http.csrf(csrf -> csrf.disable())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.headers(headers -> headers.frameOptions(frame -> frame.disable()))
