@@ -56,6 +56,7 @@ public class WebSecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
+		log.info("CORS CONFIGURED {}", props.getAllowedOrigins());
 		configuration.setAllowedOrigins(props.getAllowedOrigins()); // Allow all origins
 		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		configuration.setAllowedHeaders(List.of("*"));
