@@ -16,9 +16,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Component
 @Order(value = Ordered.LOWEST_PRECEDENCE)
 class TraceFilter extends GenericFilterBean {
@@ -32,7 +30,6 @@ class TraceFilter extends GenericFilterBean {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		log.info("trace filter configured");
 		TraceContext traceContext = this.tracer.currentTraceContext().context();
 		if (traceContext != null) {
 			// Add trace ID to response headers

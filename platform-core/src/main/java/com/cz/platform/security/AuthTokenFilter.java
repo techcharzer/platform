@@ -47,7 +47,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		// Skip the filter for any request that is NOT /actuator/** or /secure/**
 		String path = request.getRequestURI();
 		boolean isAuthenticationMustBeApplied = path.startsWith(actuatorPath) || path.startsWith(securePath);
-		log.debug("isAuthenticationMustBeApplied over request  {}: {}", path, isAuthenticationMustBeApplied);
+		log.trace("isAuthenticationMustBeApplied over request  {}: {}", path, isAuthenticationMustBeApplied);
 		return !(isAuthenticationMustBeApplied);
 	}
 
