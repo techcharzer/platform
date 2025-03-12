@@ -139,11 +139,12 @@ public class HardwareServiceClient {
 		}
 	}
 
+	@Deprecated
 	public MeterValue getMeterValues(String hardwareId, String socketId) {
 		return getMeterValues(hardwareId, socketId, null);
 	}
 
-	public MeterValue getMeterValues(String hardwareId, String socketId, String transactionId) {
+	public MeterValue getMeterValues(String hardwareId, String socketId, Long transactionId) {
 		List<MeterValueRequest> request = new ArrayList<>();
 		request.add(new MeterValueRequest(hardwareId, socketId, transactionId));
 		MultipleMeterValue response = getMeterValues(request);
@@ -155,7 +156,7 @@ public class HardwareServiceClient {
 	public static class MeterValueRequest {
 		private String hardwareId;
 		private String socketId;
-		private String transactionId;
+		private Long transactionId;
 	}
 
 	public MultipleMeterValue getMeterValues(List<MeterValueRequest> hardwareIds) {
