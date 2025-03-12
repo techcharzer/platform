@@ -305,6 +305,7 @@ public class HardwareServiceClient {
 		private String socketId;
 		private String userId;
 		private String bookingId;
+		private Long transactionId;
 		private String reasonForStopping;
 	}
 

@@ -285,7 +285,7 @@ public class BookingClient {
 		private String locationId;
 		private ChargingType chargingType;
 		private Boolean sendNotificationToPremiseOwner;
-		
+
 		@Deprecated
 		public ChargerUsageTypeConfiguration getUsageConfiguration() {
 			switch (this.usageType) {
@@ -364,7 +364,7 @@ public class BookingClient {
 	public static interface BookingSource {
 
 		BookingSourceType getBookingSourceType();
-		
+
 		default List<Long> getTransactionId() {
 			return Collections.emptyList();
 		}
@@ -466,7 +466,7 @@ public class BookingClient {
 		if (ObjectUtils.isEmpty(request)) {
 			return null;
 		}
-		log.debug("fetchig boookingDetails :{}", request);
+		log.debug("start booking :{}", request);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
@@ -476,7 +476,7 @@ public class BookingClient {
 		try {
 			String url = MessageFormat.format("{0}/booking-service/secure/internal-call/booking/start",
 					urlConfig.getBaseUrl());
-			log.debug("request : {} body and headers {}", url, entity);
+			log.info("request : {} body and headers {}", url, entity);
 			ResponseEntity<SuccessfullyCreatedDTO> response = template.exchange(url, HttpMethod.POST, entity,
 					SuccessfullyCreatedDTO.class);
 			log.info("response body : {}", response.getBody());
@@ -505,7 +505,7 @@ public class BookingClient {
 		if (ObjectUtils.isEmpty(request)) {
 			return null;
 		}
-		log.debug("fetchig boookingDetails :{}", request);
+		log.debug("stop boooking :{}", request);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
@@ -515,7 +515,7 @@ public class BookingClient {
 		try {
 			String url = MessageFormat.format("{0}/booking-service/secure/internal-call/booking/stop",
 					urlConfig.getBaseUrl());
-			log.debug("request : {} body and headers {}", url, entity);
+			log.info("request : {} body and headers {}", url, entity);
 			ResponseEntity<SuccessfullyCreatedDTO> response = template.exchange(url, HttpMethod.PUT, entity,
 					SuccessfullyCreatedDTO.class);
 			log.info("response body : {}", response.getBody());
