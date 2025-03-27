@@ -11,8 +11,6 @@ public class PlatformConstants {
 
 	}
 
-	public static final String WORKER_POOL = "threadPoolTaskExecutor";
-	public static final String SCHEDULER_POOL = "threadPoolTaskScheduler";
 	public static final String CURRENT_TIME_ZONE = "Asia/Kolkata";
 	public static final ZoneId CURRENT_ZONE_ID = ZoneId.of(CURRENT_TIME_ZONE);
 	public static final String EXTERNAL_CLIENT = "externalClient";
